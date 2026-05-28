@@ -1,0 +1,413 @@
+---
+/**
+ * SignatureViz — the 3MIP signature small-multiples figure.
+ *
+ * Six panels, same coastal Bangladesh silhouette, same question, different
+ * synthetic projections. Each panel encodes the spatial-pattern story of one
+ * model archetype:
+ *
+ *   1. Agent-based         — household heterogeneity, mid-elevation corridor concentration
+ *   2. Gravity             — smooth radial decay from the largest population center
+ *   3. Radiation           — distance + intervening-opportunity dampening
+ *   4. Integrated assess.  — coarse district-block uniformity (no within-block variation)
+ *   5. Machine learning    — blob-like clusters learned from spatial features
+ *   6. Cellular automaton  — banded patterns from neighborhood diffusion rules
+ *
+ * Hard constraints from kickoff Phase 2:
+ *   - Pure inline SVG. No <img>, no JavaScript, no D3, no external libraries.
+ *   - Color: sequential ramp keyed to the accent token (opacity steps on the
+ *     accent fill). Not rainbow. Not diverging.
+ *   - Shared legend, shared scale bar, panel titles, attribution line.
+ *   - Responsive: 3×2 desktop, 2×3 tablet, 1×6 mobile (375px).
+ *   - Accessible: role="img", aria-labelledby + describedby, title+desc inside
+ *     the SVG, plus a visible long-form text alternative below (provided by
+ *     the consuming page via the Figure component's long-description slot).
+ *
+ * Synthetic data is generated deterministically from a per-panel pure function
+ * of (column, row). Same input → same output → same rendered figure across
+ * builds. Patterns are tuned for visual clarity, not numerical realism — the
+ * "Illustrative" label is mandatory.
+ *
+ * NOTE on Bell sign-off: the choice of the six archetypes and the specific
+ * pattern story per panel is the substantive pitch 3MIP makes. Mario reviews
+ * before merge; Bell approves before launch. Tagged [PENDING BELL APPROVAL]
+ * inline.
+ */
+
+import { BANGLADESH_PATH } from "../lib/bangladesh-outline";
+
+interface Props {
+  class?: string;
+  /** Unique id base for ARIA attributes when multiple figures appear on a page. */
+  idBase?: string;
+}
+
+const { class: className = "", idBase = "sigviz" } = Astro.props;
+
+// ── Panel and grid geometry ────────────────────────────────────────────────
+const PANEL_W = 240;
+const PANEL_H = 180;
+const COLS = 14;
+const ROWS = 10;
+const CELL_W = PANEL_W / COLS; // ~17.14
+const CELL_H = PANEL_H / ROWS; // 18
+
+// Sequential ramp: bin 0 = invisible, bin 6 = full accent.
+// Opacity steps over a single hue produce a true sequential ramp that
+// inherits the accent CSS var, so dark mode rebalances automatically.
+const RAMP_OPACITY: readonly number[] = [0, 0.16, 0.30, 0.46, 0.62, 0.80, 1.0];
+
+function clampBin(n: number): number {
+  return Math.max(0, Math.min(6, Math.round(n)));
+}
+
+// ── Per-archetype generators ───────────────────────────────────────────────
+// Each takes (column, row) and returns an intensity bin 0..6.
+
+/** ABM: heterogeneous decisions, concentrated in a mid-elevation adaptive band. */
+function abm(c: number, r: number): number {
+  const band = Math.max(0, 6 - Math.abs(r - 5) * 1.4);
+  const noise = Math.sin(c * 1.7 + r * 1.1) * 1.6 + Math.cos(c * 0.9) * 0.8;
+  return clampBin(band + noise - 1);
+}
+
+/** Gravity: smooth radial attraction to Dhaka (top-center population center). */
+function gravity(c: number, r: number): number {
+  const dx = c - 7.5;
+  const dy = r - 1.5;
+  const d = Math.sqrt(dx * dx + dy * dy);
+  return clampBin(7 - d * 1.1);
+}
+
+/** Radiation: gravity-like, sharper falloff, intervening opportunities lower a region. */
+function radiation(c: number, r: number): number {
+  const dx = c - 7.5;
+  const dy = r - 1.5;
+  const d = Math.sqrt(dx * dx + dy * dy);
+  // A secondary "intervening" pocket near col 11 / row 4 absorbs flow.
+  const intervening = Math.max(0, 2.2 - Math.sqrt((c - 11) ** 2 + (r - 4) ** 2)) * 1.2;
+  return clampBin(7 - d * 1.6 - intervening);
+}
+
+/** IAM: coarse district blocks; no within-block variation. */
+function iam(c: number, r: number): number {
+  const block = [
+    [1, 3, 5, 3], // top row of blocks
+    [3, 5, 6, 2], // mid
+    [4, 6, 4, 1], // lower
+  ];
+  const blockC = Math.min(3, Math.floor(c / 4));
+  const blockR = Math.min(2, Math.floor(r / 4));
+  return clampBin(block[blockR][blockC]);
+}
+
+/** Machine learning: blob clusters learned from spatial features. */
+function ml(c: number, r: number): number {
+  const clusters = [
+    { cx: 4.0, cy: 5.5, peak: 6.4, decay: 1.1 },
+    { cx: 10.5, cy: 3.0, peak: 5.6, decay: 1.3 },
+    { cx: 7.5, cy: 8.0, peak: 4.6, decay: 1.5 },
+  ];
+  let val = 0;
+  for (const cl of clusters) {
+    const d = Math.sqrt((c - cl.cx) ** 2 + (r - cl.cy) ** 2);
+    val = Math.max(val, cl.peak - d * cl.decay);
+  }
+  return clampBin(val);
+}
+
+/** Cellular automaton: banded diffusion following coastal contour. */
+function cellular(c: number, r: number): number {
+  // Diagonal bands with a coast-parallel orientation.
+  const band = Math.sin((c + r * 1.5) * 0.55) * 3 + 3;
+  const coastBoost = r > 5 ? (r - 5) * 0.4 : 0; // intensify near south coast
+  return clampBin(band + coastBoost - 0.5);
+}
+
+type Panel = {
+  id: string;
+  title: string;
+  fn: (c: number, r: number) => number;
+};
+
+const PANELS: readonly Panel[] = [
+  { id: "abm", title: "Agent-based", fn: abm },
+  { id: "gravity", title: "Gravity", fn: gravity },
+  { id: "radiation", title: "Radiation", fn: radiation },
+  { id: "iam", title: "Integrated assessment", fn: iam },
+  { id: "ml", title: "Machine learning", fn: ml },
+  { id: "cellular", title: "Cellular automaton", fn: cellular },
+];
+
+// Pre-generate cell data for each panel so the markup loop is trivial.
+const panelCells = PANELS.map((p) => ({
+  ...p,
+  cells: Array.from({ length: COLS * ROWS }, (_, i) => {
+    const c = i % COLS;
+    const r = Math.floor(i / COLS);
+    return {
+      x: c * CELL_W,
+      y: r * CELL_H,
+      bin: p.fn(c, r),
+    };
+  }),
+}));
+
+const titleId = `${idBase}-title`;
+const descId = `${idBase}-desc`;
+---
+
+<figure class={`signature-viz ${className}`}>
+  <!--
+    The figure label is rendered above the grid (not as figcaption) so that
+    screen reader users hear the question before navigating the panels.
+    Per docs/CONTENT-INVENTORY.md § Home § Section 3.
+  -->
+  <p class="signature-viz__question">
+    <span class="signature-viz__question-label">Question</span>
+    Net internal migration, coastal Bangladesh, 2025&ndash;2050, SSP2&ndash;4.5
+    <span class="signature-viz__illustrative">(illustrative)</span>
+  </p>
+
+  <div class="signature-viz__grid" role="group" aria-label="Six model archetypes, same question.">
+    {panelCells.map((panel) => (
+      <div class="signature-viz__panel">
+        <h3 class="signature-viz__panel-title">{panel.title}</h3>
+        <svg
+          viewBox={`0 0 ${PANEL_W} ${PANEL_H}`}
+          role="img"
+          aria-labelledby={`${titleId}-${panel.id} ${descId}-${panel.id}`}
+          class="signature-viz__svg"
+        >
+          <title id={`${titleId}-${panel.id}`}>
+            {panel.title} archetype, same question.
+          </title>
+          <desc id={`${descId}-${panel.id}`}>
+            Stylized Bangladesh outline with synthetic spatial pattern showing
+            relative net migration intensity per cell under the {panel.title.toLowerCase()} model.
+          </desc>
+
+          {/* Country fill (light surface) and outline. */}
+          <defs>
+            <clipPath id={`clip-${panel.id}`}>
+              <path d={BANGLADESH_PATH} />
+            </clipPath>
+          </defs>
+
+          <path
+            d={BANGLADESH_PATH}
+            fill="var(--color-surface)"
+            stroke="var(--color-border-strong)"
+            stroke-width="1.25"
+          />
+
+          {/* Cells, clipped to country outline. */}
+          <g clip-path={`url(#clip-${panel.id})`} fill="var(--color-accent)">
+            {panel.cells
+              .filter((cell) => cell.bin > 0)
+              .map((cell) => (
+                <rect
+                  x={cell.x}
+                  y={cell.y}
+                  width={CELL_W}
+                  height={CELL_H}
+                  opacity={RAMP_OPACITY[cell.bin]}
+                />
+              ))}
+          </g>
+
+          {/* Re-stroke outline on top so cells don't bleed visually. */}
+          <path
+            d={BANGLADESH_PATH}
+            fill="none"
+            stroke="var(--color-ink)"
+            stroke-width="1.25"
+            stroke-linejoin="round"
+          />
+        </svg>
+      </div>
+    ))}
+  </div>
+
+  {/* Shared legend + scale bar. */}
+  <div class="signature-viz__legend" aria-label="Color ramp and scale legend">
+    <div class="signature-viz__ramp">
+      <span class="signature-viz__ramp-label">Net migration intensity</span>
+      <span class="signature-viz__ramp-end">low</span>
+      <span class="signature-viz__ramp-track" aria-hidden="true">
+        {RAMP_OPACITY.slice(1).map((op) => (
+          <span class="signature-viz__ramp-step" style={`opacity: ${op}`}></span>
+        ))}
+      </span>
+      <span class="signature-viz__ramp-end">high</span>
+    </div>
+
+    <div class="signature-viz__scale" aria-label="Approximate scale">
+      <span class="signature-viz__scale-bar" aria-hidden="true"></span>
+      <span class="signature-viz__scale-label">~ 50 km</span>
+    </div>
+  </div>
+
+  <p class="signature-viz__attribution">
+    <strong>Illustrative.</strong> Synthetic data tuned to show the spatial
+    signature each archetype tends to produce. 3MIP's purpose is to make this
+    divergence legible across real participating teams. <em>[PENDING BELL APPROVAL]</em>
+  </p>
+</figure>
+
+<style>
+  .signature-viz {
+    /* The signature visualization governs its own vertical rhythm. */
+    margin-block: 0;
+  }
+
+  .signature-viz__question {
+    font-family: var(--font-serif);
+    font-size: var(--text-h3);
+    line-height: var(--text-h3--line-height);
+    color: var(--color-ink);
+    text-wrap: balance;
+    max-width: 60ch;
+  }
+  .signature-viz__question-label {
+    display: inline-block;
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-ink-subtle);
+    margin-right: var(--space-2);
+    vertical-align: middle;
+    font-weight: 500;
+  }
+  .signature-viz__illustrative {
+    color: var(--color-ink-muted);
+    font-style: italic;
+    font-weight: 400;
+    font-size: var(--text-body);
+    font-family: var(--font-sans);
+  }
+
+  /* ── Grid layout ──────────────────────────────────────────────────────
+     Mobile 375px: 1 column (1×6 stack).
+     Tablet ≥640px: 2 columns (2×3).
+     Desktop ≥1024px: 3 columns (3×2).
+     The kickoff Phase 2 spec calls for 3×2 desktop / 2×3 tablet / 1×6 mobile,
+     which is the breakpoint progression below. */
+  .signature-viz__grid {
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+    margin-top: var(--space-4);
+  }
+  @media (min-width: 640px) {
+    .signature-viz__grid {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+  @media (min-width: 1024px) {
+    .signature-viz__grid {
+      grid-template-columns: repeat(3, 1fr);
+    }
+  }
+
+  .signature-viz__panel {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+
+  .signature-viz__panel-title {
+    font-family: var(--font-sans);
+    font-size: var(--text-small);
+    font-weight: 600;
+    letter-spacing: 0;
+    color: var(--color-ink);
+    margin: 0;
+    /* Title sits above the SVG; no decoration, no underline. */
+  }
+
+  .signature-viz__svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    border-radius: var(--radius);
+    background: var(--color-background);
+    /* Subtle frame so panels read as separate things in a small-multiples set. */
+  }
+
+  /* ── Legend ────────────────────────────────────────────────────────── */
+  .signature-viz__legend {
+    margin-top: var(--space-5);
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    align-items: flex-start;
+  }
+  @media (min-width: 768px) {
+    .signature-viz__legend {
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      gap: var(--space-5);
+    }
+  }
+
+  .signature-viz__ramp {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    flex-wrap: wrap;
+  }
+  .signature-viz__ramp-label {
+    font-size: var(--text-small);
+    color: var(--color-ink-muted);
+    margin-right: var(--space-2);
+  }
+  .signature-viz__ramp-end {
+    font-size: var(--text-caption);
+    color: var(--color-ink-subtle);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+  }
+  .signature-viz__ramp-track {
+    display: inline-flex;
+    height: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .signature-viz__ramp-step {
+    display: inline-block;
+    width: 28px;
+    height: 100%;
+    background: var(--color-accent);
+  }
+
+  .signature-viz__scale {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+    font-size: var(--text-small);
+    color: var(--color-ink-muted);
+  }
+  .signature-viz__scale-bar {
+    display: inline-block;
+    width: 48px;
+    height: 4px;
+    background: var(--color-ink);
+    border-radius: 1px;
+  }
+
+  /* ── Attribution ────────────────────────────────────────────────────── */
+  .signature-viz__attribution {
+    margin-top: var(--space-3);
+    font-size: var(--text-small);
+    line-height: var(--text-small--line-height);
+    color: var(--color-ink-muted);
+    max-width: 65ch;
+  }
+  .signature-viz__attribution strong {
+    color: var(--color-ink);
+  }
+</style>

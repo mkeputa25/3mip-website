@@ -18,12 +18,12 @@ import Button from "../components/Button.astro";
 import Link from "../components/Link.astro";
 import Card from "../components/Card.astro";
 import Callout from "../components/Callout.astro";
-import Figure from "../components/Figure.astro";
 import CitationBlock from "../components/CitationBlock.astro";
 import FormField from "../components/FormField.astro";
 import Footnote from "../components/Footnote.astro";
 import ColorSwatch from "../components/ColorSwatch.astro";
 import TypeSpecimen from "../components/TypeSpecimen.astro";
+import SignatureViz from "../components/SignatureViz.astro";
 
 // Light-mode token hexes mirror the values declared in src/styles/global.css.
 // We list them here for the contrast calculator; the actual rendering uses
@@ -290,23 +290,27 @@ const LIGHT = {
           </Callout>
         </div>
 
-        <h3 style="margin-top: var(--space-6);">Figure (placeholder for signature visualization)</h3>
-        <Figure
-          illustrative
-          caption="Six model archetypes applied to the same Bangladesh migration question yield divergent spatial patterns. 3MIP synthesizes the disagreement rather than averaging it away."
-          source="3MIP. Synthetic data."
-        >
-          <div style="aspect-ratio: 16 / 9; background: var(--color-surface); border: 1px dashed var(--color-border-strong); display: flex; align-items: center; justify-content: center; border-radius: var(--radius);">
-            <p class="text-caption" style="color: var(--color-ink-subtle);">SignatureViz lands here in Phase 2</p>
-          </div>
-          <p slot="long-description" class="text-small" style="color: var(--color-ink-muted); margin-top: var(--space-2);">
-            Long-form text alternative: in the final figure, each of six small panels shows the same
-            coastal silhouette of Bangladesh under a different model archetype (ABM, gravity,
-            radiation, integrated assessment, machine learning, cellular automaton). The color ramp
-            indicates synthetic net migration intensity. Panels share a legend, a scale bar, and the
-            common research question stated above.
-          </p>
-        </Figure>
+        <h3 style="margin-top: var(--space-6);">Signature visualization</h3>
+        <p style="color: var(--color-ink-muted); max-width: 65ch;">
+          The figure below is the centerpiece of the home page. Six small panels, the same
+          stylized Bangladesh outline, the same question. The synthetic data tells the story of
+          how six model archetypes tend to produce visibly different spatial patterns for the
+          same input — which is the entire reason 3MIP exists.
+        </p>
+        <SignatureViz />
+        <p class="text-small" style="color: var(--color-ink-muted); max-width: 65ch; margin-top: var(--space-3);">
+          <strong style="color: var(--color-ink);">Long-form text alternative.</strong>
+          Each of the six panels shows the same coastal silhouette of Bangladesh with a different
+          spatial pattern overlaid. Agent-based: concentrated in a mid-elevation band with
+          household-scale heterogeneity. Gravity: smooth radial decay outward from the largest
+          population center in the north-central area. Radiation: similar to gravity with sharper
+          falloff and a secondary low-intensity pocket where intervening opportunities absorb flow.
+          Integrated assessment: coarse rectangular blocks of uniform intensity at district scale.
+          Machine learning: a small number of blob-like clusters at varying intensities. Cellular
+          automaton: linear diagonal bands following coastal contour. The color ramp is sequential
+          from low (almost invisible) to high (full accent color); panels share the ramp, a scale
+          bar, and the common research question shown above the grid.
+        </p>
 
         <h3 style="margin-top: var(--space-6);">Citation block</h3>
         <CitationBlock
