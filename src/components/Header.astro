@@ -1,0 +1,271 @@
+---
+/**
+ * Header — wordmark left, primary nav right.
+ *
+ * Per docs/IA.md § Primary navigation:
+ *   - 8 nav items in declared order: About, Case 1, Data, Participate,
+ *     Team, Outputs, News, Contact.
+ *   - No CTA button in the nav (the home page has its own CTA in section 6).
+ *   - aria-current="page" on the active route, plus visual underline.
+ *   - At <768px, nav collapses behind a hamburger toggle.
+ *
+ * Mobile menu pattern: a real <button aria-expanded> toggling a <nav> with
+ * `hidden` attribute. Tiny inline script (~500 bytes) handles the toggle,
+ * keyboard escape, and focus management. No framework, no client bundle.
+ */
+import Wordmark from "./Wordmark.astro";
+
+const NAV_ITEMS = [
+  { href: "/about/", label: "About" },
+  { href: "/case-bangladesh/", label: "Case 1" },
+  { href: "/data/", label: "Data" },
+  { href: "/participate/", label: "Participate" },
+  { href: "/team/", label: "Team" },
+  { href: "/outputs/", label: "Outputs" },
+  { href: "/news/", label: "News" },
+  { href: "/contact/", label: "Contact" },
+] as const;
+
+// Current route comparison. Astro.url is available at build time per page;
+// trailing-slash policy is `always` in astro.config.mjs.
+const currentPath = Astro.url.pathname;
+function isCurrent(href: string): boolean {
+  if (href === "/") return currentPath === "/";
+  return currentPath === href || currentPath.startsWith(href);
+}
+
+// Home gets the wordmark as a non-link span (no self-referential link).
+const isHome = currentPath === "/";
+---
+
+<header class="site-header">
+  <div class="site-header__inner">
+    <Wordmark as={isHome ? "span" : "a"} />
+
+    <button
+      type="button"
+      class="site-header__toggle"
+      aria-expanded="false"
+      aria-controls="primary-nav"
+      aria-label="Open navigation menu"
+      data-nav-toggle
+    >
+      <span class="site-header__toggle-lines" aria-hidden="true">
+        <span></span><span></span><span></span>
+      </span>
+    </button>
+
+    <nav
+      id="primary-nav"
+      class="site-header__nav"
+      aria-label="Primary"
+      data-nav
+    >
+      <ul class="site-header__list">
+        {NAV_ITEMS.map((item) => (
+          <li>
+            <a
+              href={item.href}
+              class="site-header__link"
+              aria-current={isCurrent(item.href) ? "page" : undefined}
+            >
+              {item.label}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</header>
+
+<style>
+  .site-header {
+    background: var(--color-background);
+    border-bottom: 1px solid var(--color-border);
+    position: relative;
+    z-index: 10;
+  }
+
+  .site-header__inner {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: var(--space-3) var(--space-3);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+  }
+  @media (min-width: 768px) {
+    .site-header__inner {
+      padding: var(--space-4) var(--space-5);
+    }
+  }
+
+  /* Mobile toggle button — hidden ≥768px. */
+  .site-header__toggle {
+    background: transparent;
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: 0;
+    width: 44px;
+    height: 44px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    color: var(--color-ink);
+  }
+  .site-header__toggle:hover {
+    border-color: var(--color-ink);
+  }
+  @media (min-width: 768px) {
+    .site-header__toggle {
+      display: none;
+    }
+  }
+  .site-header__toggle-lines {
+    position: relative;
+    display: inline-block;
+    width: 18px;
+    height: 12px;
+  }
+  .site-header__toggle-lines span {
+    position: absolute;
+    left: 0;
+    right: 0;
+    height: 1.5px;
+    background: currentColor;
+    border-radius: 1px;
+    transition: transform 150ms var(--ease-out), opacity 150ms var(--ease-out);
+  }
+  .site-header__toggle-lines span:nth-child(1) { top: 0; }
+  .site-header__toggle-lines span:nth-child(2) { top: 5.25px; }
+  .site-header__toggle-lines span:nth-child(3) { bottom: 0; }
+
+  /* When expanded, lines morph to an X. */
+  .site-header__toggle[aria-expanded="true"] .site-header__toggle-lines span:nth-child(1) {
+    transform: translateY(5.25px) rotate(45deg);
+  }
+  .site-header__toggle[aria-expanded="true"] .site-header__toggle-lines span:nth-child(2) {
+    opacity: 0;
+  }
+  .site-header__toggle[aria-expanded="true"] .site-header__toggle-lines span:nth-child(3) {
+    transform: translateY(-5.25px) rotate(-45deg);
+  }
+
+  /* Nav — full-viewport panel at mobile, inline list at desktop. */
+  .site-header__nav {
+    display: none;
+  }
+  .site-header__nav[data-open="true"] {
+    display: block;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: var(--color-background);
+    border-bottom: 1px solid var(--color-border);
+    padding: var(--space-3) var(--space-3);
+  }
+  @media (min-width: 768px) {
+    .site-header__nav {
+      display: block !important;
+      position: static;
+      padding: 0;
+      border: 0;
+      background: transparent;
+    }
+  }
+
+  .site-header__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  @media (min-width: 768px) {
+    .site-header__list {
+      flex-direction: row;
+      gap: var(--space-4);
+    }
+  }
+
+  .site-header__link {
+    display: inline-block;
+    padding: var(--space-2) 0;
+    color: var(--color-ink);
+    text-decoration: none;
+    font-size: var(--text-body);
+    font-weight: 400;
+    transition: color 150ms var(--ease-out);
+    /* Hit area on mobile */
+    min-height: 44px;
+    line-height: 28px;
+  }
+  .site-header__link:hover {
+    color: var(--color-accent);
+  }
+  .site-header__link[aria-current="page"] {
+    color: var(--color-ink);
+    font-weight: 500;
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+    text-decoration-thickness: 2px;
+    text-underline-offset: 6px;
+  }
+  .site-header__link:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+</style>
+
+<!--
+  Tiny inline script (~500 bytes minified) for the mobile menu toggle.
+  Inline so it runs before paint and there's no flash of incorrect state.
+  Vanilla JS, no module imports — Astro will fold it into the document.
+-->
+<script is:inline>
+  (function () {
+    var toggle = document.querySelector('[data-nav-toggle]');
+    var nav = document.querySelector('[data-nav]');
+    if (!toggle || !nav) return;
+
+    function open() {
+      toggle.setAttribute('aria-expanded', 'true');
+      toggle.setAttribute('aria-label', 'Close navigation menu');
+      nav.setAttribute('data-open', 'true');
+    }
+    function close() {
+      toggle.setAttribute('aria-expanded', 'false');
+      toggle.setAttribute('aria-label', 'Open navigation menu');
+      nav.removeAttribute('data-open');
+    }
+
+    toggle.addEventListener('click', function () {
+      if (toggle.getAttribute('aria-expanded') === 'true') close();
+      else open();
+    });
+
+    // Escape key closes the panel and returns focus to the toggle.
+    document.addEventListener('keydown', function (e) {
+      if (e.key === 'Escape' && toggle.getAttribute('aria-expanded') === 'true') {
+        close();
+        toggle.focus();
+      }
+    });
+
+    // Close when a nav link is clicked (the page is about to change anyway,
+    // but this gives a snappier perceived response).
+    nav.addEventListener('click', function (e) {
+      var target = e.target;
+      if (target && target.tagName === 'A') close();
+    });
+
+    // Close if the viewport widens past the breakpoint (rare, e.g., rotation).
+    var mq = window.matchMedia('(min-width: 768px)');
+    mq.addEventListener('change', function (e) { if (e.matches) close(); });
+  })();
+</script>

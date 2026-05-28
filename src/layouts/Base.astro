@@ -1,0 +1,103 @@
+---
+/**
+ * Base layout — the only HTML shell on the site.
+ *
+ * Every page passes its own SEO metadata and an optional JSON-LD object.
+ * Defaults are set so omitting a prop doesn't ship blanks; pages should
+ * override `title`, `description`, and `jsonLd` deliberately.
+ *
+ * Includes:
+ *   - <head>: title, meta description, canonical, Open Graph, Twitter,
+ *     theme-color, color-scheme
+ *   - Skip link as the first focusable element
+ *   - Semantic landmarks: <header>, <main id="main">, <footer>
+ *   - JSON-LD slot (per-page structured data)
+ *
+ * No client-side analytics. No third-party scripts. No cookie banner.
+ */
+import "../styles/global.css";
+import SkipLink from "../components/SkipLink.astro";
+import Header from "../components/Header.astro";
+import Footer from "../components/Footer.astro";
+import JsonLd from "../components/JsonLd.astro";
+
+interface Props {
+  /** Page title — used in <title> and og:title. Will be suffixed with " — 3MIP" unless `bareTitle` is true. */
+  title: string;
+  /** Meta description, ≤155 chars (recommended). */
+  description: string;
+  /** Canonical URL path (relative). Defaults to the current page. */
+  canonical?: string;
+  /** OG image URL (absolute). If omitted, falls back to the default site OG. */
+  ogImage?: string;
+  /** Optional structured-data object emitted as <script type="application/ld+json">. */
+  jsonLd?: Record<string, unknown>;
+  /** Set to true to use `title` verbatim (Home page typically does this). */
+  bareTitle?: boolean;
+}
+
+const {
+  title,
+  description,
+  canonical,
+  ogImage,
+  jsonLd,
+  bareTitle = false,
+} = Astro.props;
+
+const SITE_URL = Astro.site?.toString().replace(/\/$/, "") ?? "https://3mip.org";
+const fullTitle = bareTitle ? title : `${title} — 3MIP`;
+const canonicalUrl = `${SITE_URL}${canonical ?? Astro.url.pathname}`;
+const ogImageUrl = ogImage ?? `${SITE_URL}/og-default.png`;
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{fullTitle}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonicalUrl} />
+
+    {/* Favicon + theme color (matches token --color-background). */}
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="theme-color" content="#FAF7F2" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#14110E" media="(prefers-color-scheme: dark)" />
+    <meta name="color-scheme" content="light dark" />
+
+    {/* Open Graph */}
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={fullTitle} />
+    <meta property="og:description" content={description} />
+    <meta property="og:url" content={canonicalUrl} />
+    <meta property="og:image" content={ogImageUrl} />
+    <meta property="og:site_name" content="3MIP" />
+    <meta property="og:locale" content="en_US" />
+
+    {/* Twitter / X Card */}
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={fullTitle} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImageUrl} />
+
+    {/* JSON-LD slot */}
+    {jsonLd && <JsonLd data={jsonLd} />}
+
+    {/* Sitemap discovery (per @astrojs/sitemap). */}
+    <link rel="sitemap" href="/sitemap-index.xml" />
+
+    {/* RSS feed (News page; built in Phase 4C). */}
+    <link rel="alternate" type="application/rss+xml" title="3MIP News" href="/news/feed.xml" />
+  </head>
+
+  <body>
+    <SkipLink />
+    <Header />
+    <main id="main">
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

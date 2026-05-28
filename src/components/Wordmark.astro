@@ -1,0 +1,51 @@
+---
+/**
+ * Wordmark — typographic "3MIP" mark used in the header and footer.
+ *
+ * No logo. No mascot. The mark is type, set in the project's serif
+ * with deliberate weight, mirroring the favicon's stylized "3."
+ *
+ * Renders as a link to "/" by default; the home page passes
+ * `as="span"` to avoid a self-referential link in the header.
+ */
+interface Props {
+  as?: "a" | "span";
+  /** Smaller variant for the footer. */
+  size?: "default" | "small";
+  class?: string;
+}
+
+const {
+  as = "a",
+  size = "default",
+  class: className = "",
+}: Props = Astro.props;
+
+const sizeClass =
+  size === "small"
+    ? "text-[1.125rem] tracking-[-0.01em]"
+    : "text-[1.375rem] tracking-[-0.015em]";
+
+const base =
+  `inline-flex items-baseline gap-2 font-serif font-medium text-ink ` +
+  `${sizeClass} ${className}`;
+---
+
+{
+  as === "a" ? (
+    <a
+      href="/"
+      class={`${base} no-underline hover:text-accent transition-colors duration-150 ease-out ` +
+             `focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 ` +
+             `focus-visible:outline-[color:var(--color-focus-ring)] rounded-[2px]`}
+      aria-label="3MIP home"
+    >
+      <span aria-hidden="true">3MIP</span>
+      <span class="vh">3MIP — Mobility and Migration Modeling Intercomparison Project</span>
+    </a>
+  ) : (
+    <span class={base} aria-label="3MIP">
+      3MIP
+    </span>
+  )
+}

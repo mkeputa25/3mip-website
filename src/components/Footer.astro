@@ -1,0 +1,218 @@
+---
+/**
+ * Footer — per docs/IA.md § Footer information architecture.
+ *
+ * Sections, in order:
+ *   1. Wordmark + tagline
+ *   2. Contact line
+ *   3. Quick links (subset of nav)
+ *   4. Project links: GitHub repo [PLACEHOLDER], Cite this site, RSS
+ *   5. Legal: Privacy notice, Accessibility statement, License
+ *   6. Meta: Last updated (auto from git)
+ *
+ * Total footer height should fit one screen at desktop (no link farms).
+ * On mobile, collapses to a single column.
+ */
+import Wordmark from "./Wordmark.astro";
+import { getLastUpdated, formatLongDate } from "../lib/last-updated";
+
+const lastUpdated = getLastUpdated();
+
+// [PENDING BELL APPROVAL — final GitHub URL]
+const GITHUB_URL = "https://github.com/3mip-project/3mip-website";
+
+const QUICK_LINKS = [
+  { href: "/about/", label: "About" },
+  { href: "/participate/", label: "Participate" },
+  { href: "/outputs/", label: "Outputs" },
+  { href: "/contact/", label: "Contact" },
+];
+
+const PROJECT_LINKS = [
+  { href: GITHUB_URL, label: "GitHub", external: true },
+  { href: "/news/feed.xml", label: "RSS feed" },
+  { href: "#cite", label: "Cite this site" },
+];
+
+const LEGAL_LINKS = [
+  { href: "/privacy/", label: "Privacy" },
+  { href: "/accessibility/", label: "Accessibility" },
+];
+---
+
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__brand">
+      <Wordmark size="small" />
+      <p class="site-footer__tagline">
+        Mobility and Migration Modeling Intercomparison Project
+      </p>
+      <p class="site-footer__contact">
+        <a href="mailto:mk2674@cornell.edu">mk2674@cornell.edu</a>
+      </p>
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__h">Quick links</h2>
+      <ul class="site-footer__list">
+        {QUICK_LINKS.map((l) => (
+          <li><a href={l.href}>{l.label}</a></li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__h">Project</h2>
+      <ul class="site-footer__list">
+        {PROJECT_LINKS.map((l) => (
+          <li>
+            <a
+              href={l.href}
+              rel={l.external ? "noopener noreferrer" : undefined}
+            >
+              {l.label}{l.external ? " ↗" : ""}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </div>
+
+    <div class="site-footer__col">
+      <h2 class="site-footer__h">Legal</h2>
+      <ul class="site-footer__list">
+        {LEGAL_LINKS.map((l) => (
+          <li><a href={l.href}>{l.label}</a></li>
+        ))}
+      </ul>
+      <p class="site-footer__license">
+        Content licensed under <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer">CC BY 4.0</a>.
+        Source code under <a href="https://opensource.org/licenses/MIT" rel="noopener noreferrer">MIT</a>.
+      </p>
+    </div>
+  </div>
+
+  <div class="site-footer__meta">
+    <span>Last updated <time datetime={lastUpdated}>{formatLongDate(lastUpdated)}</time>.</span>
+    <span class="site-footer__meta-sep" aria-hidden="true">·</span>
+    <span>No analytics, no third-party trackers.</span>
+  </div>
+</footer>
+
+<style>
+  .site-footer {
+    background: var(--color-background);
+    border-top: 1px solid var(--color-border);
+    color: var(--color-ink-muted);
+    margin-top: var(--space-8);
+  }
+
+  .site-footer__inner {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-3);
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 640px) {
+    .site-footer__inner {
+      grid-template-columns: 1fr 1fr;
+      padding: var(--space-6) var(--space-4);
+    }
+  }
+  @media (min-width: 1024px) {
+    .site-footer__inner {
+      grid-template-columns: 2fr 1fr 1fr 1.4fr;
+      padding: var(--space-7) var(--space-5);
+    }
+  }
+
+  .site-footer__brand {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+  }
+  .site-footer__tagline {
+    font-size: var(--text-small);
+    color: var(--color-ink-muted);
+    max-width: 32ch;
+    margin: 0;
+  }
+  .site-footer__contact {
+    font-size: var(--text-small);
+    color: var(--color-ink);
+    margin: 0;
+  }
+  .site-footer__contact a {
+    color: var(--color-ink);
+  }
+
+  .site-footer__h {
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-ink-subtle);
+    margin: 0 0 var(--space-3);
+  }
+
+  .site-footer__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-2);
+    font-size: var(--text-small);
+  }
+  .site-footer__list a {
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+  .site-footer__list a:hover {
+    text-decoration: underline;
+    text-decoration-color: var(--color-accent);
+    text-underline-offset: 0.2em;
+  }
+  .site-footer__list a:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+
+  .site-footer__license {
+    font-size: var(--text-caption);
+    color: var(--color-ink-subtle);
+    margin: var(--space-3) 0 0;
+    line-height: 1.5;
+  }
+  .site-footer__license a {
+    color: var(--color-ink-muted);
+  }
+
+  .site-footer__meta {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding: var(--space-3) var(--space-3) var(--space-5);
+    border-top: 1px solid var(--color-border);
+    color: var(--color-ink-subtle);
+    font-size: var(--text-caption);
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+  @media (min-width: 640px) {
+    .site-footer__meta {
+      padding: var(--space-3) var(--space-4) var(--space-5);
+    }
+  }
+  @media (min-width: 1024px) {
+    .site-footer__meta {
+      padding: var(--space-3) var(--space-5) var(--space-5);
+    }
+  }
+  .site-footer__meta-sep {
+    color: var(--color-ink-subtle);
+  }
+</style>

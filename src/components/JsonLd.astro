@@ -1,0 +1,19 @@
+---
+/**
+ * JsonLd — emits a <script type="application/ld+json"> with the given
+ * structured-data object. One emit per call; pages can include multiples
+ * (e.g., a `WebPage` + a `BreadcrumbList` on the same page).
+ *
+ * Keep keys minimal. JSON-LD validators are picky about types; prefer
+ * official Schema.org types and properties.
+ */
+interface Props {
+  data: Record<string, unknown>;
+}
+const { data } = Astro.props;
+// Escape `</` to avoid prematurely closing the script tag if the data
+// happens to contain it (e.g., in a description).
+const safe = JSON.stringify(data).replace(/<\//g, "<\\/");
+---
+
+<script type="application/ld+json" is:inline set:html={safe} />

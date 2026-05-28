@@ -1,0 +1,84 @@
+---
+/**
+ * 404 — on-brand, helpful, not cute. Per DECISIONS.md D10.
+ *
+ * The page treats getting lost as routine. No illustrations, no humor,
+ * no "lost in space" copy. It lists the five most useful destinations
+ * and offers contact for broken citations.
+ */
+import Base from "../layouts/Base.astro";
+
+const SUGGESTED = [
+  { href: "/", label: "Home" },
+  { href: "/about/", label: "About" },
+  { href: "/case-bangladesh/", label: "Case 1: Coastal Bangladesh" },
+  { href: "/participate/", label: "Participate" },
+  { href: "/team/", label: "Team" },
+];
+---
+
+<Base
+  title="404 — page not found"
+  description="This page does not exist on the 3MIP site. Try the navigation above or one of the suggested destinations."
+>
+  <article class="not-found">
+    <p class="not-found__kicker">404</p>
+    <h1>This page does not exist.</h1>
+    <p class="not-found__lede">
+      The site is small enough that everything available is in the navigation above.
+      If you arrived here from a broken link in a citation, email
+      <a href="mailto:mk2674@cornell.edu">mk2674@cornell.edu</a>
+      with the source so we can fix it.
+    </p>
+
+    <h2>Suggested destinations</h2>
+    <ul class="not-found__list">
+      {SUGGESTED.map((s) => (
+        <li><a href={s.href}>{s.label}</a></li>
+      ))}
+    </ul>
+  </article>
+</Base>
+
+<style>
+  .not-found {
+    max-width: 65ch;
+    margin-inline: auto;
+    padding: var(--space-7) var(--space-3);
+  }
+  @media (min-width: 768px) {
+    .not-found { padding: var(--space-8) var(--space-4); }
+  }
+  .not-found__kicker {
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    color: var(--color-ink-subtle);
+    margin: 0;
+  }
+  .not-found h1 {
+    margin-top: var(--space-2);
+  }
+  .not-found__lede {
+    font-size: var(--text-body-lg);
+    color: var(--color-ink-muted);
+    margin-top: var(--space-3);
+  }
+  .not-found h2 {
+    margin-top: var(--space-6);
+    font-size: var(--text-h3);
+  }
+  .not-found__list {
+    margin-top: var(--space-3);
+    padding-left: var(--space-4);
+    list-style-type: square;
+    color: var(--color-ink-muted);
+  }
+  .not-found__list li {
+    padding-block: var(--space-1);
+  }
+  .not-found__list a {
+    color: var(--color-ink);
+  }
+</style>
