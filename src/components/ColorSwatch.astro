@@ -1,0 +1,60 @@
+---
+/**
+ * ColorSwatch — used only on /_design. Renders a color token with its
+ * hex value and the measured WCAG contrast ratio against a paired color.
+ *
+ * The whole point of this component is that the showcase page becomes
+ * the QA artifact: any token pair that fails its threshold ships as FAIL
+ * and gets fixed before merge.
+ */
+import { contrastRatio, classify } from "../lib/contrast";
+
+interface Props {
+  /** Token name (e.g., "ink", "accent"). */
+  name: string;
+  /** Hex value of this token (light mode reference). */
+  hex: string;
+  /** Hex of the color this token is paired against (for contrast). */
+  pairedWith: string;
+  /** Friendly label of the paired token. */
+  pairedName: string;
+  /** Threshold kind: body text, large text, or non-text UI. */
+  kind?: "body" | "large" | "ui";
+  /** If true, this swatch represents the background (rendered inverted). */
+  asBackground?: boolean;
+}
+
+const {
+  name,
+  hex,
+  pairedWith,
+  pairedName,
+  kind = "body",
+  asBackground = false,
+} = Astro.props;
+
+const ratio = contrastRatio(hex, pairedWith);
+const result = classify(ratio, kind);
+const passStyle = result.passes
+  ? "text-[color:var(--color-success)]"
+  : "text-[color:var(--color-error)]";
+---
+
+<div class="border border-border rounded-[4px] overflow-hidden bg-surface-elevated">
+  <div
+    class="h-20 w-full flex items-end p-3"
+    style={`background-color: ${asBackground ? hex : hex}; color: ${asBackground ? pairedWith : pairedWith}`}
+  >
+    <span class="text-small font-medium">Aa</span>
+  </div>
+  <div class="p-3 text-small">
+    <div class="font-medium text-ink">{name}</div>
+    <div class="font-mono text-ink-muted">{hex.toUpperCase()}</div>
+    <div class="mt-2 text-ink-muted">
+      vs <span class="text-ink">{pairedName}</span>: <span class={`font-medium ${passStyle}`}>{ratio}:1 ({result.level})</span>
+    </div>
+    <div class="text-ink-subtle text-caption mt-1">
+      target: {kind === "body" ? "≥4.5:1 (AA)" : kind === "large" ? "≥3:1 (AA Large)" : "≥3:1 (non-text)"}
+    </div>
+  </div>
+</div>

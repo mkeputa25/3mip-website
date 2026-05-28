@@ -1,0 +1,46 @@
+---
+/**
+ * Figure — semantic <figure> wrapper with <figcaption>.
+ *
+ * Per DESIGN-PRINCIPLES.md § Figures: caption is required and includes
+ *   1. Descriptive sentence
+ *   2. Source line
+ *   3. "Illustrative" prefix for synthetic data
+ *
+ * For complex SVG figures (e.g., the signature visualization in Phase 2),
+ * the long-form text alternative goes inside a default named slot below
+ * the figcaption — visible and present in the DOM, not hidden in alt.
+ */
+interface Props {
+  caption: string;
+  /** Source attribution shown on a second line of the caption. */
+  source?: string;
+  /** Prefixes the caption with "Illustrative." for synthetic data figures. */
+  illustrative?: boolean;
+  class?: string;
+}
+
+const {
+  caption,
+  source,
+  illustrative = false,
+  class: className = "",
+} = Astro.props;
+---
+
+<figure class={`my-8 ${className}`}>
+  <slot />
+  <figcaption class="mt-3 text-small text-ink-muted max-w-[65ch]">
+    {illustrative && <strong class="text-ink">Illustrative.</strong>}
+    {illustrative && " "}
+    {caption}
+    {source && (
+      <>
+        <span class="block mt-1 text-ink-subtle">
+          Source: {source}
+        </span>
+      </>
+    )}
+  </figcaption>
+  <slot name="long-description" />
+</figure>

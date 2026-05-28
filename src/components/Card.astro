@@ -1,0 +1,51 @@
+---
+/**
+ * Card — generic surface primitive. Specialized cards (DatasetCard,
+ * WebinarCard, etc.) compose this.
+ *
+ * Per DESIGN-PRINCIPLES.md § Cards:
+ *  - 1px border, 4px radius, no shadow by default
+ *  - hover state darkens the border, no translation
+ *  - entirely-clickable cards use a single <a> wrapping the content
+ */
+interface Props {
+  /** If set, the entire card becomes a single accessible link. */
+  href?: string;
+  /** Required when href is set: the accessible label for the link. */
+  "aria-label"?: string;
+  /** Visual emphasis — uses border-strong instead of border. */
+  emphasized?: boolean;
+  class?: string;
+}
+
+const {
+  href,
+  "aria-label": ariaLabel,
+  emphasized = false,
+  class: className = "",
+} = Astro.props;
+
+const base =
+  "block bg-surface border rounded-[4px] p-4 md:p-6 " +
+  "transition-colors duration-150 ease-out";
+const borderClass = emphasized ? "border-border-strong" : "border-border";
+const hoverClass = href ? "hover:border-ink" : "";
+const focusClass = href
+  ? "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 " +
+    "focus-visible:outline-[color:var(--color-focus-ring)]"
+  : "";
+
+const finalClass = `${base} ${borderClass} ${hoverClass} ${focusClass} ${className}`;
+---
+
+{
+  href ? (
+    <a href={href} class={finalClass} aria-label={ariaLabel}>
+      <slot />
+    </a>
+  ) : (
+    <div class={finalClass}>
+      <slot />
+    </div>
+  )
+}

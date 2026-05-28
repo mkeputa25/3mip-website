@@ -1,0 +1,47 @@
+---
+/**
+ * CitationBlock — formatted academic citation, intended for in-prose use
+ * adjacent to a claim that needs sourcing (Case page, Outputs page).
+ *
+ * Uses <cite> wrapped around the title as the spec intends.
+ */
+interface Props {
+  authors: string;
+  year: number | string;
+  title: string;
+  venue?: string;
+  doi?: string;
+  /** Optional volume/issue/pages line. */
+  reference?: string;
+  class?: string;
+}
+
+const {
+  authors,
+  year,
+  title,
+  venue,
+  doi,
+  reference,
+  class: className = "",
+} = Astro.props;
+---
+
+<div class={`bg-surface border border-border rounded-[4px] p-4 my-4 text-small leading-relaxed ${className}`}>
+  <span class="text-ink">{authors} ({year}). </span>
+  <cite class="text-ink italic not-italic">{title}.</cite>
+  {venue && <span class="text-ink-muted"> <em>{venue}</em></span>}
+  {reference && <span class="text-ink-muted">, {reference}</span>}
+  {doi && (
+    <>
+      {" "}
+      <a
+        href={`https://doi.org/${doi}`}
+        rel="noopener noreferrer"
+        class="text-ink underline decoration-border-strong hover:text-accent hover:decoration-accent underline-offset-[0.15em]"
+      >
+        https://doi.org/{doi}
+      </a>
+    </>
+  )}
+</div>

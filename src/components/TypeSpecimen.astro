@@ -1,0 +1,35 @@
+---
+/**
+ * TypeSpecimen — one row of the type scale, rendering real copy from
+ * COPY-GUIDE.md examples (Lorem is forbidden).
+ */
+interface Props {
+  token: string;
+  description: string;
+  family: "serif" | "sans";
+  sampleHtml?: string;
+  /** The literal CSS class to apply for this row. Use Tailwind text-* utilities. */
+  className: string;
+}
+
+const {
+  token,
+  description,
+  family,
+  sampleHtml,
+  className,
+} = Astro.props;
+
+const fontClass = family === "serif" ? "font-serif" : "font-sans";
+---
+
+<div class="grid grid-cols-[10rem,1fr] gap-6 items-baseline py-4 border-b border-border">
+  <div class="text-small text-ink-muted">
+    <div class="font-medium text-ink">{token}</div>
+    <div>{family}</div>
+    <div class="text-caption text-ink-subtle">{description}</div>
+  </div>
+  <div class={`${className} ${fontClass} text-ink`}>
+    {sampleHtml ? <Fragment set:html={sampleHtml} /> : <slot />}
+  </div>
+</div>

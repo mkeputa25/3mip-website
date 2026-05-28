@@ -1,0 +1,6 @@
+User-agent: *
+Allow: /
+Disallow: /design/
+Disallow: /design
+
+Sitemap: https://3mip.org/sitemap-index.xml

@@ -1,0 +1,39 @@
+---
+/**
+ * Callout — three variants per DESIGN-PRINCIPLES.md § Callouts.
+ *
+ *   note     surface bg + accent-dim left border (informational)
+ *   citation surface bg, no border (publication / data citation)
+ *   caution  surface bg + warning left border (rare, calibration only)
+ *
+ * The wrapper is <aside> with role="note" so it's announced as supplementary
+ * content but doesn't interrupt the document flow.
+ */
+type Variant = "note" | "citation" | "caution";
+
+interface Props {
+  variant?: Variant;
+  /** Optional heading inside the callout. Rendered as <strong>, not a heading. */
+  label?: string;
+  class?: string;
+}
+
+const { variant = "note", label, class: className = "" } = Astro.props;
+
+const base = "bg-surface p-4 md:p-5 rounded-[4px] text-ink";
+const variants: Record<Variant, string> = {
+  note: "border-l-4 border-[color:var(--color-accent-dim)]",
+  citation: "border border-border text-[0.9375rem] leading-relaxed",
+  caution: "border-l-4 border-[color:var(--color-warning)]",
+};
+
+const role = variant === "caution" ? "note" : "note";
+---
+
+<aside
+  role={role}
+  class={`${base} ${variants[variant]} ${className}`}
+>
+  {label && <strong class="block mb-1 text-ink">{label}</strong>}
+  <slot />
+</aside>

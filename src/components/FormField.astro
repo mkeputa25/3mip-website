@@ -1,0 +1,131 @@
+---
+/**
+ * FormField — single-column form input with accessible label.
+ *
+ * Per DESIGN-PRINCIPLES.md § Forms:
+ *  - Labels above inputs
+ *  - Required marked with asterisk + "(required)" in label text (not color alone)
+ *  - Errors inline below input with aria-describedby
+ *  - No placeholder-as-label
+ *
+ * Supports text, email, textarea, select. Multi-select uses <select multiple>.
+ */
+type FieldType = "text" | "email" | "textarea" | "select";
+
+interface Option {
+  value: string;
+  label: string;
+}
+
+interface Props {
+  id: string;
+  name: string;
+  label: string;
+  type?: FieldType;
+  required?: boolean;
+  placeholder?: string;
+  help?: string;
+  error?: string;
+  rows?: number;
+  options?: Option[];
+  multiple?: boolean;
+  value?: string;
+  pattern?: string;
+}
+
+const {
+  id,
+  name,
+  label,
+  type = "text",
+  required = false,
+  placeholder,
+  help,
+  error,
+  rows = 4,
+  options = [],
+  multiple = false,
+  value,
+  pattern,
+} = Astro.props;
+
+const helpId = help ? `${id}-help` : undefined;
+const errorId = error ? `${id}-error` : undefined;
+const describedBy = [helpId, errorId].filter(Boolean).join(" ") || undefined;
+
+const baseField =
+  "block w-full mt-2 px-3 py-2.5 " +
+  "bg-surface-elevated text-ink " +
+  "border border-border rounded-[4px] " +
+  "font-sans text-[1rem] leading-normal " +
+  "focus:border-ink focus:outline-none " +
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 " +
+  "focus-visible:outline-[color:var(--color-focus-ring)]";
+---
+
+<div class="mb-5">
+  <label for={id} class="block text-small font-medium text-ink">
+    {label}
+    {required && (
+      <span class="text-ink-muted font-normal"> (required)</span>
+    )}
+  </label>
+
+  {type === "textarea" && (
+    <textarea
+      id={id}
+      name={name}
+      required={required}
+      placeholder={placeholder}
+      rows={rows}
+      aria-describedby={describedBy}
+      aria-invalid={error ? "true" : undefined}
+      class={baseField}
+    >{value ?? ""}</textarea>
+  )}
+
+  {type === "select" && (
+    <select
+      id={id}
+      name={name}
+      required={required}
+      multiple={multiple}
+      aria-describedby={describedBy}
+      aria-invalid={error ? "true" : undefined}
+      class={baseField}
+    >
+      {!multiple && <option value="">Select…</option>}
+      {options.map((opt) => (
+        <option value={opt.value} selected={value === opt.value}>
+          {opt.label}
+        </option>
+      ))}
+    </select>
+  )}
+
+  {(type === "text" || type === "email") && (
+    <input
+      id={id}
+      name={name}
+      type={type}
+      required={required}
+      placeholder={placeholder}
+      pattern={pattern}
+      value={value}
+      aria-describedby={describedBy}
+      aria-invalid={error ? "true" : undefined}
+      class={baseField}
+    />
+  )}
+
+  {help && (
+    <p id={helpId} class="mt-1 text-small text-ink-muted">
+      {help}
+    </p>
+  )}
+  {error && (
+    <p id={errorId} class="mt-1 text-small text-[color:var(--color-error)]">
+      {error}
+    </p>
+  )}
+</div>

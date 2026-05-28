@@ -1,0 +1,70 @@
+---
+/**
+ * Button — three variants (primary / secondary / ghost) plus disabled.
+ * Per docs/DESIGN-PRINCIPLES.md § Buttons: 44×44 minimum hit area,
+ * aria-disabled when disabled, no fourth variant.
+ *
+ * For routing actions, pass `href` and the component renders an <a>;
+ * otherwise a <button>. Keyboard semantics follow the chosen element.
+ */
+type Variant = "primary" | "secondary" | "ghost";
+
+interface Props {
+  variant?: Variant;
+  href?: string;
+  type?: "button" | "submit" | "reset";
+  disabled?: boolean;
+  external?: boolean;
+  class?: string;
+  /** Optional aria-label for icon-only or context-poor buttons (rare). */
+  "aria-label"?: string;
+}
+
+const {
+  variant = "primary",
+  href,
+  type = "button",
+  disabled = false,
+  external = false,
+  class: className = "",
+  "aria-label": ariaLabel,
+} = Astro.props;
+
+const isLink = typeof href === "string" && href.length > 0;
+const Tag = isLink ? "a" : "button";
+
+const base =
+  "inline-flex items-center justify-center gap-2 min-h-[44px] px-4 py-2.5 " +
+  "rounded-[4px] font-medium text-[1rem] leading-none text-center " +
+  "border border-transparent " +
+  "transition-colors duration-150 ease-out " +
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 " +
+  "focus-visible:outline-[color:var(--color-focus-ring)] " +
+  "disabled:cursor-not-allowed disabled:opacity-50";
+
+const variants: Record<Variant, string> = {
+  primary:
+    "bg-accent text-accent-ink border-accent " +
+    "hover:bg-accent-dim hover:border-accent-dim",
+  secondary:
+    "bg-transparent text-ink border-border-strong " +
+    "hover:border-ink hover:bg-surface",
+  ghost:
+    "bg-transparent text-ink border-transparent " +
+    "hover:bg-surface",
+};
+---
+
+<Tag
+  class={`${base} ${variants[variant]} ${className}`}
+  href={isLink ? href : undefined}
+  type={!isLink ? type : undefined}
+  disabled={!isLink ? disabled : undefined}
+  aria-disabled={disabled || undefined}
+  aria-label={ariaLabel}
+  rel={external ? "noopener noreferrer" : undefined}
+  target={external ? undefined : undefined /* same-tab per COPY-GUIDE.md */}
+>
+  <slot />
+  {external && <span aria-hidden="true">↗</span>}
+</Tag>

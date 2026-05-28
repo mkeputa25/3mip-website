@@ -1,0 +1,55 @@
+---
+/**
+ * Link — three variants (in-prose / standalone / external).
+ * Visited-link styling not differentiated (see DESIGN-PRINCIPLES.md § Links).
+ * External links open in the same tab per COPY-GUIDE.md, with discreet ↗.
+ */
+type Variant = "in-prose" | "standalone" | "external";
+
+interface Props {
+  href: string;
+  variant?: Variant;
+  class?: string;
+  /** Force external visual treatment even on same-origin links (rare). */
+  forceExternal?: boolean;
+}
+
+const {
+  href,
+  variant: variantProp,
+  class: className = "",
+  forceExternal = false,
+} = Astro.props;
+
+// Auto-detect external if not explicitly set.
+const isAbsolute = /^https?:\/\//i.test(href);
+const isExternalGuess = isAbsolute && !href.startsWith("https://3mip.org");
+const variant: Variant = variantProp ?? (isExternalGuess || forceExternal ? "external" : "in-prose");
+
+const base = "transition-colors duration-150 ease-out " +
+  "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 " +
+  "focus-visible:outline-[color:var(--color-focus-ring)] focus-visible:rounded-[2px]";
+
+const variants: Record<Variant, string> = {
+  "in-prose":
+    "text-ink underline decoration-border-strong decoration-1 underline-offset-[0.2em] " +
+    "hover:text-accent hover:decoration-accent",
+  standalone:
+    "text-ink no-underline " +
+    "hover:underline hover:decoration-accent hover:underline-offset-[0.2em]",
+  external:
+    "text-ink underline decoration-border-strong decoration-1 underline-offset-[0.2em] " +
+    "hover:text-accent hover:decoration-accent",
+};
+
+const showGlyph = variant === "external";
+---
+
+<a
+  href={href}
+  class={`${base} ${variants[variant]} ${className}`}
+  rel={variant === "external" ? "noopener noreferrer" : undefined}
+>
+  <slot />
+  {showGlyph && <span aria-hidden="true" class="ml-0.5">↗</span>}
+</a>

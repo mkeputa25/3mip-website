@@ -1,0 +1,22 @@
+---
+/**
+ * Footnote — small superscript reference + a hidden return link target.
+ * The full footnote text lives in a <Footnotes> list at the bottom of the
+ * page; this component is only the inline marker.
+ *
+ * Pattern: <Footnote id="1" />…
+ * Then at bottom: <Footnotes><li id="fn-1">…<a href="#ref-1">↩</a></li></Footnotes>
+ */
+interface Props {
+  id: string | number;
+}
+const { id } = Astro.props;
+---
+
+<sup id={`ref-${id}`} class="text-[0.7em] align-super ml-0.5">
+  <a
+    href={`#fn-${id}`}
+    class="text-accent no-underline hover:underline focus-visible:outline-1 focus-visible:outline focus-visible:outline-[color:var(--color-focus-ring)]"
+    aria-label={`Footnote ${id}`}
+  >[{id}]</a>
+</sup>
