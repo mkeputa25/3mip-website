@@ -2,23 +2,42 @@
 /**
  * Home — src/pages/index.astro
  *
- * Per docs/CONTENT-INVENTORY.md § Home. Nine sections:
+ * Per docs/CONTENT-INVENTORY.md § Home, amended in Phase 4D. Ten sections:
  *   1. Header (shared via Base)
  *   2. Hero
  *   3. Signature visualization
  *   4. Current case (2-col text + key facts)
- *   5. Next milestone (iEMSs 2026)
+ *   5. Next milestone (iEMSs 2026 — confirmed July 12–16, UC Dublin)
  *   6. How 3MIP works (4 steps)
- *   7. Registration CTA
- *   8. Lineage strip
- *   9. Footer (shared via Base)
+ *   7. Leadership (4D.5 — cards from the team collection + coordination line)
+ *   8. Registration CTA
+ *   9. Lineage strip
+ *  10. Footer (shared via Base)
  *
  * Headline + tagline are [PENDING BELL APPROVAL] — see DECISIONS.md D13, D14.
  */
+import { getCollection } from "astro:content";
 import Base from "../layouts/Base.astro";
 import SignatureViz from "../components/SignatureViz.astro";
 import Button from "../components/Button.astro";
 import Link from "../components/Link.astro";
+
+// Leadership section is driven by the team collection so a successor swaps a
+// Markdown file, not this page. Co-leads alphabetical by surname.
+const team = await getCollection("team");
+const coLeads = team
+  .filter((e) => e.data.role === "co-lead")
+  .sort((a, b) => a.data.surname.localeCompare(b.data.surname));
+// Coordination line: active coordinator first (primary contact).
+// NOTE: this contact line must be updated when project coordination
+// transitions after June 2026 — edit src/content/team/, not this file.
+const coordinators = team
+  .filter((e) => e.data.role === "project-management")
+  .sort((a, b) => {
+    const aCoord = a.data.shortRole.toLowerCase().includes("coordinator") ? 0 : 1;
+    const bCoord = b.data.shortRole.toLowerCase().includes("coordinator") ? 0 : 1;
+    return aCoord - bCoord || a.data.surname.localeCompare(b.data.surname);
+  });
 
 const orgJsonLd = {
   "@context": "https://schema.org",
@@ -127,7 +146,7 @@ const orgJsonLd = {
           <div>
             <dt>Curated dataset</dt>
             <dd>
-              6+ open datasets with DOIs (<Link href="/data/" variant="in-prose">Data page</Link>)
+              16 datasets — population, environmental, mobility (<Link href="/data/" variant="in-prose">Data page</Link>)
             </dd>
           </div>
         </dl>
@@ -140,7 +159,7 @@ const orgJsonLd = {
     <div class="band__inner band__inner--narrow">
       <h2 id="next-h">Next milestone</h2>
       <div class="milestone">
-        <p class="milestone__head"><strong>iEMSs 2026 — Dublin, July 2026</strong></p>
+        <p class="milestone__head"><strong>iEMSs 2026 — University College Dublin, July 12–16, 2026</strong></p>
         <p>
           Session C7: <em>Mobility and Migration Modeling Intercomparison
           Project (3MIP) – An open, first synthesis</em>
@@ -150,9 +169,12 @@ const orgJsonLd = {
         </p>
         <p class="milestone__note">
           The first public synthesis of 3MIP results. Open to all conference
-          attendees.
+          attendees. Session day and room follow the preliminary program,
+          which publishes June 15, 2026.
         </p>
         <p>
+          <Link href="/dublin/" variant="in-prose">3MIP at iEMSs Dublin</Link>
+          <span class="milestone__sep" aria-hidden="true"> · </span>
           <Link href="https://conference.iemss.org/streams/" variant="external">
             Session details on the iEMSs program
           </Link>
@@ -190,7 +212,39 @@ const orgJsonLd = {
     </div>
   </section>
 
-  <!-- Section 7 — Registration CTA -->
+  <!-- Section 7 — Leadership (Phase 4D.5) -->
+  {coLeads.length > 0 && (
+    <section class="band" aria-labelledby="lead-h">
+      <div class="band__inner">
+        <h2 id="lead-h">Leadership</h2>
+        <ul class="leads">
+          {coLeads.map((e) => (
+            <li class="lead-card">
+              <h3 class="lead-card__name">
+                <a href="/team/">{e.data.name}</a>
+              </h3>
+              <p class="lead-card__affil">{e.data.affiliation}</p>
+              <p class="lead-card__role">{e.data.shortRole}</p>
+            </li>
+          ))}
+        </ul>
+        {coordinators.length > 0 && (
+          <p class="coord-line">
+            Project coordination —
+            {coordinators.map((c, i) => (
+              <span>
+                {" "}{c.data.name} ({c.data.affiliation}){c.data.email && (
+                  <>, <a href={`mailto:${c.data.email}`}>{c.data.email}</a></>
+                )}{i < coordinators.length - 1 ? " ·" : ""}
+              </span>
+            ))}
+          </p>
+        )}
+      </div>
+    </section>
+  )}
+
+  <!-- Section 8 — Registration CTA -->
   <section class="band band--cta" aria-labelledby="cta-h">
     <div class="band__inner band__inner--narrow cta">
       <h2 id="cta-h" class="vh">Register</h2>
@@ -203,7 +257,7 @@ const orgJsonLd = {
     </div>
   </section>
 
-  <!-- Section 8 — Lineage strip -->
+  <!-- Section 9 — Lineage strip -->
   <section class="lineage" aria-label="Lineage and institutional context">
     <p>
       Inspired by AgMIP and ISIMIP. Founded at Princeton C-PREE, September 2024.
@@ -362,7 +416,65 @@ const orgJsonLd = {
   }
   .step p { color: var(--color-ink-muted); font-size: var(--text-small); margin: 0; }
 
-  /* ── Section 7: CTA ────────────────────────────────────────────── */
+  /* ── Section 7: leadership (Phase 4D.5) ─────────────────────────── */
+  .leads {
+    list-style: none;
+    margin: var(--space-5) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-4);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 768px) { .leads { grid-template-columns: repeat(3, 1fr); } }
+  .lead-card {
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    background: var(--color-background);
+  }
+  .lead-card__name {
+    font-family: var(--font-serif);
+    font-size: var(--text-h4);
+    font-weight: 600;
+    margin: 0;
+  }
+  .lead-card__name a {
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+  .lead-card__name a:hover {
+    color: var(--color-accent);
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+  .lead-card__name a:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+  .lead-card__affil {
+    margin: var(--space-2) 0 0;
+    font-size: var(--text-small);
+    color: var(--color-ink-muted);
+  }
+  .lead-card__role {
+    margin: var(--space-2) 0 0;
+    font-size: var(--text-small);
+    font-style: italic;
+    color: var(--color-ink-subtle);
+  }
+  /* Coordination line — deliberately NOT a card; one rule above, smaller type. */
+  .coord-line {
+    margin-top: var(--space-5);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border);
+    font-size: var(--text-small);
+    color: var(--color-ink-muted);
+    max-width: none;
+  }
+  .coord-line a { color: var(--color-ink); }
+
+  /* ── Section 8: CTA ────────────────────────────────────────────── */
   .cta {
     display: flex;
     flex-direction: column;
@@ -378,7 +490,7 @@ const orgJsonLd = {
     margin: 0;
   }
 
-  /* ── Section 8: lineage strip ──────────────────────────────────── */
+  /* ── Section 9: lineage strip ──────────────────────────────────── */
   .lineage {
     padding-block: var(--space-7);
     text-align: center;

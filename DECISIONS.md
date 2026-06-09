@@ -368,6 +368,18 @@ Falls back to `import.meta.env.BUILD_TIME` if git isn't available during build (
 
 ---
 
+## D20 — Webinar video hosting (added Phase 4D)
+
+**Decision:** webinar recordings stay on Google Drive in v1, linked from cards as external "Watch recording ↗" buttons. Never embedded as iframes.
+
+**Why:** Vercel free-tier static deployments cap individual files at 100MB, and the site shouldn't carry video weight regardless. Drive is what the project already uses, requires no new account, and the links are already public. Embedded iframes would add a third-party frame (privacy posture) and layout shift; an external link is honest about where the video lives.
+
+**Considered and rejected:** self-hosting (file size, bandwidth), embedding Drive iframes (the current Weebly approach — works but exposes the Drive viewer chrome and contradicts the no-third-party-embeds posture).
+
+**v2 upgrade path:** an unlisted project-owned YouTube channel; swap the `recordingUrl` values in `src/content/webinars/`. One frontmatter field per file.
+
+---
+
 ## Open decisions awaiting Bell (surfaced in OPEN-QUESTIONS.md at Phase 6)
 
 | ID | Decision | Default while waiting |
@@ -382,5 +394,8 @@ Falls back to `import.meta.env.BUILD_TIME` if git isn't available during build (
 | B8 | Press posture | Routed through Cornell University Relations |
 | B9 | Accent color institutional alignment | Clay `#B7472A` |
 | B10 | Mario's successor for project management | Placeholder text on Team and Contact pages |
+| B11 | Logo: existing `final-3mip-logo.png` vs new typographic wordmark vs commissioned refresh | Wordmark ships site-wide; do not mix both (Phase 4D; see OPEN-QUESTIONS.md) |
+| B12 | Code-sharing FAQ wording — official statement is "modelers will be asked to share their code and model findings" | Site states the official policy verbatim (Phase 4D) |
+| B13 | Domain expert photos (exist in Weebly archive) | No photos in v1, pending consent confirmation |
 
 These are not blockers for the build. They are blockers for the launch.

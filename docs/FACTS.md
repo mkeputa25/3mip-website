@@ -17,6 +17,7 @@ Sources are cited inline. Where a source is contested or has been updated, the m
 - **Launch date**: October 2025
 - **Founding event**: Climate Migration Modeling Intercomparison Workshop, Princeton C-PREE, September 25–27, 2024
 - **Current website**: 3mip.weebly.com (to be deprecated)
+- **Official logo**: `final-3mip-logo.png` exists on the Weebly site. New-site treatment `[PENDING BELL APPROVAL]` — see OPEN-QUESTIONS.md. The typographic wordmark ships until decided; do not mix both.
 - **First benchmark case**: coastal Bangladesh under climate stress
 
 ## Leadership
@@ -35,6 +36,7 @@ Sources are cited inline. Where a source is contested or has been updated, the m
   - Bell, A. R., Calvo-Hernandez, C., & Oppenheimer, M. (2019). "Migration, Intensification, and Diversification as Adaptive Strategies." *Socio-Environmental Systems Modelling*, 1, 16102. DOI: 10.18174/sesmo.2019a16102
 - **Email**: andrew.reid.bell@cornell.edu `[VERIFY current Cornell address — older publications cite andrew.reid.bell@nyu.edu]`
 - **Cornell page**: https://einaudi.cornell.edu/discover/people/andrew-reid-bell
+- **Personal site**: https://andrewreidbell.com (added Phase 4D)
 
 ### Kelsea Best (Co-Lead)
 
@@ -49,6 +51,7 @@ Sources are cited inline. Where a source is contested or has been updated, the m
 - **Key publications relevant to 3MIP**:
   - Best, K., Ober, K., & McLeman, R. (2025). *Migration and Displacement in a Changing Climate*. Cambridge University Press.
 - **OSU page**: https://si.osu.edu/kelsea-best
+- **Personal site**: https://kelseabestresearch.com (added Phase 4D)
 
 ### Lars Tierolf (Co-Lead)
 
@@ -58,7 +61,7 @@ Sources are cited inline. Where a source is contested or has been updated, the m
 - **Research focus**: Coupled coastal adaptation and migration agent-based modeling
 - **Key publications relevant to 3MIP**:
   - Tierolf, L., de Moel, H., van Vuuren, D. P., Botzen, W. J. W., Hoogvliet, M., Aerts, J. C. J. H. (2024). "A coupled agent-based model for France for simulating adaptation and migration decisions under future coastal flood risk." *Science of the Total Environment*, 917, 170239.
-- **VU page**: https://research.vu.nl/en/persons/lars-tierolf `[VERIFY exact URL]`
+- **VU page**: https://research.vu.nl/en/persons/lars-tierolf (confirmed — Phase 4D crawl)
 
 ## Project management
 
@@ -132,24 +135,37 @@ Source: Princeton C-PREE workshop announcement, September 2024.
 
 ## Timeline (as currently planned)
 
+Corrected June 2026 (Phase 4D) against the official site. The Weebly
+timeline's "Early November, 2026" is a typo for 2025. The earlier
+February/March **2025** webinar dates in this file were wrong — they predate
+the project launch; the recorded webinars are February and March **2026**
+(year confirmed by Mario).
+
 | Date | Event | Status |
 |---|---|---|
 | September 25–27, 2024 | Founding workshop, Princeton C-PREE | Completed |
-| October 2025 | 3MIP launch and recruitment opens | Completed |
-| February 2025 | First participant webinar | Completed; recording available |
-| March 2025 | Second participant webinar | Completed; recording available |
-| Late 2025 – Mid 2026 | Regular participant webinars | Ongoing |
-| **July 2026** | **iEMSs 2026 Dublin, Session C7 + Workshop WSC7** | **Public inflection point** |
-| Late 2026 onward | Submissions to *Climatic Change* topical collection | Aspirational — formal Springer call not yet posted as of May 2026 |
+| October 1, 2025 | 3MIP launch and recruitment opens | Completed |
+| Early November 2025 | First participant webinar | Completed |
+| December 2025 – May 2026 | Regular participant webinars | Completed/ongoing |
+| **July 12–16, 2026** | **iEMSs 2026, University College Dublin — Session C7 + Workshop WSC7** | **Public inflection point** |
+| August – December 2026 | Regular webinars continue | Planned |
+| Late 2026 onward | Submissions to *Climatic Change* topical collection, received through 2027 | Aspirational — formal Springer call not yet posted |
 | 2027+ | Additional benchmark cases | TBD |
 
-`[VERIFY exact date of iEMSs 2026 Dublin — conference.iemss.org/streams confirms Session C7 and Workshop WSC7 but exact dates within July 2026 should be verified at time of writing]`
+### Webinar recordings (Drive links from the official site)
+
+- **February 2026** — Hedda Bonatz (University of Kiel). Title `[VERIFY — Mario supplies]`. Recording: https://drive.google.com/file/d/1UA-KpVOobspNNLXdW1pD4ctI4v0y9UJi/view
+- **March 2026** — Simona `[VERIFY surname and affiliation — Mario supplies]`. Title `[VERIFY]`. Recording: https://drive.google.com/file/d/1Of1ndcRHtXi54mnlKnaBDDHida04ak29/view
+- **Date `[VERIFY]`** — Andrew Bell (Cornell). Title `[VERIFY — Mario supplies]`. Recording: https://drive.google.com/file/d/1-qAABRtk0wHcn95Gu0LjAypfRUkPIAqT/view
+
+Hosting: recordings stay on Google Drive in v1 (see DECISIONS.md D20); linked as external buttons, never embedded iframes.
 
 ## iEMSs 2026 Dublin
 
 - **Conference**: International Environmental Modelling and Software Society biennial conference 2026
-- **Location**: Dublin, Ireland
-- **Date**: July 2026 `[VERIFY exact dates]`
+- **Location**: University College Dublin, Dublin, Ireland
+- **Dates**: July 12–16, 2026 (confirmed — Phase 4D, June 2026)
+- **Preliminary program**: publishes June 15, 2026. Session day and room `[PENDING — program June 15]`
 - **3MIP Session**: C7 — "Mobility and Migration Modeling Intercomparison Project (3MIP) – An open, first synthesis"
 - **3MIP Workshop**: WSC7 — "Panel Discussion – 3MIP"
 - **Source**: https://conference.iemss.org/streams/
@@ -165,40 +181,59 @@ Source: Princeton C-PREE workshop announcement, September 2024.
 
 ## Datasets curated for the Bangladesh case
 
-The following datasets are listed on the current Weebly site Data page. **Verify each link and citation before publishing.** The Data page is the strongest page on the current site and should be ported largely as-is with typographic upgrades and citation reformatting.
+**Replaced June 2026 (Phase 4D)** with the full 16-dataset list from a complete
+crawl of the official 3mip.weebly.com data page — the earlier 7-item draft in
+this file was partial. The Tellman citation is resolved (it is the flood
+exposure paper, not forest loss; the Weebly site misspells "Telman" — use
+Tellman). The BBS entry is resolved: full title is "Report on Socio-Economic
+and Demographic Survey 2023."
 
-`[Mario to verify final dataset list with Bell/Best/Tierolf before launch. The list below reflects what is publicly visible on 3mip.weebly.com as of the analysis date.]`
+**Data-extension policy (official wording, corrected in 4D):** "This data list
+may be expanded, but any new dataset must be made known and available to all
+teams. Contact project coordination to request the inclusion of an additional
+dataset." The earlier "document your own additions in your submission"
+framing was wrong — do not use it anywhere on the site.
 
-1. **JRC/Copernicus GHSL Population Grid**
-   - Citation: Schiavina, M., Freire, S., MacManus, K. (2019). GHS-POP R2019A — GHS population grid multitemporal (1975-1990-2000-2015), European Commission, Joint Research Centre (JRC).
-   - DOI: 10.2905/0C6B9751-A71F-4062-830B-43C9F432370F
-   - Variable: population
-   - Spatial resolution: 250m
-   - Temporal coverage: 1975, 1990, 2000, 2015
-   - License: CC BY 4.0
+### Population and socioeconomic data
 
-2. **CIESIN Gridded Population of the World v4 (GPWv4)**
-   - Citation: Center for International Earth Science Information Network — CIESIN — Columbia University. (2018). Gridded Population of the World, Version 4 (GPWv4). NASA Socioeconomic Data and Applications Center (SEDAC).
-   - DOI: 10.7927/H4PG1PPM `[VERIFY]`
-   - License: CC BY 4.0
+1. **GHSL population density** — Population density, 1975–2030, 100m–1km. Schiavina, M., Freire, S., MacManus, K. (2019), European Commission JRC. CC BY 4.0. Data: https://human-settlement.emergency.copernicus.eu/download.php?ds=pop
+2. **Building locations and footprint** — point data, 2024. Florio, P., et al. (2024), JRC Data Catalogue. `[VERIFY full citation]` Data: https://data.jrc.ec.europa.eu/dataset/f41a22f1-5741-4c41-86eb-6384654f6927
+3. **Age by gender** — 30 arc-sec, 2010. CIESIN (2018), GPWv4 Basic Demographic Characteristics, Rev. 11, NASA SEDAC. CC BY 4.0. Data: https://www.earthdata.nasa.gov/data/catalog/sedac-ciesin-sedac-gpwv4-bdc-r11-4.11
+4. **Income, wealth, rural/urban, age, gender, education** — admin units, 2015. Ton, M. J., et al. (2024), *Scientific Data*, DOI: 10.1038/s41597-024-03864-2. `[VERIFY full author list and title]` Data: https://doi.org/10.7910/DVN/KJC3RH
+5. **Education** — admin units, 2010. Smits, J., & Permanyer, I. (2019), The Subnational Human Development Database, *Scientific Data*, 6, 190038. Data: https://globaldatalab.org/shdi/download/
+6. **Income** — admin units, 2010. Smits & Permanyer (GDL SHDI), as above. Data: https://globaldatalab.org/shdi/download/
+7. **Per capita income** — 5 & 30 arc-min, 1990–2015. Kummu, M., Taka, M., & Guillaume, J. H. A. (2018), *Scientific Data*, 5, 180004. Data: https://datadryad.org/dataset/doi:10.5061/dryad.dk1j0
 
-3. **Sorichetta et al. modeled internal migration flows**
-   - Citation: Sorichetta, A., Bird, T. J., Ruktanonchai, N. W., zu Erbach-Schoenberg, E., Pezzulo, C., Tejedor, N., Waldock, I. C., Sadler, J. D., Garcia, A. J., Sedda, L., & Tatem, A. J. (2016). "Mapping internal connectivity through human migration in malaria endemic countries." *Scientific Data*, 3, 160066.
-   - DOI: 10.1038/sdata.2016.66
+### Environmental data
 
-4. **Hassani et al. soil salinity**
-   - Citation: Hassani, A., Azapagic, A., Shokri, N. (2020). "Predicting long-term dynamics of soil salinity and sodicity on a global scale." *Proceedings of the National Academy of Sciences*, 117(52), 33017–33027.
-   - DOI: 10.1073/pnas.2013771117
+8. **Inundation** — 30 arc-sec; 2015, 2030, 2050, 2080. Ward, P. J., et al. (2020), WRI Aqueduct Floods. Data: https://wri-projects.s3.amazonaws.com/AqueductFloodTool/download/v2/index.html
+9. **Flood extent and duration** — 250m, 2000–2018. Tellman, B., Sullivan, J. A., Kuhn, C., et al. (2021). "Satellite imaging reveals increased proportional population exposure to floods." *Nature*, 596, 80–86. DOI: 10.1038/s41586-021-03695-w. Data: http://global-flood-database.cloudtostreet.ai/#interactive-map
+10. **Soil salinity** — 30 arc-sec, 1980–2018. Hassani, A., Azapagic, A., Shokri, N. (2020), *PNAS*, 117(52), 33017–33027. DOI: 10.1073/pnas.2013771117. CC BY 4.0. Data: https://doi.org/10.6084/m9.figshare.13295918.v1
+11. **Soil salinity and effects on yield** — Upazila level, 2010. Soil Resource Development Institute, Government of the People's Republic of Bangladesh (SRDI report, November 2010). Data: PDF on srdi.portal.gov.bd `[VERIFY exact PDF URL — copy from archived Weebly data.html]`
+12. **Precipitation** — 0.01° gridded, 1901–2018. Dewan, A., et al. (2022), *Scientific Data*, DOI: 10.1038/s41597-022-01568-z. Data: https://figshare.com/articles/dataset/Long_term_high_resolution_gridded_rainfall_product_for_Bangladesh/16607912
 
-5. **Tellman et al. global flood database**
-   - Citation: Tellman, B., Sullivan, J. A., Kuhn, C., Kettner, A. J., Doyle, C. S., Brakenridge, G. R., Erickson, T. A., & Slayback, D. A. (2021). "Satellite imaging reveals increased proportional forest loss in protected areas during armed conflicts." *Nature*, 596, 80–86.
-   - DOI: 10.1038/s41586-021-03695-w `[VERIFY — this citation may be incorrect; the Tellman 2021 flood paper is "Satellite imaging reveals increased proportional flood exposure" — confirm exact paper title and DOI against Weebly source]`
+### Mobility data
 
-6. **Bangladesh Bureau of Statistics 2023 internal migration survey**
-   - Citation: `[VERIFY full citation — BBS publications inconsistently indexed]`
-   - License: typically requires attribution; check current BBS data sharing policy
+13. **Modeled internal migration flows** — district level, 2005–2010. Sorichetta, A., et al. (2016). "Mapping internal connectivity through human migration in malaria endemic countries." *Scientific Data*, 3, 160066. DOI: 10.1038/sdata.2016.66. CC BY 4.0. Data: https://doi.org/10.7910/DVN/RUWQQK/XGJNDL
+14. **Number of people displaced** — event level, 2000–2019. Tellman, B., et al. (2021), as #9. Data: http://global-flood-database.cloudtostreet.ai/#interactive-map
+15. **Number of people displaced** — XY data, 1985–2021. Brakenridge, G. R. (2021). Global Active Archive of Large Flood Events. Dartmouth Flood Observatory, University of Colorado. Data: https://floodobservatory.colorado.edu/
+16. **Migration drivers** — district level, 2023. Bangladesh Bureau of Statistics (2023). *Report on Socio-Economic and Demographic Survey 2023*. Data: nsds.bbs.gov.bd
 
-7. **Additional datasets listed on current Weebly site Data page**: port complete table; do not omit datasets even if citations look incomplete. Tag incomplete citations `[VERIFY]`.
+## Participation policy (from the official site, Phase 4D)
+
+- **Two registration tracks**: (a) modeler; (b) expert — relevant expertise on Bangladesh and/or climate-related mobility.
+- **Code and findings sharing**: "In participating, modelers will be asked to share their code and model findings." This is the official statement; the site must not contradict it. `[PENDING BELL APPROVAL if leadership wants softer public wording]`
+- **Expert network**: regular meetings, scheduled to alternate time zones; experts provide domain consultation on Bangladesh and climate-related mobility.
+- **Registration form also asks**: anyone else who might be interested in participating, or team members who should be included (names and emails).
+
+## Domain experts (4 — from the official site, Phase 4D)
+
+1. **Hedda Bonatz** — PhD researcher, Coastal Risk and Sea Level Rise group, University of Kiel. Spatial patterns of population development and flood-induced mobility. https://www.crslr.de/team/hedda-bonatz
+2. **Khandaker Jafor Ahmed** — University of Michigan. Climate-migration research on environmental stressors in LMICs; BEMS dataset. https://seas.umich.edu/research/faculty/khandaker-jafor-ahmed
+3. **Muhammad Abdur Rahaman** — Director, Center for People & Environ (CPE), Bangladesh. Disaster risk reduction and Nature-based Solutions. https://cpe-bd.org/2024/08/11/muhammad-abdur-rahaman/
+4. **Ramesh Poluru** — The INCLEN Trust International. Demography and epidemiology; large-scale socioeconomic and behavioral studies. https://scholar.google.com/citations?user=xT4xVZAAAAAJ
+
+No photos in v1 `[PENDING consent confirmation — photos exist in the Weebly archive if approved]`.
 
 ## Key publications by the team (recent, relevant to 3MIP)
 
@@ -250,3 +285,14 @@ When Claude Code adds a content claim during the build, it must either:
 2. Add `[VERIFY]` inline AND surface the unverified claim in `OPEN-QUESTIONS.md` at the end of the phase.
 
 Never proceed past a `[VERIFY]` tag silently. The whole point of this file is to keep the website's factual ground sound.
+
+**Phase 4D update (June 2026):** full crawl of 3mip.weebly.com (all 7 pages)
+by Mario. Corrections: timeline (Weebly "Early November, 2026" typo → 2025;
+webinar recordings are February/March 2026, not 2025), iEMSs 2026 dates
+confirmed (July 12–16, University College Dublin; preliminary program June
+15), Tellman citation resolved (flood exposure paper), BBS survey title
+resolved, dataset list replaced with the complete 16-item official list.
+Additions: dual-track participation policy, code-and-findings-sharing policy,
+data-extension policy, domain experts (4), leads' personal sites, official
+logo existence. The live site is the official record; where this file
+conflicted with it, this file was corrected.

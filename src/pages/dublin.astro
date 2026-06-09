@@ -1,0 +1,174 @@
+---
+/**
+ * /dublin — QR-code landing page for iEMSs 2026 (Phase 4D.7).
+ *
+ * Purpose: someone scans a QR code during a talk in Dublin and lands here.
+ * They get what 3MIP is in 90 seconds, where to find the sessions, the
+ * signature figure, and one CTA. One screen-and-a-half, no more.
+ *
+ * Deliberately excluded from the primary nav (Header NAV_ITEMS unchanged);
+ * linked from the home page milestone block and the Outputs page. Included
+ * in the sitemap — it should rank for "3MIP Dublin".
+ */
+import Base from "../layouts/Base.astro";
+import SignatureViz from "../components/SignatureViz.astro";
+import Button from "../components/Button.astro";
+import Link from "../components/Link.astro";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Event",
+  name: "3MIP at iEMSs 2026 — Session C7 and Workshop WSC7",
+  startDate: "2026-07-12",
+  endDate: "2026-07-16",
+  eventStatus: "https://schema.org/EventScheduled",
+  eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
+  location: {
+    "@type": "Place",
+    name: "University College Dublin",
+    address: { "@type": "PostalAddress", addressLocality: "Dublin", addressCountry: "IE" },
+  },
+  organizer: {
+    "@type": "Organization",
+    name: "International Environmental Modelling and Software Society (iEMSs)",
+    url: "https://conference.iemss.org/",
+  },
+  about: {
+    "@type": "Organization",
+    name: "Mobility and Migration Modeling Intercomparison Project",
+    alternateName: "3MIP",
+    url: "https://3mip.org",
+  },
+};
+---
+
+<Base
+  title="3MIP at iEMSs 2026"
+  description="3MIP at iEMSs 2026 Dublin: Session C7 and Workshop WSC7. The climate-migration model intercomparison in 90 seconds, and how to join."
+  jsonLd={jsonLd}
+>
+  <article class="page">
+    <header class="page__header">
+      <p class="kicker">iEMSs 2026 · University College Dublin · July 12–16, 2026</p>
+      <h1>3MIP in 90 seconds</h1>
+      <p class="lede">
+        3MIP — the Mobility and Migration Modeling Intercomparison Project —
+        is a community of researchers who apply their climate-migration models
+        to a shared benchmark case. The first case is coastal Bangladesh.
+      </p>
+      <ul class="facts">
+        <li>Launched October 2025, modeled on AgMIP and ISIMIP. Founded at a Princeton C-PREE workshop in 2024.</li>
+        <li>Led from Cornell (Bell), Ohio State (Best), and VU Amsterdam (Tierolf).</li>
+        <li>Registration is open and free — 16 curated datasets, shared question, your model stays yours.</li>
+      </ul>
+    </header>
+
+    <section aria-labelledby="sessions-h">
+      <h2 id="sessions-h">Find us at the conference</h2>
+      <div class="sessions">
+        <p>
+          <strong>Session C7</strong> — <em>Mobility and Migration Modeling
+          Intercomparison Project (3MIP) – An open, first synthesis</em>
+        </p>
+        <p>
+          <strong>Workshop WSC7</strong> — <em>Panel Discussion – 3MIP</em>
+        </p>
+        <p class="sessions__note">
+          Day and room: <span class="pending">[PENDING — preliminary program publishes June 15, 2026]</span>.
+          Check the <Link href="https://conference.iemss.org/streams/" variant="external">iEMSs program</Link>.
+        </p>
+      </div>
+    </section>
+
+    <section aria-labelledby="viz-h">
+      <h2 id="viz-h">The pitch in one figure</h2>
+      <SignatureViz idBase="dublin-viz" />
+      <p class="viz-alt">
+        Six model archetypes, the same Bangladesh outline, the same question —
+        six visibly different spatial patterns. 3MIP exists to make that
+        divergence legible and synthesize it.
+      </p>
+    </section>
+
+    <section aria-labelledby="join-h" class="join">
+      <h2 id="join-h" class="vh">Join</h2>
+      <Button href="/participate/">Register to participate</Button>
+      <p class="join__more">
+        Webinar recordings and conference materials are on the
+        <Link href="/outputs/" variant="in-prose">Outputs</Link> page.
+      </p>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .page {
+    max-width: 45rem;
+    margin: 0 auto;
+    padding: var(--space-6) var(--space-3) var(--space-8);
+  }
+  @media (min-width: 768px) { .page { padding: var(--space-7) var(--space-5) var(--space-8); } }
+
+  .kicker {
+    font-size: var(--text-caption);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--color-ink-subtle);
+    font-weight: 500;
+    margin: 0 0 var(--space-2);
+  }
+  .page__header h1 { margin: 0; }
+  .lede {
+    font-size: var(--text-body-lg);
+    color: var(--color-ink-muted);
+    margin-top: var(--space-3);
+    max-width: 60ch;
+  }
+  .facts {
+    margin: var(--space-4) 0 0;
+    padding-left: var(--space-4);
+    list-style-type: square;
+    color: var(--color-ink-muted);
+  }
+  .facts li { padding-block: var(--space-1); max-width: 60ch; }
+
+  .page section { margin-top: var(--space-6); }
+  .page h2 { margin: 0 0 var(--space-3); }
+
+  .sessions {
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-accent);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    background: var(--color-surface);
+  }
+  .sessions p { margin: 0 0 var(--space-2); max-width: 65ch; }
+  .sessions p:last-child { margin-bottom: 0; }
+  .sessions__note { color: var(--color-ink-muted); font-size: var(--text-small); }
+  .pending {
+    color: var(--color-warning);
+    font-size: var(--text-caption);
+    font-weight: 500;
+  }
+
+  .viz-alt {
+    margin-top: var(--space-3);
+    font-size: var(--text-small);
+    color: var(--color-ink-muted);
+    max-width: 65ch;
+  }
+
+  .join {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-3);
+    padding-top: var(--space-5);
+    border-top: 1px solid var(--color-border);
+  }
+  .join__more {
+    margin: 0;
+    font-size: var(--text-small);
+    color: var(--color-ink-muted);
+  }
+</style>

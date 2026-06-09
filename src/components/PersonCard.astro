@@ -21,6 +21,8 @@ interface Props {
   shortRole: string;
   publications?: Publication[];
   institutionalUrl?: string;
+  /** Personal or lab site, distinct from the institutional page. */
+  personalUrl?: string;
   /** Path under /public, e.g. "team/bell.webp". Only rendered if Bell approved photos. */
   photo?: string;
 }
@@ -31,6 +33,7 @@ const {
   shortRole,
   publications = [],
   institutionalUrl,
+  personalUrl,
   photo,
 }: Props = Astro.props;
 ---
@@ -83,11 +86,19 @@ const {
       </div>
     )}
 
-    {institutionalUrl && (
+    {(institutionalUrl || personalUrl) && (
       <p class="person__link">
-        <a href={institutionalUrl} rel="noopener noreferrer">
-          Institutional page <span aria-hidden="true">↗</span>
-        </a>
+        {institutionalUrl && (
+          <a href={institutionalUrl} rel="noopener noreferrer">
+            Institutional page <span aria-hidden="true">↗</span>
+          </a>
+        )}
+        {institutionalUrl && personalUrl && <span class="person__link-sep" aria-hidden="true"> · </span>}
+        {personalUrl && (
+          <a href={personalUrl} rel="noopener noreferrer">
+            Personal site <span aria-hidden="true">↗</span>
+          </a>
+        )}
       </p>
     )}
   </div>
@@ -174,6 +185,7 @@ const {
   .person__doi:hover { color: var(--color-accent); text-decoration-color: var(--color-accent); }
 
   .person__link { margin-top: var(--space-3); }
+  .person__link-sep { color: var(--color-ink-subtle); }
   .person__link a {
     color: var(--color-ink);
     font-size: var(--text-small);

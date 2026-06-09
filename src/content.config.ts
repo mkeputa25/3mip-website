@@ -71,7 +71,7 @@ const team = defineCollection({
     /** Used for alphabetical sort on the advisory committee list. */
     surname: z.string(),
     affiliation: z.string(),
-    role: z.enum(["co-lead", "advisor", "project-management"]),
+    role: z.enum(["co-lead", "advisor", "project-management", "domain-expert"]),
     /** One-line role description shown on the Team page. */
     shortRole: z.string(),
     /** Longer bio — typically only for co-leads. */
@@ -85,6 +85,8 @@ const team = defineCollection({
       )
       .optional(),
     institutionalUrl: z.string().url().optional(),
+    /** Personal/lab site, distinct from the institutional page (Phase 4D). */
+    personalUrl: z.string().url().optional(),
     email: z.string().email().optional(),
     /** Path to a photo in /public/team/, e.g. "bell.webp". */
     photo: z.string().optional(),

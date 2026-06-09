@@ -2,16 +2,21 @@
 /**
  * Participate — src/pages/participate.astro
  *
- * Per docs/CONTENT-INVENTORY.md § Participate. Six sections.
+ * Phase 4D: restructured to match the official registration form, which has
+ * two tracks — modeler and expert. The track radio is the first field;
+ * progressive disclosure (small inline script) reveals the track-specific
+ * block: modeling-approach checkboxes for modelers, an expertise textarea
+ * for experts. Without JS, both blocks are visible and the form still posts.
  *
- * Form strategy (DECISIONS.md D5): Formspree free tier. The endpoint is read
- * from PUBLIC_FORMSPREE_ENDPOINT (set in Vercel env) with a clearly-marked
- * placeholder fallback so the build never depends on a live form.
+ * Policy corrections (4D, against the official site):
+ *  - Code sharing: "In participating, modelers will be asked to share their
+ *    code and model findings." The earlier "code sharing is encouraged but
+ *    not required" answer contradicted this and is replaced.
+ *  - Data extension: additions go through project coordination and must be
+ *    made available to all teams (not "document your own additions").
  *
- * UX: the form posts normally without JS (Formspree's own thank-you page is
- * the no-JS fallback). With JS, a progressive-enhancement handler submits via
- * fetch and swaps in an inline success state on the same page, preserving the
- * entered data on error. Per DESIGN-PRINCIPLES.md § Forms.
+ * Form strategy (DECISIONS.md D5): Formspree free tier; endpoint from
+ * PUBLIC_FORMSPREE_ENDPOINT with a clearly-marked inert placeholder.
  */
 import Base from "../layouts/Base.astro";
 import Link from "../components/Link.astro";
@@ -29,7 +34,7 @@ const jsonLd = {
   "@type": "WebPage",
   name: "Participate in 3MIP",
   description:
-    "Modelers using ABM, gravity, radiation, IAM, or ML approaches can join 3MIP's coastal Bangladesh case. Registration open.",
+    "Modelers and domain experts can join 3MIP's coastal Bangladesh case. Registration open.",
   isPartOf: { "@type": "Organization", name: "3MIP" },
 };
 
@@ -56,6 +61,10 @@ const faqItems = [
     a: "No. Participation is free.",
   },
   {
+    q: "I'm not a modeler — can I still participate?",
+    a: "Yes. Researchers with relevant expertise on Bangladesh and/or climate-related mobility can register as experts. The network holds regular meetings — scheduled to alternate time zones so no region always takes the inconvenient slot — and experts contribute domain consultation to the modeling teams.",
+  },
+  {
     q: "What if my model is still in development?",
     a: 'You can register and join webinars now. Output submission for the synthesis requires a working model by <span class="verify">[VERIFY deadline]</span>.',
   },
@@ -65,7 +74,7 @@ const faqItems = [
   },
   {
     q: "Do I have to share my code?",
-    a: "No. Code sharing is encouraged but not required. Methodological documentation is required.",
+    a: 'Yes. In participating, modelers are asked to share their code and model findings with the network. <span class="pending">[PENDING BELL APPROVAL — leadership may prefer different public wording; this answer follows the current official statement]</span>',
   },
   {
     q: "Can I join after July 2026?",
@@ -73,7 +82,7 @@ const faqItems = [
   },
   {
     q: "What if I want to use additional data sources?",
-    a: "Document them in your output submission so the synthesis can attribute differences to data choices.",
+    a: 'The curated data list may be expanded, but any new dataset must be made known and available to all teams. <a href="/contact/">Contact project coordination</a> to request the inclusion of an additional dataset.',
   },
   {
     q: "How are decisions made about protocol changes?",
@@ -96,7 +105,7 @@ const faqItems = [
 
 <Base
   title="Participate"
-  description="Modelers using ABM, gravity, radiation, IAM, or ML approaches can join 3MIP's coastal Bangladesh case. Registration is open."
+  description="Modelers using ABM, gravity, radiation, IAM, or ML approaches — and domain experts on Bangladesh and climate mobility — can join 3MIP. Registration open."
   jsonLd={jsonLd}
 >
   <article class="page">
@@ -104,8 +113,9 @@ const faqItems = [
       <h1>Participate in 3MIP</h1>
       <p class="lede">
         3MIP is open to research teams applying any model architecture to
-        climate-migration questions. The first benchmark case is coastal
-        Bangladesh; registered participants commit to working with the
+        climate-migration questions, and to researchers with domain expertise
+        on Bangladesh or climate-related mobility. The first benchmark case is
+        coastal Bangladesh; registered modelers commit to working with the
         curated input dataset and contributing outputs to the iEMSs 2026
         synthesis and the <em>Climatic Change</em> topical collection.
       </p>
@@ -114,14 +124,24 @@ const faqItems = [
     <section aria-labelledby="who-h">
       <h2 id="who-h">Who should participate</h2>
       <div class="who">
-        <p>
-          3MIP is for active research teams developing migration models. Solo
-          PhD students, postdocs with their own implementation, established
-          modeling labs — all welcome. Participation requires working with a
-          model that produces some form of mobility output for spatial units
-          in Bangladesh.
-        </p>
-        <ul class="who__list">
+        <div>
+          <h3 class="who__h">Modelers</h3>
+          <p>
+            Active research teams developing migration models. Solo PhD
+            students, postdocs with their own implementation, established
+            modeling labs — all welcome. Participation requires working with
+            a model that produces some form of mobility output for spatial
+            units in Bangladesh.
+          </p>
+          <h3 class="who__h">Experts</h3>
+          <p>
+            Researchers with relevant expertise on Bangladesh and/or
+            climate-related mobility who are not running a model. Experts
+            join the network's regular meetings and provide domain
+            consultation to the modeling teams.
+          </p>
+        </div>
+        <ul class="who__list" aria-label="Model architectures">
           <li>Agent-based models</li>
           <li>Gravity models</li>
           <li>Radiation models</li>
@@ -141,22 +161,25 @@ const faqItems = [
         </li>
         <li>
           <strong>Attend two participant webinars per year</strong>, scheduled
-          with the cohort. Recordings are available if you cannot attend live.
+          with the cohort and alternating time zones. Recordings are available
+          if you cannot attend live.
         </li>
         <li>
           <strong>Run your model on the shared question</strong> for the
           Bangladesh case at your own pace. The first major milestone is the
-          iEMSs 2026 Dublin synthesis session in July 2026.
+          iEMSs 2026 Dublin synthesis session, July 12–16, 2026.
         </li>
         <li>
           <strong>Submit your outputs and methodological documentation</strong>
           by <span class="verify">[VERIFY deadline]</span> for inclusion in
           the synthesis and the <em>Climatic Change</em> topical collection.
+          Participating modelers are asked to share their code and model
+          findings with the network.
         </li>
         <li>
           <strong>Retain ownership of your model and outputs.</strong> 3MIP
           synthesizes findings across teams; individual model outputs and code
-          remain with their authors and may be published independently.
+          remain their authors' work and may be published independently.
         </li>
       </ol>
     </section>
@@ -182,18 +205,47 @@ const faqItems = [
         data-reg-form
         aria-describedby="form-status"
       >
+        <fieldset class="track-group">
+          <legend class="track-group__legend">
+            I'd like to participate as <span class="track-group__req">(required)</span>
+          </legend>
+          <div class="track-group__options">
+            <label class="track-group__option">
+              <input type="radio" name="participant_type" value="modeler" required data-track-radio />
+              <span><strong>A modeler</strong> — your model produces mobility outputs for spatial units in Bangladesh</span>
+            </label>
+            <label class="track-group__option">
+              <input type="radio" name="participant_type" value="expert" required data-track-radio />
+              <span><strong>An expert</strong> — you have relevant expertise on Bangladesh and/or climate-related mobility</span>
+            </label>
+          </div>
+        </fieldset>
+
+        <div data-track-panel="modeler">
+          <CheckboxGroup
+            id="approach"
+            name="approach"
+            legend="Modeling approach"
+            options={approachOptions}
+            required
+          />
+        </div>
+
+        <div data-track-panel="expert">
+          <FormField
+            id="expertise"
+            name="expertise"
+            type="textarea"
+            label="Your expertise"
+            rows={3}
+            help="Required for the expert track. Describe your expertise on Bangladesh and/or climate-related mobility."
+          />
+        </div>
+
         <FormField id="name" name="name" label="Name" required placeholder="First and last" />
         <FormField id="affiliation" name="affiliation" label="Affiliation" required placeholder="University, institute, or organization" />
         <FormField id="email" name="email" type="email" label="Email" required help="Used for communication and dataset access." />
         <FormField id="orcid" name="orcid" label="ORCID" pattern="\d{4}-\d{4}-\d{4}-\d{4}" help="Optional. Format: 0000-0000-0000-0000" placeholder="0000-0000-0000-0000" />
-
-        <CheckboxGroup
-          id="approach"
-          name="approach"
-          legend="Modeling approach"
-          options={approachOptions}
-          required
-        />
 
         <FormField
           id="question"
@@ -201,7 +253,16 @@ const faqItems = [
           type="textarea"
           label="Research question of interest"
           required
-          help="2–4 sentences on what you intend to study with the curated dataset."
+          help="2–4 sentences on what you intend to study or contribute."
+        />
+
+        <FormField
+          id="colleagues"
+          name="colleagues"
+          type="textarea"
+          label="Anyone else who might be interested?"
+          rows={3}
+          help="Colleagues or team members who should be included — names and emails. Optional."
         />
 
         <FormField
@@ -220,7 +281,7 @@ const faqItems = [
           rows={3}
         />
 
-        {/* Honeypot — bots fill this; humans never see it. Server ignores submissions with it set. */}
+        {/* Honeypot — bots fill this; humans never see it. */}
         <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="vh" aria-hidden="true" />
         <input type="hidden" name="_subject" value="New 3MIP registration" />
 
@@ -269,20 +330,24 @@ const faqItems = [
 
   .who { display: grid; gap: var(--space-4); grid-template-columns: 1fr; }
   @media (min-width: 768px) { .who { grid-template-columns: 3fr 2fr; gap: var(--space-5); } }
-  .who p { margin: 0; }
+  .who__h {
+    font-size: var(--text-h4);
+    margin: 0 0 var(--space-2);
+  }
+  .who__h + p { margin-bottom: var(--space-4); }
   .who__list {
     margin: 0;
     padding-left: var(--space-4);
     list-style-type: square;
     color: var(--color-ink-muted);
     font-size: var(--text-small);
+    align-self: start;
   }
   .who__list li { padding-block: 2px; }
 
   .involves {
     margin: var(--space-3) 0 0;
     padding-left: var(--space-4);
-    counter-reset: step;
   }
   .involves li {
     margin-bottom: var(--space-3);
@@ -298,6 +363,50 @@ const faqItems = [
   }
   .reg-form__submit { margin-top: var(--space-2); }
   @media (max-width: 479px) { .reg-form__submit { width: 100%; } }
+
+  /* Track radio group — mirrors CheckboxGroup styling. */
+  .track-group {
+    border: 0;
+    margin: 0 0 var(--space-5);
+    padding: 0;
+  }
+  .track-group__legend {
+    padding: 0;
+    font-size: var(--text-small);
+    font-weight: 500;
+    color: var(--color-ink);
+    margin-bottom: var(--space-3);
+  }
+  .track-group__req { color: var(--color-ink-muted); font-weight: 400; }
+  .track-group__options { display: grid; gap: var(--space-2); }
+  .track-group__option {
+    display: flex;
+    align-items: flex-start;
+    gap: var(--space-2);
+    min-height: 44px;
+    padding: var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface-elevated);
+    cursor: pointer;
+    font-size: var(--text-body);
+    color: var(--color-ink);
+    line-height: 1.45;
+  }
+  .track-group__option:hover { border-color: var(--color-border-strong); }
+  .track-group__option:focus-within {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+  .track-group__option input {
+    width: 18px;
+    height: 18px;
+    margin-top: 2px;
+    accent-color: var(--color-accent);
+    flex-shrink: 0;
+  }
+  .track-group__option span { color: var(--color-ink-muted); }
+  .track-group__option strong { color: var(--color-ink); }
 
   .form-status {
     margin: var(--space-3) 0;
@@ -344,14 +453,14 @@ const faqItems = [
 </style>
 
 <!--
-  Progressive-enhancement form handler. ~1.2KB.
-  - Validates the "at least one approach" rule that HTML can't express on a
-    checkbox group.
-  - Submits via fetch with Accept: application/json (Formspree AJAX mode).
-  - On success: hides the form, reveals the inline success panel.
-  - On error: shows an inline message, keeps the entered data.
-  - If JS is disabled, the form posts normally and Formspree shows its own
-    thank-you page (the documented no-JS fallback).
+  Progressive-enhancement handler (~1.6KB):
+  - Track radios toggle the modeler/expert panels (both hidden until a track
+    is chosen; without JS both panels are visible and the form posts normally).
+  - Validation on submit (fires after native required checks pass):
+      modeler -> at least one approach checkbox
+      expert  -> non-empty expertise textarea
+  - AJAX submit to Formspree with inline success state; data preserved on error.
+  - Placeholder endpoint short-circuits with a visible [PENDING] note.
 -->
 <script is:inline>
   (function () {
@@ -361,12 +470,27 @@ const faqItems = [
     var successEl = document.querySelector('[data-form-success]');
     var endpointNote = document.querySelector('[data-endpoint-note]');
     var action = form.getAttribute('action') || '';
+    var radios = form.querySelectorAll('[data-track-radio]');
+    var panels = form.querySelectorAll('[data-track-panel]');
 
-    // Surface the "endpoint not configured" note in non-production if the
-    // placeholder is still in place, so reviewers know the form is inert.
     if (action.indexOf('REPLACE_WITH_FORM_ID') !== -1 && endpointNote) {
       endpointNote.hidden = false;
     }
+
+    function selectedTrack() {
+      var r = form.querySelector('[data-track-radio]:checked');
+      return r ? r.value : null;
+    }
+
+    function syncPanels() {
+      var track = selectedTrack();
+      panels.forEach(function (p) {
+        p.hidden = p.getAttribute('data-track-panel') !== track;
+      });
+    }
+
+    radios.forEach(function (r) { r.addEventListener('change', syncPanels); });
+    syncPanels(); // hides both panels until a track is chosen
 
     function showStatus(msg, state) {
       if (!statusEl) return;
@@ -375,36 +499,45 @@ const faqItems = [
       statusEl.setAttribute('data-state', state);
     }
 
-    function checkApproach() {
-      var boxes = form.querySelectorAll('[data-checkbox-group="approach"]');
-      var any = false;
-      boxes.forEach(function (b) { if (b.checked) any = true; });
-      var errEl = form.querySelector('[data-checkbox-error="approach"]');
-      if (!any && errEl) {
-        errEl.textContent = 'Select at least one modeling approach.';
-        errEl.hidden = false;
-      } else if (errEl) {
-        errEl.hidden = true;
+    function validateTrack() {
+      var track = selectedTrack();
+      if (track === 'modeler') {
+        var boxes = form.querySelectorAll('[data-checkbox-group="approach"]');
+        var any = false;
+        boxes.forEach(function (b) { if (b.checked) any = true; });
+        var errEl = form.querySelector('[data-checkbox-error="approach"]');
+        if (!any && errEl) {
+          errEl.textContent = 'Select at least one modeling approach.';
+          errEl.hidden = false;
+          return false;
+        }
+        if (errEl) errEl.hidden = true;
+        return true;
       }
-      return any;
+      if (track === 'expert') {
+        var expertise = form.querySelector('#expertise');
+        if (expertise && !expertise.value.trim()) {
+          showStatus('Describe your expertise to register on the expert track.', 'error');
+          expertise.focus();
+          return false;
+        }
+        return true;
+      }
+      return true; // no-JS / unexpected: let the server sort it out
     }
 
     form.addEventListener('submit', function (e) {
-      // Always enforce the checkbox rule first.
-      if (!checkApproach()) {
+      if (!validateTrack()) {
         e.preventDefault();
         return;
       }
 
-      // If the endpoint is still the placeholder, don't attempt a network
-      // request — just tell the reviewer it's not wired yet.
       if (action.indexOf('REPLACE_WITH_FORM_ID') !== -1) {
         e.preventDefault();
         showStatus('Form endpoint is not configured yet. This is expected before launch.', 'error');
         return;
       }
 
-      // Progressive enhancement: AJAX submit.
       e.preventDefault();
       showStatus('Submitting…', 'pending');
       var data = new FormData(form);

@@ -22,23 +22,43 @@ const jsonLd = {
   parentOrganization: { "@type": "Organization", name: "3MIP", alternateName: "Mobility and Migration Modeling Intercomparison Project" },
 };
 
+// Official timeline, corrected in Phase 4D against the live site (the Weebly
+// timeline's "Early November, 2026" is a typo for 2025).
 const timelineItems = [
   {
-    date: "2025-10",
-    dateLabel: "Now – mid 2026",
-    text: "Teams run their models, attend webinars, share preliminary findings.",
+    date: "2025-10-01",
+    dateLabel: "October 1, 2025",
+    text: "3MIP launches; registration opens.",
+    kind: "done" as const,
+  },
+  {
+    date: "2025-11",
+    dateLabel: "Early November 2025",
+    text: "First participant webinar.",
+    kind: "done" as const,
+  },
+  {
+    date: "2025-12",
+    dateLabel: "December 2025 – May 2026",
+    text: "Regular participant webinars; teams run their models and share preliminary findings.",
     kind: "active" as const,
   },
   {
-    date: "2026-07",
-    dateLabel: "July 2026",
-    text: "First synthesis presented at iEMSs Dublin (Session C7 + Workshop WSC7).",
+    date: "2026-07-12",
+    dateLabel: "July 12–16, 2026",
+    text: "First synthesis at iEMSs 2026, University College Dublin (Session C7 + Workshop WSC7).",
     kind: "active" as const,
+  },
+  {
+    date: "2026-08",
+    dateLabel: "August – December 2026",
+    text: "Regular webinars continue.",
+    kind: "planned" as const,
   },
   {
     date: "2026-12",
     dateLabel: "Late 2026 onward",
-    text: "Submissions to <em>Climatic Change</em> topical collection. [VERIFY: formal Springer call not yet posted as of May 2026]",
+    text: "Submissions to <em>Climatic Change</em> topical collection, received through 2027. [VERIFY: formal Springer call not yet posted]",
     kind: "planned" as const,
   },
   {
@@ -46,6 +66,50 @@ const timelineItems = [
     dateLabel: "2027",
     text: "Synthesis paper drafted from the collected outputs.",
     kind: "aspirational" as const,
+  },
+];
+
+// Background literature (official Context page, Phase 4D). Bell et al. 2021
+// also appears with full citation in the "Why Bangladesh" section above.
+const READING_LIST = [
+  {
+    authors: "Bell, A. R., Wrathall, D. J., Mueller, V., Chen, J., Oppenheimer, M., et al.",
+    year: 2021,
+    title: "Migration towards Bangladesh coastlines projected to increase with sea-level rise through 2100",
+    venue: "Environmental Research Letters",
+    reference: "16(2), 024045",
+    doi: "10.1088/1748-9326/abdc5b",
+  },
+  {
+    authors: "Carrico, A. R., & Donato, K.",
+    year: 2019,
+    title: "Extreme weather and migration: evidence from Bangladesh",
+    venue: "Population and Environment",
+    reference: "41, 1–31",
+    doi: "10.1007/s11111-019-00322-9",
+  },
+  {
+    authors: "Chen, J., & Mueller, V.",
+    year: 2018,
+    title: "Coastal climate change, soil salinity and human migration in Bangladesh",
+    venue: "Nature Climate Change",
+    reference: "8, 981–985",
+    doi: "10.1038/s41558-018-0313-8",
+  },
+  {
+    authors: "Hassani-Mahmooei, B., & Parris, B. W.",
+    year: 2012,
+    title: "Climate change and internal migration patterns in Bangladesh: an agent-based model",
+    venue: "Environment and Development Economics",
+    reference: "17(6), 763–780",
+    doi: "10.1017/S1355770X12000290",
+  },
+  {
+    authors: "Mallick, B., Best, K., Carrico, A., Ghosh, R., Priodarshini, R., Sultana, Z., & Samanta, G.",
+    year: 2023,
+    title: "How do migration decisions and drivers differ against extreme environmental events? [VERIFY exact title]",
+    venue: "Environmental Hazards",
+    doi: "10.1080/17477891.2023.2195152",
   },
 ];
 ---
@@ -78,6 +142,13 @@ const timelineItems = [
         consequential. And the data infrastructure — population grids, modeled
         migration flows, salinity layers, flood histories — is already openly
         licensed and usable.
+      </p>
+      <p>
+        The coastal districts face coastal erosion, sea-level rise, seasonal
+        monsoons, tropical cyclones, and salinity encroachment — and their
+        populations are highly mobile. The case was chosen for data
+        availability and the depth of the existing literature, not because
+        the dynamics are simple.
       </p>
       <p>
         Bell et al. (2021) projected that migration <em>toward</em> Bangladesh's
@@ -137,11 +208,12 @@ const timelineItems = [
     <section aria-labelledby="data-h">
       <h2 id="data-h">Curated input dataset</h2>
       <p>
-        3MIP provides a harmonized, openly licensed dataset combining
-        population grids, modeled migration flows, soil salinity, flood
-        extent, and socioeconomic indicators. Teams use this dataset as their
-        common input. They may add additional data sources if their model
-        requires them, with documentation.
+        3MIP curates 16 datasets for the case — population and socioeconomic,
+        environmental, and mobility data — documented with citations and
+        access links on the Data page. Teams use this curation as their common
+        input. The data list may be expanded, but any new dataset must be made
+        known and available to all teams; contact project coordination to
+        request the inclusion of an additional dataset.
       </p>
       <p>
         <Link href="/data/" variant="in-prose">See the full data documentation</Link>.
@@ -151,6 +223,25 @@ const timelineItems = [
     <section aria-labelledby="time-h">
       <h2 id="time-h">Expected outputs and timeline</h2>
       <TimelineList items={timelineItems} />
+    </section>
+
+    <section aria-labelledby="lit-h">
+      <h2 id="lit-h">Background literature</h2>
+      <p>
+        The papers below frame the Bangladesh case. Bell et al. (2021)
+        provides the direct empirical motivation; the others document the
+        migration dynamics the participating models must contend with.
+      </p>
+      {READING_LIST.map((paper) => (
+        <CitationBlock
+          authors={paper.authors}
+          year={paper.year}
+          title={paper.title}
+          venue={paper.venue}
+          reference={paper.reference}
+          doi={paper.doi}
+        />
+      ))}
     </section>
 
     <section aria-labelledby="proto-h">

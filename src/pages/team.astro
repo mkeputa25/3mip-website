@@ -29,7 +29,16 @@ const bySurname = (a: { data: { surname: string } }, b: { data: { surname: strin
 // Co-leads: canonical order is alphabetical by surname (Bell, Best, Tierolf).
 const coLeads = all.filter((e) => e.data.role === "co-lead").sort(bySurname);
 const advisors = all.filter((e) => e.data.role === "advisor").sort(bySurname);
-const pm = all.filter((e) => e.data.role === "project-management").sort(bySurname);
+const domainExperts = all.filter((e) => e.data.role === "domain-expert").sort(bySurname);
+// PM: the active coordinator leads the list (primary contact), then others
+// by surname. Update when coordination transitions after June 2026.
+const pm = all
+  .filter((e) => e.data.role === "project-management")
+  .sort((a, b) => {
+    const aCoord = a.data.shortRole.toLowerCase().includes("coordinator") ? 0 : 1;
+    const bCoord = b.data.shortRole.toLowerCase().includes("coordinator") ? 0 : 1;
+    return aCoord - bCoord || a.data.surname.localeCompare(b.data.surname);
+  });
 
 // Render each co-lead's Markdown body for the bio slot.
 const coLeadsRendered = await Promise.all(
@@ -61,8 +70,9 @@ const jsonLd = {
     <header class="page__header">
       <h1>Team</h1>
       <p class="lede">
-        3MIP is led by three co-leads, advised by a 14-member committee, and
-        coordinated by project management at Cornell.
+        3MIP is led by three co-leads, advised by a 14-member committee,
+        supported by four domain experts, and coordinated by project
+        management at Cornell.
       </p>
     </header>
 
@@ -78,6 +88,7 @@ const jsonLd = {
           shortRole={entry.data.shortRole}
           publications={entry.data.publications}
           institutionalUrl={entry.data.institutionalUrl}
+          personalUrl={entry.data.personalUrl}
           photo={entry.data.photo}
         >
           <Content />
@@ -93,6 +104,29 @@ const jsonLd = {
       {advisors.length > 0 && (
         <ul class="advisor-list">
           {advisors.map((e) => (
+            <PersonRow
+              name={e.data.name}
+              affiliation={e.data.affiliation}
+              shortRole={e.data.shortRole}
+              institutionalUrl={e.data.institutionalUrl}
+            />
+          ))}
+        </ul>
+      )}
+    </section>
+
+    <section aria-labelledby="experts-h">
+      <h2 id="experts-h">Domain experts</h2>
+      <p>
+        Researchers with domain expertise on Bangladesh and climate-related
+        mobility who support the network.
+      </p>
+      {domainExperts.length === 0 && (
+        <p class="empty">Domain expert profiles load from the team content collection.</p>
+      )}
+      {domainExperts.length > 0 && (
+        <ul class="advisor-list">
+          {domainExperts.map((e) => (
             <PersonRow
               name={e.data.name}
               affiliation={e.data.affiliation}

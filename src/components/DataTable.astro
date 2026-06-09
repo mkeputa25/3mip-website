@@ -2,17 +2,21 @@
 /**
  * DataTable — sortable HTML table for the Data page dataset list.
  *
- * Per docs/CONTENT-INVENTORY.md § Data § Section 3:
- *   - 7 columns: Dataset, Variable, Resolution, Coverage, License, Citation, DOI
+ * Phase 4D: the Data page now mirrors the official site's 16-dataset list in
+ * three groups (population/socioeconomic, environmental, mobility), so this
+ * component renders one group per instance. The sort script binds to every
+ * [data-rows] tbody on the page, so multiple instances sort independently.
+ *
+ * The link column changed from DOI-only to a generic data-access link
+ * ({ href, label }) because many official sources are repository or portal
+ * URLs, not DOIs. Paper DOIs live in the citation text.
+ *
  *   - Sortable: header click toggles asc/desc, aria-sort updates
  *   - Each row has an `id` slug for direct linking from elsewhere
  *   - Mobile: collapse to cards, columns stack with bold labels
- *   - Sort behavior is delivered by an inline ~1.5KB vanilla script.
- *
- * Rows are passed in as a typed array so the page file owns the data.
  */
 export interface DataRow {
-  /** URL-safe slug used as the row id and for anchor links. */
+  /** URL-safe slug used as the row id and for anchor links. Unique site-wide. */
   id: string;
   dataset: string;
   variable: string;
@@ -20,8 +24,8 @@ export interface DataRow {
   coverage: string;
   license: string;
   citation: string;
-  /** DOI without the "https://doi.org/" prefix, or null if unavailable. */
-  doi?: string | null;
+  /** Data access link. Null/omitted renders "pending". */
+  link?: { href: string; label: string } | null;
   /** True if any field on this row carries a [VERIFY] tag. */
   needsVerify?: boolean;
 }
@@ -65,7 +69,7 @@ const { rows, caption } = Astro.props;
           </button>
         </th>
         <th scope="col">Citation</th>
-        <th scope="col">DOI</th>
+        <th scope="col">Data</th>
       </tr>
     </thead>
     <tbody data-rows>
@@ -89,15 +93,15 @@ const { rows, caption } = Astro.props;
           <td data-label="Coverage">{row.coverage}</td>
           <td data-label="License">{row.license}</td>
           <td data-label="Citation" class="data-table__citation">{row.citation}</td>
-          <td data-label="DOI">
-            {row.doi ? (
+          <td data-label="Data">
+            {row.link ? (
               <a
-                href={`https://doi.org/${row.doi}`}
+                href={row.link.href}
                 rel="noopener noreferrer"
                 class="data-table__doi"
-              >{row.doi} <span aria-hidden="true">↗</span></a>
+              >{row.link.label} <span aria-hidden="true">↗</span></a>
             ) : (
-              <span class="data-table__missing">unavailable</span>
+              <span class="data-table__missing">pending</span>
             )}
           </td>
         </tr>
@@ -172,14 +176,14 @@ const { rows, caption } = Astro.props;
   }
   .data-table__citation {
     color: var(--color-ink-muted);
-    max-width: 28rem;
+    max-width: 26rem;
   }
   .data-table__doi {
     color: var(--color-ink);
     text-decoration: underline;
     text-decoration-color: var(--color-border-strong);
     text-underline-offset: 0.2em;
-    word-break: break-all;
+    word-break: break-word;
   }
   .data-table__doi:hover { color: var(--color-accent); text-decoration-color: var(--color-accent); }
   .data-table__missing {
@@ -228,10 +232,8 @@ const { rows, caption } = Astro.props;
 </style>
 
 <!--
-  Vanilla sort script (~1.4KB). Single-purpose; isolated to [data-rows].
-  - Click a sortable th's button to toggle asc/desc.
-  - Re-orders <tr> nodes by the data-{key} attribute (lowercased).
-  - Updates aria-sort on each th accordingly.
+  Vanilla sort script (~1.4KB). Binds to every [data-rows] tbody on the page,
+  so the three grouped tables on /data/ each sort independently.
 -->
 <script is:inline>
   (function () {
@@ -248,7 +250,6 @@ const { rows, caption } = Astro.props;
           if (!key) return;
           var current = th.getAttribute('aria-sort');
           var next = current === 'ascending' ? 'descending' : 'ascending';
-          // Reset all headers, then set this one.
           headers.forEach(function (h) { h.setAttribute('aria-sort', 'none'); });
           th.setAttribute('aria-sort', next);
           var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));

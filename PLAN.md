@@ -197,20 +197,44 @@ Complexity scale: **S** ≈ ≤2h, **M** ≈ ≤6h, **L** ≈ ≤12h. Estimates 
 
 ---
 
+## Phase 4D — Content fidelity with the official site (inserted June 2026)
+
+**Why this phase exists:** Mario's full crawl of 3mip.weebly.com (all 7 pages)
+surfaced substantive gaps between our docs and the project's published
+positions. The live site is the official record; the build must match it.
+FACTS.md was corrected as part of this phase.
+
+**Scope delivered:**
+- Data page restructured: 16 datasets in 3 groups (population/socioeconomic,
+  environmental, mobility); corrected data-extension policy
+- Participate: dual-track registration (modeler / expert) with progressive
+  disclosure; corrected code-sharing FAQ; expert FAQ; colleagues field
+- Case 1: background literature (5 papers), climate-stressor framing,
+  corrected official timeline
+- Team: domain experts section (4 entries, new `domain-expert` role);
+  leads' personal-site links
+- Home: leadership section (cards from the team collection + coordination
+  line); corrected milestone block
+- iEMSs 2026 confirmed July 12–16, University College Dublin — corrected
+  everywhere; session day/room [PENDING — program June 15]
+- `/dublin` QR-landing page (excluded from nav, JSON-LD Event)
+- Webinar seed entries (3, with Drive recording links — DECISIONS D20)
+- Logo question flagged (OPEN-QUESTIONS.md, DECISIONS B11)
+- Team collection partially seeded ahead of Phase 5: co-leads, PM, domain
+  experts
+
+---
+
 ## Phase 5 — Seed content
 
-**Complexity: M.** Mostly writing, not coding.
+**Complexity: S–M** (reduced — Phase 4D already seeded webinars, co-leads,
+PM, and domain experts).
 
 **Files to create:**
 
 ```
 /src/content/news/2025-10-launch.md
 /src/content/news/2026-iemss-acceptance.md          [VERIFY date]
-/src/content/webinars/2025-02-webinar.md            [VERIFY title, speaker, abstract]
-/src/content/webinars/2025-03-webinar.md            [VERIFY title, speaker, abstract]
-/src/content/team/bell.md                           — full bio from FACTS.md § Bell
-/src/content/team/best.md                           — full bio from FACTS.md § Best
-/src/content/team/tierolf.md                        — full bio from FACTS.md § Tierolf
 /src/content/team/aerts.md                          — one-line role
 /src/content/team/bearpark.md                       [VERIFY title]
 /src/content/team/burzynski.md
@@ -226,6 +250,9 @@ Complexity scale: **S** ≈ ≤2h, **M** ≈ ≤6h, **L** ≈ ≤12h. Estimates 
 /src/content/team/thalheimer.md
 /src/content/team/thomas.md                         [VERIFY title and role]
 ```
+
+**Already done in Phase 4D (do not duplicate):** webinars (3 entries),
+bell/best/tierolf, keputa/kashyap, bonatz/ahmed/rahaman/poluru.
 
 **Rules for this phase:**
 - Pull facts only from `docs/FACTS.md`. Anything beyond it gets `[VERIFY]` inline.
@@ -261,6 +288,13 @@ Complexity scale: **S** ≈ ≤2h, **M** ≈ ≤6h, **L** ≈ ≤12h. Estimates 
 5. Manual keyboard traversal of each page → log focus order in A11Y-AUDIT.md
 6. `lychee` against built output → fix internal, document legitimately-broken externals
 7. Compile OPEN-QUESTIONS.md from every `[VERIFY]` and `[PENDING BELL APPROVAL]` tag in `/src/content/` and `/src/pages/`
+
+**Added in Phase 4D (required deliverables, not gaps):**
+8. Generate `/public/og-default.png` (1200×630) via Playwright screenshot at
+   build time — the dev dependency is accepted (4D.10)
+9. Export the signature visualization at 3000px-wide PNG + single-page PDF
+   into `/assets-for-slides/` (repo only, not the public site) so the leads
+   can drop the figure into their Dublin decks (4D.10)
 
 **Dependencies:** Phases 1–5 complete.
 
