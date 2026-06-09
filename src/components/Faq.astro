@@ -1,0 +1,108 @@
+---
+/**
+ * Faq — a list of question/answer pairs rendered as native <details>/<summary>.
+ *
+ * Native disclosure is the right tool: keyboard-operable, screen-reader
+ * friendly, zero JavaScript, works with find-in-page (open-on-find in modern
+ * browsers). No accordion library.
+ *
+ * Answers may contain inline HTML (links, <em>, [VERIFY] spans), so each
+ * answer is passed through set:html. Content is authored in the page file.
+ */
+interface Item {
+  q: string;
+  /** Answer as an HTML string. */
+  a: string;
+}
+
+interface Props {
+  items: Item[];
+}
+
+const { items }: Props = Astro.props;
+---
+
+<div class="faq">
+  {items.map((item) => (
+    <details class="faq__item">
+      <summary class="faq__q">
+        <span>{item.q}</span>
+        <span class="faq__marker" aria-hidden="true"></span>
+      </summary>
+      <div class="faq__a" set:html={item.a} />
+    </details>
+  ))}
+</div>
+
+<style>
+  .faq {
+    margin-top: var(--space-4);
+    border-top: 1px solid var(--color-border);
+  }
+  .faq__item {
+    border-bottom: 1px solid var(--color-border);
+  }
+  .faq__q {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-3);
+    padding: var(--space-3) 0;
+    cursor: pointer;
+    font-weight: 500;
+    color: var(--color-ink);
+    font-size: var(--text-body);
+    list-style: none;
+    min-height: 44px;
+  }
+  /* Remove default disclosure triangle across engines. */
+  .faq__q::-webkit-details-marker { display: none; }
+  .faq__q:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+    border-radius: 2px;
+  }
+  .faq__q:hover { color: var(--color-accent); }
+
+  /* +/− marker built from CSS so there's no icon dependency. */
+  .faq__marker {
+    position: relative;
+    width: 14px;
+    height: 14px;
+    flex-shrink: 0;
+  }
+  .faq__marker::before,
+  .faq__marker::after {
+    content: "";
+    position: absolute;
+    background: var(--color-ink-muted);
+    transition: transform 150ms var(--ease-out);
+  }
+  .faq__marker::before { top: 6px; left: 0; width: 14px; height: 2px; }
+  .faq__marker::after { top: 0; left: 6px; width: 2px; height: 14px; }
+  .faq__item[open] .faq__marker::after { transform: scaleY(0); }
+
+  .faq__a {
+    padding: 0 0 var(--space-4);
+    color: var(--color-ink-muted);
+    font-size: var(--text-body);
+    line-height: var(--text-body--line-height);
+    max-width: 65ch;
+  }
+  .faq__a :global(a) {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-border-strong);
+    text-underline-offset: 0.2em;
+  }
+  .faq__a :global(a:hover) { color: var(--color-accent); text-decoration-color: var(--color-accent); }
+  .faq__a :global(.verify) {
+    color: var(--color-warning);
+    font-size: var(--text-caption);
+    font-weight: 500;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .faq__marker::before, .faq__marker::after { transition: none; }
+  }
+</style>

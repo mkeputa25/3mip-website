@@ -1,0 +1,437 @@
+---
+/**
+ * Participate — src/pages/participate.astro
+ *
+ * Per docs/CONTENT-INVENTORY.md § Participate. Six sections.
+ *
+ * Form strategy (DECISIONS.md D5): Formspree free tier. The endpoint is read
+ * from PUBLIC_FORMSPREE_ENDPOINT (set in Vercel env) with a clearly-marked
+ * placeholder fallback so the build never depends on a live form.
+ *
+ * UX: the form posts normally without JS (Formspree's own thank-you page is
+ * the no-JS fallback). With JS, a progressive-enhancement handler submits via
+ * fetch and swaps in an inline success state on the same page, preserving the
+ * entered data on error. Per DESIGN-PRINCIPLES.md § Forms.
+ */
+import Base from "../layouts/Base.astro";
+import Link from "../components/Link.astro";
+import Button from "../components/Button.astro";
+import FormField from "../components/FormField.astro";
+import CheckboxGroup from "../components/CheckboxGroup.astro";
+import Faq from "../components/Faq.astro";
+
+const FORMSPREE_ENDPOINT =
+  import.meta.env.PUBLIC_FORMSPREE_ENDPOINT ??
+  "https://formspree.io/f/REPLACE_WITH_FORM_ID";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "WebPage",
+  name: "Participate in 3MIP",
+  description:
+    "Modelers using ABM, gravity, radiation, IAM, or ML approaches can join 3MIP's coastal Bangladesh case. Registration open.",
+  isPartOf: { "@type": "Organization", name: "3MIP" },
+};
+
+const approachOptions = [
+  { value: "abm", label: "Agent-based" },
+  { value: "gravity", label: "Gravity" },
+  { value: "radiation", label: "Radiation" },
+  { value: "iam", label: "Integrated assessment" },
+  { value: "ml", label: "Machine learning" },
+  { value: "other", label: "Other" },
+];
+
+const hearOptions = [
+  { value: "conference", label: "Conference" },
+  { value: "colleague", label: "Colleague" },
+  { value: "publication", label: "Publication" },
+  { value: "search", label: "Search" },
+  { value: "other", label: "Other" },
+];
+
+const faqItems = [
+  {
+    q: "Does it cost anything to participate?",
+    a: "No. Participation is free.",
+  },
+  {
+    q: "What if my model is still in development?",
+    a: 'You can register and join webinars now. Output submission for the synthesis requires a working model by <span class="verify">[VERIFY deadline]</span>.',
+  },
+  {
+    q: "Who owns the outputs?",
+    a: "You own your model and outputs. 3MIP synthesizes across teams; you remain the author of your own work.",
+  },
+  {
+    q: "Do I have to share my code?",
+    a: "No. Code sharing is encouraged but not required. Methodological documentation is required.",
+  },
+  {
+    q: "Can I join after July 2026?",
+    a: "Yes. The Bangladesh case continues after the iEMSs synthesis. Future cases will have their own registration windows.",
+  },
+  {
+    q: "What if I want to use additional data sources?",
+    a: "Document them in your output submission so the synthesis can attribute differences to data choices.",
+  },
+  {
+    q: "How are decisions made about protocol changes?",
+    a: "The three co-leads decide, in consultation with the advisory committee. Major protocol revisions are announced to registered participants before they take effect.",
+  },
+  {
+    q: "What is the Climatic Change topical collection?",
+    a: 'A planned topical collection in the journal <em>Climatic Change</em> for 3MIP-affiliated papers. The formal call is anticipated for late 2026 <span class="verify">[VERIFY]</span>.',
+  },
+  {
+    q: "Will participating modelers be listed publicly?",
+    a: "Only with your explicit consent. A public directory is planned for a future version of the site.",
+  },
+  {
+    q: "Who do I contact if I have questions?",
+    a: 'Email Mario Keputa at <a href="mailto:mk2674@cornell.edu">mk2674@cornell.edu</a> through June 2026, or use the <a href="/contact/">Contact</a> page.',
+  },
+];
+---
+
+<Base
+  title="Participate"
+  description="Modelers using ABM, gravity, radiation, IAM, or ML approaches can join 3MIP's coastal Bangladesh case. Registration is open."
+  jsonLd={jsonLd}
+>
+  <article class="page">
+    <header class="page__header">
+      <h1>Participate in 3MIP</h1>
+      <p class="lede">
+        3MIP is open to research teams applying any model architecture to
+        climate-migration questions. The first benchmark case is coastal
+        Bangladesh; registered participants commit to working with the
+        curated input dataset and contributing outputs to the iEMSs 2026
+        synthesis and the <em>Climatic Change</em> topical collection.
+      </p>
+    </header>
+
+    <section aria-labelledby="who-h">
+      <h2 id="who-h">Who should participate</h2>
+      <div class="who">
+        <p>
+          3MIP is for active research teams developing migration models. Solo
+          PhD students, postdocs with their own implementation, established
+          modeling labs — all welcome. Participation requires working with a
+          model that produces some form of mobility output for spatial units
+          in Bangladesh.
+        </p>
+        <ul class="who__list">
+          <li>Agent-based models</li>
+          <li>Gravity models</li>
+          <li>Radiation models</li>
+          <li>Integrated assessment models with migration modules</li>
+          <li>Machine learning approaches (statistical, deep learning, hybrid)</li>
+          <li>Other architectures producing comparable outputs</li>
+        </ul>
+      </div>
+    </section>
+
+    <section aria-labelledby="involves-h">
+      <h2 id="involves-h">What participation involves</h2>
+      <ol class="involves">
+        <li>
+          <strong>Receive the curated input dataset and protocol document</strong>
+          within five working days of registration.
+        </li>
+        <li>
+          <strong>Attend two participant webinars per year</strong>, scheduled
+          with the cohort. Recordings are available if you cannot attend live.
+        </li>
+        <li>
+          <strong>Run your model on the shared question</strong> for the
+          Bangladesh case at your own pace. The first major milestone is the
+          iEMSs 2026 Dublin synthesis session in July 2026.
+        </li>
+        <li>
+          <strong>Submit your outputs and methodological documentation</strong>
+          by <span class="verify">[VERIFY deadline]</span> for inclusion in
+          the synthesis and the <em>Climatic Change</em> topical collection.
+        </li>
+        <li>
+          <strong>Retain ownership of your model and outputs.</strong> 3MIP
+          synthesizes findings across teams; individual model outputs and code
+          remain with their authors and may be published independently.
+        </li>
+      </ol>
+    </section>
+
+    <section aria-labelledby="register-h">
+      <h2 id="register-h">Register</h2>
+
+      <!-- Success panel, revealed by JS after a successful AJAX submission. -->
+      <div class="form-success" hidden data-form-success>
+        <h3>Registration received.</h3>
+        <p>
+          Thank you. You'll receive an email with access to the curated input
+          dataset and the participant handbook within five working days. If you
+          don't hear back, email
+          <a href="mailto:mk2674@cornell.edu">mk2674@cornell.edu</a>.
+        </p>
+      </div>
+
+      <form
+        class="reg-form"
+        action={FORMSPREE_ENDPOINT}
+        method="POST"
+        data-reg-form
+        aria-describedby="form-status"
+      >
+        <FormField id="name" name="name" label="Name" required placeholder="First and last" />
+        <FormField id="affiliation" name="affiliation" label="Affiliation" required placeholder="University, institute, or organization" />
+        <FormField id="email" name="email" type="email" label="Email" required help="Used for communication and dataset access." />
+        <FormField id="orcid" name="orcid" label="ORCID" pattern="\d{4}-\d{4}-\d{4}-\d{4}" help="Optional. Format: 0000-0000-0000-0000" placeholder="0000-0000-0000-0000" />
+
+        <CheckboxGroup
+          id="approach"
+          name="approach"
+          legend="Modeling approach"
+          options={approachOptions}
+          required
+        />
+
+        <FormField
+          id="question"
+          name="research_question"
+          type="textarea"
+          label="Research question of interest"
+          required
+          help="2–4 sentences on what you intend to study with the curated dataset."
+        />
+
+        <FormField
+          id="hear"
+          name="how_heard"
+          type="select"
+          label="How did you hear about 3MIP?"
+          options={hearOptions}
+        />
+
+        <FormField
+          id="questions"
+          name="questions"
+          type="textarea"
+          label="Any questions before registering?"
+          rows={3}
+        />
+
+        {/* Honeypot — bots fill this; humans never see it. Server ignores submissions with it set. */}
+        <input type="text" name="_gotcha" tabindex="-1" autocomplete="off" class="vh" aria-hidden="true" />
+        <input type="hidden" name="_subject" value="New 3MIP registration" />
+
+        <p id="form-status" class="form-status" role="status" aria-live="polite" hidden data-form-status></p>
+
+        <Button type="submit" class="reg-form__submit">Submit registration</Button>
+      </form>
+
+      <p class="privacy-note">
+        Your information is used only for 3MIP coordination. We do not share it
+        with third parties. See the <Link href="/privacy/" variant="in-prose">privacy notice</Link> for details.
+      </p>
+
+      <p class="endpoint-note" data-endpoint-note hidden>
+        <span class="pending">[PENDING]</span> Form endpoint not yet configured.
+        Set <code>PUBLIC_FORMSPREE_ENDPOINT</code> in the Vercel environment
+        before launch (see DECISIONS.md D5).
+      </p>
+    </section>
+
+    <section aria-labelledby="faq-h">
+      <h2 id="faq-h">Frequently asked questions</h2>
+      <Faq items={faqItems} />
+    </section>
+  </article>
+</Base>
+
+<style>
+  .page {
+    max-width: 45rem;
+    margin: 0 auto;
+    padding: var(--space-7) var(--space-3) var(--space-8);
+  }
+  @media (min-width: 768px) { .page { padding: var(--space-8) var(--space-5); } }
+  .page__header { margin-bottom: var(--space-6); }
+  .page__header h1 { margin: 0; }
+  .lede {
+    font-size: var(--text-body-lg);
+    color: var(--color-ink-muted);
+    margin-top: var(--space-3);
+    max-width: 60ch;
+  }
+  .page section { margin-top: var(--space-7); }
+  .page h2 { margin: 0 0 var(--space-3); }
+  .page p { margin: 0 0 var(--space-3); max-width: 65ch; }
+
+  .who { display: grid; gap: var(--space-4); grid-template-columns: 1fr; }
+  @media (min-width: 768px) { .who { grid-template-columns: 3fr 2fr; gap: var(--space-5); } }
+  .who p { margin: 0; }
+  .who__list {
+    margin: 0;
+    padding-left: var(--space-4);
+    list-style-type: square;
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+  }
+  .who__list li { padding-block: 2px; }
+
+  .involves {
+    margin: var(--space-3) 0 0;
+    padding-left: var(--space-4);
+    counter-reset: step;
+  }
+  .involves li {
+    margin-bottom: var(--space-3);
+    color: var(--color-ink-muted);
+    max-width: 65ch;
+    padding-left: var(--space-2);
+  }
+  .involves li strong { color: var(--color-ink); }
+
+  .reg-form {
+    margin-top: var(--space-4);
+    max-width: 36rem;
+  }
+  .reg-form__submit { margin-top: var(--space-2); }
+  @media (max-width: 479px) { .reg-form__submit { width: 100%; } }
+
+  .form-status {
+    margin: var(--space-3) 0;
+    padding: var(--space-3);
+    border-radius: var(--radius);
+    font-size: var(--text-small);
+  }
+  .form-status[data-state="error"] {
+    background: var(--color-surface);
+    border-left: 4px solid var(--color-error);
+    color: var(--color-ink);
+  }
+
+  .form-success {
+    margin-top: var(--space-4);
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border-left: 4px solid var(--color-success);
+    border-radius: var(--radius);
+  }
+  .form-success h3 { margin: 0 0 var(--space-2); }
+  .form-success p { margin: 0; color: var(--color-ink-muted); }
+
+  .privacy-note {
+    margin-top: var(--space-4);
+    font-size: var(--text-small);
+    color: var(--color-ink-muted);
+  }
+  .endpoint-note {
+    margin-top: var(--space-3);
+    font-size: var(--text-small);
+    color: var(--color-ink-muted);
+  }
+  .pending {
+    color: var(--color-warning);
+    font-weight: 500;
+    font-size: var(--text-caption);
+  }
+  .verify {
+    color: var(--color-warning);
+    font-size: var(--text-caption);
+    font-weight: 500;
+  }
+</style>
+
+<!--
+  Progressive-enhancement form handler. ~1.2KB.
+  - Validates the "at least one approach" rule that HTML can't express on a
+    checkbox group.
+  - Submits via fetch with Accept: application/json (Formspree AJAX mode).
+  - On success: hides the form, reveals the inline success panel.
+  - On error: shows an inline message, keeps the entered data.
+  - If JS is disabled, the form posts normally and Formspree shows its own
+    thank-you page (the documented no-JS fallback).
+-->
+<script is:inline>
+  (function () {
+    var form = document.querySelector('[data-reg-form]');
+    if (!form) return;
+    var statusEl = form.querySelector('[data-form-status]');
+    var successEl = document.querySelector('[data-form-success]');
+    var endpointNote = document.querySelector('[data-endpoint-note]');
+    var action = form.getAttribute('action') || '';
+
+    // Surface the "endpoint not configured" note in non-production if the
+    // placeholder is still in place, so reviewers know the form is inert.
+    if (action.indexOf('REPLACE_WITH_FORM_ID') !== -1 && endpointNote) {
+      endpointNote.hidden = false;
+    }
+
+    function showStatus(msg, state) {
+      if (!statusEl) return;
+      statusEl.textContent = msg;
+      statusEl.hidden = false;
+      statusEl.setAttribute('data-state', state);
+    }
+
+    function checkApproach() {
+      var boxes = form.querySelectorAll('[data-checkbox-group="approach"]');
+      var any = false;
+      boxes.forEach(function (b) { if (b.checked) any = true; });
+      var errEl = form.querySelector('[data-checkbox-error="approach"]');
+      if (!any && errEl) {
+        errEl.textContent = 'Select at least one modeling approach.';
+        errEl.hidden = false;
+      } else if (errEl) {
+        errEl.hidden = true;
+      }
+      return any;
+    }
+
+    form.addEventListener('submit', function (e) {
+      // Always enforce the checkbox rule first.
+      if (!checkApproach()) {
+        e.preventDefault();
+        return;
+      }
+
+      // If the endpoint is still the placeholder, don't attempt a network
+      // request — just tell the reviewer it's not wired yet.
+      if (action.indexOf('REPLACE_WITH_FORM_ID') !== -1) {
+        e.preventDefault();
+        showStatus('Form endpoint is not configured yet. This is expected before launch.', 'error');
+        return;
+      }
+
+      // Progressive enhancement: AJAX submit.
+      e.preventDefault();
+      showStatus('Submitting…', 'pending');
+      var data = new FormData(form);
+      fetch(action, {
+        method: 'POST',
+        body: data,
+        headers: { Accept: 'application/json' },
+      })
+        .then(function (res) {
+          if (res.ok) {
+            form.hidden = true;
+            if (successEl) {
+              successEl.hidden = false;
+              successEl.setAttribute('tabindex', '-1');
+              successEl.focus();
+            }
+          } else {
+            return res.json().then(function (body) {
+              var msg = (body && body.errors && body.errors.map(function (x) { return x.message; }).join(', ')) ||
+                'Something went wrong. Please email mk2674@cornell.edu.';
+              showStatus(msg, 'error');
+            });
+          }
+        })
+        .catch(function () {
+          showStatus('Network error. Please try again, or email mk2674@cornell.edu.', 'error');
+        });
+    });
+  })();
+</script>

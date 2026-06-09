@@ -1,0 +1,67 @@
+---
+/**
+ * PersonRow — compact advisory-committee entry on the Team page.
+ *
+ * Per docs/CONTENT-INVENTORY.md § Team § Section 3: name (semibold),
+ * affiliation (regular), role in 3MIP (small italic). No photos for
+ * advisors in v1 (privacy). Optional institutional link.
+ *
+ * If shortRole contains a [VERIFY] marker, it's rendered via set:html so the
+ * tag styles consistently.
+ */
+interface Props {
+  name: string;
+  affiliation: string;
+  shortRole: string;
+  institutionalUrl?: string;
+}
+
+const { name, affiliation, shortRole, institutionalUrl }: Props = Astro.props;
+---
+
+<li class="person-row">
+  <p class="person-row__line">
+    {institutionalUrl ? (
+      <a class="person-row__name" href={institutionalUrl} rel="noopener noreferrer">
+        {name} <span aria-hidden="true">↗</span>
+      </a>
+    ) : (
+      <span class="person-row__name">{name}</span>
+    )}<span class="person-row__sep">, </span><span class="person-row__affil">{affiliation}</span>
+  </p>
+  <p class="person-row__role" set:html={shortRole} />
+</li>
+
+<style>
+  .person-row {
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-border);
+    list-style: none;
+  }
+  .person-row__line {
+    margin: 0;
+    font-size: var(--text-body);
+    line-height: 1.4;
+  }
+  .person-row__name {
+    font-weight: 600;
+    color: var(--color-ink);
+    text-decoration: none;
+  }
+  a.person-row__name { text-decoration: underline; text-decoration-color: var(--color-border-strong); text-underline-offset: 0.2em; }
+  a.person-row__name:hover { color: var(--color-accent); text-decoration-color: var(--color-accent); }
+  .person-row__affil { color: var(--color-ink); }
+  .person-row__sep { color: var(--color-ink); }
+  .person-row__role {
+    margin: var(--space-1) 0 0;
+    font-size: var(--text-small);
+    font-style: italic;
+    color: var(--color-ink-muted);
+  }
+  .person-row__role :global(.verify) {
+    color: var(--color-warning);
+    font-size: var(--text-caption);
+    font-weight: 500;
+    font-style: normal;
+  }
+</style>

@@ -1,0 +1,120 @@
+---
+/**
+ * CheckboxGroup — accessible multi-select rendered as a <fieldset> of
+ * checkboxes. Used for the Participate form's "Modeling approach" field.
+ *
+ * Why checkboxes over <select multiple>: native multi-selects are hostile
+ * on touch devices and confusing with assistive tech (no clear "select all
+ * that apply" affordance). A checkbox group is the accessible idiom.
+ *
+ * "At least one" is enforced as progressive enhancement in the form's submit
+ * handler; without JS, Formspree simply receives whatever is checked.
+ */
+interface Option {
+  value: string;
+  label: string;
+}
+
+interface Props {
+  name: string;
+  legend: string;
+  options: Option[];
+  required?: boolean;
+  help?: string;
+  /** id used to wire aria-describedby to the help/error text. */
+  id: string;
+}
+
+const { name, legend, options, required = false, help, id }: Props = Astro.props;
+const helpId = help ? `${id}-help` : undefined;
+const errorId = `${id}-error`;
+---
+
+<fieldset class="checkbox-group" aria-describedby={[helpId, errorId].filter(Boolean).join(" ") || undefined}>
+  <legend class="checkbox-group__legend">
+    {legend}
+    {required && <span class="checkbox-group__req"> (required — select all that apply)</span>}
+    {!required && <span class="checkbox-group__req"> (select all that apply)</span>}
+  </legend>
+
+  <div class="checkbox-group__options">
+    {options.map((opt) => (
+      <label class="checkbox-group__option">
+        <input
+          type="checkbox"
+          name={name}
+          value={opt.value}
+          data-checkbox-group={id}
+        />
+        <span>{opt.label}</span>
+      </label>
+    ))}
+  </div>
+
+  {help && (
+    <p id={helpId} class="checkbox-group__help">{help}</p>
+  )}
+  {/* Error slot, populated by the form's JS if nothing is checked on submit. */}
+  <p id={errorId} class="checkbox-group__error" hidden data-checkbox-error={id}></p>
+</fieldset>
+
+<style>
+  .checkbox-group {
+    border: 0;
+    margin: 0 0 var(--space-5);
+    padding: 0;
+  }
+  .checkbox-group__legend {
+    padding: 0;
+    font-size: var(--text-small);
+    font-weight: 500;
+    color: var(--color-ink);
+    margin-bottom: var(--space-3);
+  }
+  .checkbox-group__req {
+    color: var(--color-ink-muted);
+    font-weight: 400;
+  }
+  .checkbox-group__options {
+    display: grid;
+    gap: var(--space-2);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 480px) {
+    .checkbox-group__options { grid-template-columns: 1fr 1fr; }
+  }
+  .checkbox-group__option {
+    display: flex;
+    align-items: center;
+    gap: var(--space-2);
+    min-height: 44px;
+    padding: var(--space-1) var(--space-2);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    background: var(--color-surface-elevated);
+    cursor: pointer;
+    font-size: var(--text-body);
+    color: var(--color-ink);
+  }
+  .checkbox-group__option:hover { border-color: var(--color-border-strong); }
+  .checkbox-group__option:focus-within {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+  .checkbox-group__option input {
+    width: 18px;
+    height: 18px;
+    accent-color: var(--color-accent);
+    flex-shrink: 0;
+  }
+  .checkbox-group__help {
+    margin: var(--space-2) 0 0;
+    font-size: var(--text-small);
+    color: var(--color-ink-muted);
+  }
+  .checkbox-group__error {
+    margin: var(--space-2) 0 0;
+    font-size: var(--text-small);
+    color: var(--color-error);
+  }
+</style>

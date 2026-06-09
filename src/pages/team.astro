@@ -1,0 +1,173 @@
+---
+/**
+ * Team — src/pages/team.astro
+ *
+ * Per docs/CONTENT-INVENTORY.md § Team. Reads the `team` content collection
+ * and groups entries by role:
+ *   - co-lead              → full PersonCard with bio + publications
+ *   - advisor              → compact PersonRow, alphabetical by surname
+ *   - project-management   → short entries
+ * Plus a static "Participating modelers" empty state (v2: opt-in directory).
+ *
+ * The collection is seeded in Phase 5. This page renders correctly whether
+ * the collection is empty (pre-seed) or populated — empty groups simply
+ * render their heading and nothing else, which is honest.
+ *
+ * Co-lead bios are authored as Markdown bodies in the collection entries, so
+ * each entry is rendered and its <Content /> passed into PersonCard's slot.
+ */
+import { getCollection, render } from "astro:content";
+import Base from "../layouts/Base.astro";
+import PersonCard from "../components/PersonCard.astro";
+import PersonRow from "../components/PersonRow.astro";
+
+const all = await getCollection("team");
+
+const bySurname = (a: { data: { surname: string } }, b: { data: { surname: string } }) =>
+  a.data.surname.localeCompare(b.data.surname);
+
+// Co-leads: canonical order is alphabetical by surname (Bell, Best, Tierolf).
+const coLeads = all.filter((e) => e.data.role === "co-lead").sort(bySurname);
+const advisors = all.filter((e) => e.data.role === "advisor").sort(bySurname);
+const pm = all.filter((e) => e.data.role === "project-management").sort(bySurname);
+
+// Render each co-lead's Markdown body for the bio slot.
+const coLeadsRendered = await Promise.all(
+  coLeads.map(async (entry) => {
+    const { Content } = await render(entry);
+    return { entry, Content };
+  }),
+);
+
+// JSON-LD: Person entities for leadership only (advisors excluded for privacy,
+// per CONTENT-INVENTORY § Team JSON-LD note).
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@graph": coLeads.map((e) => ({
+    "@type": "Person",
+    name: e.data.name,
+    affiliation: e.data.affiliation,
+    ...(e.data.institutionalUrl ? { url: e.data.institutionalUrl } : {}),
+  })),
+};
+---
+
+<Base
+  title="Team"
+  description="3MIP is led by Andrew Bell (Cornell), Kelsea Best (OSU), and Lars Tierolf (VU Amsterdam). Advisory committee includes Oppenheimer, de Sherbinin, and Aerts."
+  jsonLd={coLeads.length > 0 ? jsonLd : undefined}
+>
+  <article class="page">
+    <header class="page__header">
+      <h1>Team</h1>
+      <p class="lede">
+        3MIP is led by three co-leads, advised by a 14-member committee, and
+        coordinated by project management at Cornell.
+      </p>
+    </header>
+
+    <section aria-labelledby="lead-h">
+      <h2 id="lead-h">Leadership</h2>
+      {coLeadsRendered.length === 0 && (
+        <p class="empty">Leadership profiles load from the team content collection (seeded in Phase 5).</p>
+      )}
+      {coLeadsRendered.map(({ entry, Content }) => (
+        <PersonCard
+          name={entry.data.name}
+          affiliation={entry.data.affiliation}
+          shortRole={entry.data.shortRole}
+          publications={entry.data.publications}
+          institutionalUrl={entry.data.institutionalUrl}
+          photo={entry.data.photo}
+        >
+          <Content />
+        </PersonCard>
+      ))}
+    </section>
+
+    <section aria-labelledby="advisory-h">
+      <h2 id="advisory-h">Advisory committee</h2>
+      {advisors.length === 0 && (
+        <p class="empty">Advisory committee loads from the team content collection (seeded in Phase 5).</p>
+      )}
+      {advisors.length > 0 && (
+        <ul class="advisor-list">
+          {advisors.map((e) => (
+            <PersonRow
+              name={e.data.name}
+              affiliation={e.data.affiliation}
+              shortRole={e.data.shortRole}
+              institutionalUrl={e.data.institutionalUrl}
+            />
+          ))}
+        </ul>
+      )}
+    </section>
+
+    <section aria-labelledby="pm-h">
+      <h2 id="pm-h">Project management</h2>
+      {pm.length === 0 && (
+        <p class="empty">Project management entries load from the team content collection (seeded in Phase 5).</p>
+      )}
+      {pm.length > 0 && (
+        <ul class="advisor-list">
+          {pm.map((e) => (
+            <PersonRow
+              name={e.data.name}
+              affiliation={e.data.affiliation}
+              shortRole={e.data.shortRole}
+              institutionalUrl={e.data.institutionalUrl}
+            />
+          ))}
+        </ul>
+      )}
+    </section>
+
+    <section aria-labelledby="modelers-h">
+      <h2 id="modelers-h">Participating modelers</h2>
+      <p>
+        A public directory of participating modeling teams will appear here
+        after teams register and provide their consent to public listing. If
+        you are a registered participant and wish to be listed, contact
+        project management.
+      </p>
+      <p class="v2-note"><em>Planned for a future version, after consent is collected.</em></p>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .page {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: var(--space-7) var(--space-3) var(--space-8);
+  }
+  @media (min-width: 768px) { .page { padding: var(--space-8) var(--space-5); } }
+  .page__header { margin-bottom: var(--space-6); }
+  .page__header h1 { margin: 0; }
+  .lede {
+    font-size: var(--text-body-lg);
+    color: var(--color-ink-muted);
+    margin-top: var(--space-3);
+    max-width: 60ch;
+  }
+  .page section { margin-top: var(--space-7); }
+  .page h2 { margin: 0 0 var(--space-4); }
+  .page p { margin: 0 0 var(--space-3); max-width: 65ch; color: var(--color-ink-muted); }
+
+  .advisor-list {
+    margin: 0;
+    padding: 0;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .empty {
+    color: var(--color-ink-subtle);
+    font-style: italic;
+    font-size: var(--text-small);
+  }
+  .v2-note {
+    font-size: var(--text-small);
+    color: var(--color-ink-subtle);
+  }
+</style>
