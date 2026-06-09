@@ -1,0 +1,193 @@
+---
+/**
+ * Outputs — src/pages/outputs.astro
+ *
+ * Per docs/CONTENT-INVENTORY.md § Outputs. Sections:
+ *   - Webinars (from `webinars` collection)
+ *   - Working papers (empty state until first paper; from `papers` collection)
+ *   - Conference sessions (static: iEMSs 2026, Princeton C-PREE 2024)
+ *   - Climatic Change topical collection (empty state)
+ *
+ * Empty states are honest and labeled, per COPY-GUIDE.md § Empty states.
+ */
+import Base from "../layouts/Base.astro";
+import Link from "../components/Link.astro";
+import WebinarCard from "../components/WebinarCard.astro";
+import PaperCard from "../components/PaperCard.astro";
+import { getCollection } from "astro:content";
+
+const webinars = (await getCollection("webinars")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+const papers = (await getCollection("papers")).sort((a, b) => b.data.year - a.data.year);
+
+function longDate(d: Date): string {
+  return d.toLocaleDateString("en-US", { year: "numeric", month: "long", timeZone: "UTC" });
+}
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "CollectionPage",
+  name: "3MIP Outputs",
+  description:
+    "3MIP outputs: webinars, working papers, conference sessions, and the forthcoming Climatic Change topical collection.",
+};
+---
+
+<Base
+  title="Outputs"
+  description="3MIP outputs: webinars, working papers, conference sessions, and the forthcoming Climatic Change topical collection."
+  jsonLd={jsonLd}
+>
+  <article class="page">
+    <header class="page__header">
+      <h1>Outputs</h1>
+      <p class="lede">
+        3MIP outputs include webinar recordings, working papers from
+        participating teams, conference sessions, and a forthcoming topical
+        collection in the journal <em>Climatic Change</em>. This page is
+        updated as new outputs become available.
+      </p>
+    </header>
+
+    <section aria-labelledby="webinars-h">
+      <h2 id="webinars-h">Webinars</h2>
+      {webinars.length === 0 ? (
+        <p class="empty">
+          Webinar recordings will appear here. Two participant webinars were
+          held in early 2025; details are being prepared for publication.
+          <span class="verify">[VERIFY — webinar details from FACTS.md]</span>
+        </p>
+      ) : (
+        <div class="webinar-list">
+          {webinars.map((w) => (
+            <WebinarCard
+              title={w.data.title}
+              date={w.data.date.toISOString().slice(0, 10)}
+              dateLabel={longDate(w.data.date)}
+              speakers={w.data.speakers}
+              lengthMinutes={w.data.lengthMinutes}
+              abstract={w.data.abstract}
+              recordingUrl={w.data.recordingUrl}
+              slidesUrl={w.data.slidesUrl}
+            />
+          ))}
+        </div>
+      )}
+    </section>
+
+    <section aria-labelledby="papers-h">
+      <h2 id="papers-h">Working papers</h2>
+      {papers.length === 0 ? (
+        <p class="empty">
+          Working papers from participating teams will appear here as they are
+          released. Papers are linked to their original venue (preprint server
+          or journal) and remain under their authors' control.
+          <Link href="/news/feed.xml" variant="in-prose">Subscribe to the news feed</Link>
+          for release announcements.
+        </p>
+      ) : (
+        <div class="paper-list">
+          {papers.map((p) => (
+            <PaperCard
+              title={p.data.title}
+              authors={p.data.authors}
+              year={p.data.year}
+              venue={p.data.venue}
+              abstract={p.data.abstract}
+              doi={p.data.doi}
+              preprintUrl={p.data.preprintUrl}
+              pdfUrl={p.data.pdfUrl}
+            />
+          ))}
+        </div>
+      )}
+    </section>
+
+    <section aria-labelledby="sessions-h">
+      <h2 id="sessions-h">Conference sessions</h2>
+      <div class="sessions">
+        <article class="session">
+          <h3 class="session__title">iEMSs 2026 — Dublin, July 2026 <span class="verify">[VERIFY exact dates]</span></h3>
+          <ul class="session__list">
+            <li>Session C7: <em>Mobility and Migration Modeling Intercomparison Project (3MIP) – An open, first synthesis</em></li>
+            <li>Workshop WSC7: <em>Panel Discussion – 3MIP</em></li>
+          </ul>
+          <p>
+            <Link href="https://conference.iemss.org/streams/" variant="external">iEMSs streams page</Link>
+          </p>
+        </article>
+
+        <article class="session">
+          <h3 class="session__title">Princeton C-PREE — September 25–27, 2024</h3>
+          <ul class="session__list">
+            <li>Climate Migration Modeling Intercomparison Workshop</li>
+            <li>The founding workshop of 3MIP</li>
+          </ul>
+          <p>
+            <Link
+              href="https://cpree.princeton.edu/news/2024/researchers-around-world-attend-climate-migration-workshop-princeton"
+              variant="external"
+            >Princeton C-PREE summary</Link>
+          </p>
+        </article>
+      </div>
+    </section>
+
+    <section aria-labelledby="cc-h">
+      <h2 id="cc-h"><em>Climatic Change</em> topical collection</h2>
+      <p class="empty">
+        A topical collection in the journal <em>Climatic Change</em> will host
+        peer-reviewed 3MIP outputs. The formal call for papers is anticipated
+        in late 2026 <span class="verify">[VERIFY: Springer call not yet posted as of May 2026]</span>.
+        When the call opens, the link and submission instructions will appear here.
+      </p>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .page {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: var(--space-7) var(--space-3) var(--space-8);
+  }
+  @media (min-width: 768px) { .page { padding: var(--space-8) var(--space-5); } }
+  .page__header { margin-bottom: var(--space-6); }
+  .page__header h1 { margin: 0; }
+  .lede {
+    font-size: var(--text-body-lg);
+    color: var(--color-ink-muted);
+    margin-top: var(--space-3);
+    max-width: 60ch;
+  }
+  .page section { margin-top: var(--space-7); }
+  .page h2 { margin: 0 0 var(--space-3); }
+  .page p { margin: 0 0 var(--space-3); max-width: 65ch; }
+
+  .empty {
+    color: var(--color-ink-muted);
+    background: var(--color-surface);
+    border-left: 4px solid var(--color-border-strong);
+    padding: var(--space-4);
+    border-radius: var(--radius);
+  }
+
+  .sessions { display: grid; gap: var(--space-5); }
+  .session { padding: var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius); }
+  .session__title { margin: 0 0 var(--space-2); font-size: var(--text-h4); }
+  .session__list {
+    margin: 0 0 var(--space-3);
+    padding-left: var(--space-4);
+    list-style-type: square;
+    color: var(--color-ink-muted);
+  }
+  .session__list li { padding-block: 2px; max-width: 60ch; }
+  .session p { margin: 0; }
+
+  .verify {
+    color: var(--color-warning);
+    font-size: var(--text-caption);
+    font-weight: 500;
+  }
+</style>

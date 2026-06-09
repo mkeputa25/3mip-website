@@ -1,0 +1,73 @@
+---
+/**
+ * PaperCard — one working paper / publication on the Outputs page.
+ *
+ * Empty in v1 (no papers yet). Component exists so the first paper drops in
+ * without retrofitting. Per docs/CONTENT-INVENTORY.md § Outputs § Section 3
+ * and DESIGN-PRINCIPLES.md § Cards (Paper type).
+ */
+interface Props {
+  title: string;
+  authors: string[];
+  year: number;
+  venue?: string;
+  abstract?: string;
+  doi?: string;
+  preprintUrl?: string;
+  pdfUrl?: string;
+}
+
+const {
+  title,
+  authors,
+  year,
+  venue,
+  abstract,
+  doi,
+  preprintUrl,
+  pdfUrl,
+}: Props = Astro.props;
+
+const authorLine =
+  authors.length <= 3
+    ? authors.join(", ")
+    : `${authors.slice(0, 3).join(", ")}, et al.`;
+
+const primaryLink = doi ? `https://doi.org/${doi}` : preprintUrl ?? pdfUrl;
+---
+
+<article class="paper">
+  <h3 class="paper__title">{title}</h3>
+  <p class="paper__meta">{authorLine} ({year}){venue ? <> · <em>{venue}</em></> : null}</p>
+  {abstract && <p class="paper__abstract">{abstract}</p>}
+  <div class="paper__links">
+    {primaryLink && (
+      <a href={primaryLink} rel="noopener noreferrer" class="paper__link">
+        {doi ? "View publication" : "Read preprint"} <span aria-hidden="true">↗</span>
+      </a>
+    )}
+    {pdfUrl && doi && (
+      <a href={pdfUrl} rel="noopener noreferrer" class="paper__link">PDF <span aria-hidden="true">↗</span></a>
+    )}
+  </div>
+</article>
+
+<style>
+  .paper {
+    padding: var(--space-4) 0;
+    border-top: 1px solid var(--color-border);
+  }
+  .paper:first-of-type { border-top: 0; }
+  .paper__title { margin: 0 0 var(--space-1); font-size: var(--text-h4); }
+  .paper__meta { margin: 0; color: var(--color-ink-muted); font-size: var(--text-small); }
+  .paper__abstract { margin: var(--space-2) 0 0; color: var(--color-ink-muted); font-size: var(--text-small); max-width: 65ch; }
+  .paper__links { margin-top: var(--space-2); display: flex; gap: var(--space-4); }
+  .paper__link {
+    color: var(--color-ink);
+    font-size: var(--text-small);
+    text-decoration: underline;
+    text-decoration-color: var(--color-border-strong);
+    text-underline-offset: 0.2em;
+  }
+  .paper__link:hover { color: var(--color-accent); text-decoration-color: var(--color-accent); }
+</style>

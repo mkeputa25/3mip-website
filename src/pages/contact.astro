@@ -1,0 +1,120 @@
+---
+/**
+ * Contact — src/pages/contact.astro
+ *
+ * Per docs/CONTENT-INVENTORY.md § Contact. Email-first; no public contact
+ * form (the only form on the site is the Participate registration).
+ */
+import Base from "../layouts/Base.astro";
+import Link from "../components/Link.astro";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ContactPage",
+  name: "Contact 3MIP",
+  description: "Contact 3MIP. Project coordinator: Mario Keputa (Cornell). PI escalation: Andrew Bell.",
+};
+---
+
+<Base
+  title="Contact"
+  description="Contact 3MIP. Project coordinator: Mario Keputa (Cornell). PI escalation: Andrew Bell."
+  jsonLd={jsonLd}
+>
+  <article class="page">
+    <header class="page__header">
+      <h1>Contact</h1>
+      <p class="lede">
+        3MIP does not maintain a public contact form. Email is the preferred channel.
+      </p>
+    </header>
+
+    <section aria-labelledby="coord-h">
+      <h2 id="coord-h">Project coordination</h2>
+      <div class="contact-block">
+        <p class="contact-block__name">Mario Keputa</p>
+        <p class="contact-block__role">Project coordinator, Cornell University</p>
+        <p><a href="mailto:mk2674@cornell.edu">mk2674@cornell.edu</a></p>
+        <p class="contact-block__note">
+          Through June 2026. After that, please contact
+          <span class="pending">[PENDING BELL APPROVAL — successor]</span>
+          or use the PI escalation below.
+        </p>
+      </div>
+    </section>
+
+    <section aria-labelledby="pi-h">
+      <h2 id="pi-h">Principal investigator</h2>
+      <div class="contact-block">
+        <p class="contact-block__name">Andrew Bell</p>
+        <p class="contact-block__role">Schleifer Family Professor of Sustainability, Cornell University</p>
+        <p>
+          Contact via the Cornell directory:
+          <Link href="https://einaudi.cornell.edu/discover/people/andrew-reid-bell" variant="external">Cornell page</Link>
+          <span class="verify">[VERIFY Bell's preferred public email or institutional page]</span>
+        </p>
+      </div>
+    </section>
+
+    <section aria-labelledby="press-h">
+      <h2 id="press-h">Press</h2>
+      <p>
+        Press inquiries are routed through Cornell University Relations
+        <span class="pending">[PENDING BELL APPROVAL on press posture]</span>.
+        For specific research questions, contact one of the co-leads directly
+        via their institutional pages on the <Link href="/team/" variant="in-prose">Team</Link> page.
+      </p>
+    </section>
+
+    <section aria-labelledby="addr-h">
+      <h2 id="addr-h">Mailing address</h2>
+      <address class="contact-address">
+        Department of Global Development<br />
+        Cornell University<br />
+        Ithaca, NY <span class="verify">[VERIFY full address]</span>
+      </address>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .page {
+    max-width: 45rem;
+    margin: 0 auto;
+    padding: var(--space-7) var(--space-3) var(--space-8);
+  }
+  @media (min-width: 768px) { .page { padding: var(--space-8) var(--space-5); } }
+  .page__header { margin-bottom: var(--space-6); }
+  .page__header h1 { margin: 0; }
+  .lede {
+    font-size: var(--text-body-lg);
+    color: var(--color-ink-muted);
+    margin-top: var(--space-3);
+    max-width: 60ch;
+  }
+  .page section { margin-top: var(--space-6); }
+  .page h2 { margin: 0 0 var(--space-3); }
+  .page p { margin: 0 0 var(--space-2); max-width: 65ch; }
+
+  .contact-block__name {
+    font-family: var(--font-serif);
+    font-size: var(--text-h4);
+    font-weight: 600;
+    color: var(--color-ink);
+  }
+  .contact-block__role { color: var(--color-ink-muted); }
+  .contact-block__note { color: var(--color-ink-muted); font-size: var(--text-small); margin-top: var(--space-2); }
+  .contact-block a { color: var(--color-ink); }
+
+  .contact-address {
+    font-style: normal;
+    color: var(--color-ink);
+    line-height: 1.7;
+  }
+
+  .pending, .verify {
+    color: var(--color-warning);
+    font-size: var(--text-caption);
+    font-weight: 500;
+  }
+</style>

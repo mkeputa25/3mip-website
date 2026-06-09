@@ -1,0 +1,99 @@
+---
+/**
+ * News — src/pages/news/index.astro
+ *
+ * Reverse-chronological list of entries from the `news` collection.
+ * RSS at /news/feed.xml.
+ *
+ * v1 lists all entries on one page. The site gains a handful of news items
+ * per year, so pagination is not yet needed. When the list exceeds ~20
+ * entries, convert this to src/pages/news/[...page].astro using Astro's
+ * paginate() helper (the documented upgrade path; see CONTENT-INVENTORY
+ * § News which specifies 20 per page at scale). Kept simple here so the
+ * non-developer maintainer isn't navigating pagination routing to add a post.
+ */
+import Base from "../../layouts/Base.astro";
+import NewsListItem from "../../components/NewsListItem.astro";
+import { getCollection } from "astro:content";
+
+const entries = (await getCollection("news")).sort(
+  (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
+);
+
+function longDate(d: Date): string {
+  return d.toLocaleDateString("en-US", { year: "numeric", month: "long", timeZone: "UTC" });
+}
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Blog",
+  name: "3MIP News",
+  description:
+    "Recent news from 3MIP: project updates, webinar announcements, publication releases, and conference participation.",
+  blogPost: entries.map((e) => ({
+    "@type": "BlogPosting",
+    headline: e.data.title,
+    datePublished: e.data.date.toISOString().slice(0, 10),
+    description: e.data.excerpt,
+  })),
+};
+---
+
+<Base
+  title="News"
+  description="Recent news from 3MIP: project updates, webinar announcements, publication releases, and conference participation."
+  jsonLd={entries.length > 0 ? jsonLd : undefined}
+>
+  <article class="page">
+    <header class="page__header">
+      <h1>News</h1>
+      <p class="lede">
+        Updates from 3MIP. Subscribe to the
+        <a href="/news/feed.xml" class="rss-link">RSS feed <span aria-hidden="true">↗</span></a>
+        for new entries.
+      </p>
+    </header>
+
+    {entries.length === 0 ? (
+      <p class="empty">News entries load from the news content collection (seeded in Phase 5).</p>
+    ) : (
+      <div class="news-list">
+        {entries.map((e) => (
+          <NewsListItem
+            title={e.data.title}
+            date={e.data.date.toISOString().slice(0, 10)}
+            dateLabel={longDate(e.data.date)}
+            excerpt={e.data.excerpt}
+            tags={e.data.tags}
+            href={e.data.fullPost ? `/news/${e.id}/` : undefined}
+          />
+        ))}
+      </div>
+    )}
+  </article>
+</Base>
+
+<style>
+  .page {
+    max-width: 45rem;
+    margin: 0 auto;
+    padding: var(--space-7) var(--space-3) var(--space-8);
+  }
+  @media (min-width: 768px) { .page { padding: var(--space-8) var(--space-5); } }
+  .page__header { margin-bottom: var(--space-5); }
+  .page__header h1 { margin: 0; }
+  .lede {
+    font-size: var(--text-body-lg);
+    color: var(--color-ink-muted);
+    margin-top: var(--space-3);
+    max-width: 60ch;
+  }
+  .rss-link {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-border-strong);
+    text-underline-offset: 0.2em;
+  }
+  .rss-link:hover { color: var(--color-accent); text-decoration-color: var(--color-accent); }
+  .empty { color: var(--color-ink-subtle); font-style: italic; font-size: var(--text-small); }
+</style>

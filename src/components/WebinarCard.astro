@@ -1,0 +1,128 @@
+---
+/**
+ * WebinarCard — one webinar on the Outputs page § Webinars.
+ *
+ * Per docs/CONTENT-INVENTORY.md § Outputs § Section 2: title, date,
+ * speaker(s) + affiliation, length, abstract, watch/slides buttons.
+ *
+ * Detail-rich card (single column), not a browse tile. Recording and slides
+ * links are external; rendered as buttons only when a URL is present.
+ */
+import Button from "./Button.astro";
+
+interface Speaker {
+  name: string;
+  affiliation: string;
+}
+
+interface Props {
+  title: string;
+  /** ISO date string for the <time> element. */
+  date: string;
+  /** Long-format display date, e.g. "February 2025". */
+  dateLabel: string;
+  speakers: Speaker[];
+  lengthMinutes?: number;
+  abstract?: string;
+  recordingUrl?: string;
+  slidesUrl?: string;
+  /** Render a [VERIFY] flag if details are unconfirmed. */
+  needsVerify?: boolean;
+}
+
+const {
+  title,
+  date,
+  dateLabel,
+  speakers,
+  lengthMinutes,
+  abstract,
+  recordingUrl,
+  slidesUrl,
+  needsVerify = false,
+}: Props = Astro.props;
+---
+
+<article class="webinar">
+  <div class="webinar__meta">
+    <time datetime={date} class="webinar__date">{dateLabel}</time>
+    {lengthMinutes && <span class="webinar__len">{lengthMinutes} min</span>}
+    {needsVerify && <span class="webinar__verify">[VERIFY]</span>}
+  </div>
+
+  <h3 class="webinar__title">{title}</h3>
+
+  <p class="webinar__speakers">
+    {speakers.map((s, i) => (
+      <span>
+        {s.name} <span class="webinar__affil">({s.affiliation})</span>{i < speakers.length - 1 ? "; " : ""}
+      </span>
+    ))}
+  </p>
+
+  {abstract && <p class="webinar__abstract">{abstract}</p>}
+
+  {(recordingUrl || slidesUrl) && (
+    <div class="webinar__actions">
+      {recordingUrl && (
+        <Button href={recordingUrl} external variant="secondary">Watch recording</Button>
+      )}
+      {slidesUrl && (
+        <Button href={slidesUrl} external variant="ghost">Slides</Button>
+      )}
+    </div>
+  )}
+</article>
+
+<style>
+  .webinar {
+    padding: var(--space-5) 0;
+    border-top: 1px solid var(--color-border);
+  }
+  .webinar:first-of-type { border-top: 0; }
+
+  .webinar__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+  .webinar__date {
+    font-size: var(--text-small);
+    color: var(--color-ink-muted);
+    font-weight: 500;
+  }
+  .webinar__len {
+    font-size: var(--text-caption);
+    color: var(--color-ink-subtle);
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+  }
+  .webinar__verify {
+    font-size: var(--text-caption);
+    color: var(--color-warning);
+    font-weight: 500;
+  }
+
+  .webinar__title {
+    margin: var(--space-2) 0 var(--space-2);
+    font-size: var(--text-h3);
+  }
+  .webinar__speakers {
+    margin: 0;
+    color: var(--color-ink);
+    font-size: var(--text-body);
+  }
+  .webinar__affil { color: var(--color-ink-muted); }
+  .webinar__abstract {
+    margin: var(--space-3) 0 0;
+    color: var(--color-ink-muted);
+    max-width: 65ch;
+  }
+  .webinar__actions {
+    margin-top: var(--space-4);
+    display: flex;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
+</style>

@@ -346,6 +346,28 @@ Falls back to `import.meta.env.BUILD_TIME` if git isn't available during build (
 
 ---
 
+## D18 — RSS feed library (added Phase 4C)
+
+**Decision:** `@astrojs/rss` (first-party Astro package) for the News feed at `/news/feed.xml`.
+
+**Why:** the RSS feed is a required deliverable (IA.md footer, CONTENT-INVENTORY § News). I considered hand-rolling the XML to avoid a dependency, but feed correctness — RFC-822 date formatting, XML entity escaping, valid GUIDs — is subtle and fails *silently* in feed readers when wrong. `@astrojs/rss` is maintained in lockstep with Astro itself, is ~1 file of runtime, and handles all of this correctly. This is the documented Astro approach. Surfacing it here per the brief's "do not silently add dependencies" rule.
+
+**Considered and rejected:** hand-rolled XML endpoint — saves the dependency but trades it for a correctness risk in a format that's hard to test without a reader. Not worth it.
+
+**v2 upgrade path:** none required. If per-post full content in the feed is wanted later, add `content` to each item via the package's `content` option.
+
+---
+
+## D19 — News pagination (deferred, Phase 4C note)
+
+**Decision:** the News index (`/news/`) lists all entries on one page in v1, reverse-chronological. No pagination route.
+
+**Why:** CONTENT-INVENTORY § News specifies 20-per-page pagination *at scale*. The project produces a handful of news items per year; the list will not approach 20 for years. Building the `[...page].astro` pagination route now adds routing the non-developer maintainer would have to navigate to add a post, and it overlaps awkwardly with the `[slug].astro` full-post route. Deferring keeps the inherited codebase simpler. The user-facing requirement (reverse-chron list + RSS) is fully met.
+
+**v2 upgrade path:** when entries exceed ~20, convert `src/pages/news/index.astro` to `src/pages/news/[...page].astro` using Astro's `paginate()` helper. Documented inline in the index file.
+
+---
+
 ## Open decisions awaiting Bell (surfaced in OPEN-QUESTIONS.md at Phase 6)
 
 | ID | Decision | Default while waiting |
