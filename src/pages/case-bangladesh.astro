@@ -1,0 +1,228 @@
+---
+/**
+ * Case 1: Coastal Bangladesh — src/pages/case-bangladesh.astro
+ *
+ * Per docs/CONTENT-INVENTORY.md § Case 1. Seven content sections.
+ */
+import Base from "../layouts/Base.astro";
+import Link from "../components/Link.astro";
+import Button from "../components/Button.astro";
+import Callout from "../components/Callout.astro";
+import CitationBlock from "../components/CitationBlock.astro";
+import BangladeshMap from "../components/BangladeshMap.astro";
+import TimelineList from "../components/TimelineList.astro";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "ResearchProject",
+  name: "3MIP Case 1: Coastal Bangladesh",
+  description:
+    "3MIP's first benchmark case asks participating teams to project net internal migration in coastal Bangladesh districts from 2025 to 2050 using a curated input dataset.",
+  location: { "@type": "Place", name: "Coastal Bangladesh" },
+  parentOrganization: { "@type": "Organization", name: "3MIP", alternateName: "Mobility and Migration Modeling Intercomparison Project" },
+};
+
+const timelineItems = [
+  {
+    date: "2025-10",
+    dateLabel: "Now – mid 2026",
+    text: "Teams run their models, attend webinars, share preliminary findings.",
+    kind: "active" as const,
+  },
+  {
+    date: "2026-07",
+    dateLabel: "July 2026",
+    text: "First synthesis presented at iEMSs Dublin (Session C7 + Workshop WSC7).",
+    kind: "active" as const,
+  },
+  {
+    date: "2026-12",
+    dateLabel: "Late 2026 onward",
+    text: "Submissions to <em>Climatic Change</em> topical collection. [VERIFY: formal Springer call not yet posted as of May 2026]",
+    kind: "planned" as const,
+  },
+  {
+    date: "2027",
+    dateLabel: "2027",
+    text: "Synthesis paper drafted from the collected outputs.",
+    kind: "aspirational" as const,
+  },
+];
+---
+
+<Base
+  title="Case 1: Coastal Bangladesh"
+  description="Coastal Bangladesh is 3MIP's first benchmark case. 175.7M people, sea-level rise, salinity, flood dynamics. Open dataset, shared protocol."
+  jsonLd={jsonLd}
+>
+  <article class="page">
+    <header class="page__header">
+      <h1>Case 1: Coastal Bangladesh</h1>
+      <p class="lede">
+        Bangladesh's coastal districts face one of the most studied combinations
+        of climate stress and population pressure in the world. 3MIP's first
+        benchmark case asks participating modeling teams to project net
+        internal migration in these districts from 2025 to 2050 under shared
+        climate and socioeconomic scenarios, using shared input data.
+      </p>
+    </header>
+
+    <section aria-labelledby="why-h">
+      <h2 id="why-h">Why Bangladesh is the first case</h2>
+      <p>
+        Three factors converge on Bangladesh. The empirical literature on
+        internal migration there is among the densest in the climate-migration
+        field, providing a real benchmark against which model outputs can be
+        sanity-checked. The country's population of 175.7 million (UNFPA SWOP
+        2025) and its low-lying delta geography make the policy stakes
+        consequential. And the data infrastructure — population grids, modeled
+        migration flows, salinity layers, flood histories — is already openly
+        licensed and usable.
+      </p>
+      <p>
+        Bell et al. (2021) projected that migration <em>toward</em> Bangladesh's
+        coast, not away from it, will continue through 2100 across the
+        sea-level rise scenarios they studied. That finding sits in productive
+        tension with the popular narrative of mass climate exodus and provides
+        the empirical motivation for revisiting the problem with multiple
+        model architectures.
+      </p>
+
+      <CitationBlock
+        authors="Bell, A. R., Wrathall, D. J., Mueller, V., Chen, J., Oppenheimer, M., et al."
+        year={2021}
+        title="Migration towards Bangladesh coastlines projected to increase with sea-level rise through 2100"
+        venue="Environmental Research Letters"
+        reference="16(2), 024045"
+        doi="10.1088/1748-9326/abdc5b"
+      />
+    </section>
+
+    <section aria-labelledby="q-h">
+      <h2 id="q-h">The shared question</h2>
+      <Callout variant="note" label="The shared question">
+        <strong>Net internal migration in coastal Bangladesh districts, 2025–2050,
+        under SSP2-4.5.</strong>
+        Each participating team applies their model to this question using the
+        curated input dataset. Teams may extend the analysis to SSP1-2.6 and
+        SSP5-8.5 as sensitivity scenarios, and to 2100 as a sensitivity time
+        horizon. <span class="verify">[VERIFY scenario specification with Bell — current FACTS.md draft]</span>
+      </Callout>
+      <p>
+        Teams choose how to operationalize "migration" within their own model
+        architecture. The intercomparison does not require harmonized output
+        variables; it requires harmonized inputs and a shared central question.
+        Where outputs diverge — and they will — the synthesis paper documents
+        the divergence and the methodological choices that drive it.
+      </p>
+    </section>
+
+    <section aria-labelledby="geo-h">
+      <h2 id="geo-h">Geographic scope</h2>
+      <div class="geo">
+        <div>
+          <p>
+            The case focuses on districts in the Ganges-Brahmaputra-Meghna
+            delta and adjacent coastal areas. The exact district list is
+            specified in the protocol document and includes Khulna, Satkhira,
+            Bagerhat, Barguna, Patuakhali, Pirojpur, Bhola, Noakhali,
+            Chattogram, and adjacent inland districts that receive coastal
+            migrants <span class="verify">[VERIFY exact district list against protocol]</span>.
+          </p>
+        </div>
+        <BangladeshMap />
+      </div>
+    </section>
+
+    <section aria-labelledby="data-h">
+      <h2 id="data-h">Curated input dataset</h2>
+      <p>
+        3MIP provides a harmonized, openly licensed dataset combining
+        population grids, modeled migration flows, soil salinity, flood
+        extent, and socioeconomic indicators. Teams use this dataset as their
+        common input. They may add additional data sources if their model
+        requires them, with documentation.
+      </p>
+      <p>
+        <Link href="/data/" variant="in-prose">See the full data documentation</Link>.
+      </p>
+    </section>
+
+    <section aria-labelledby="time-h">
+      <h2 id="time-h">Expected outputs and timeline</h2>
+      <TimelineList items={timelineItems} />
+    </section>
+
+    <section aria-labelledby="proto-h">
+      <h2 id="proto-h">Protocol document</h2>
+      <p>
+        The 3MIP Bangladesh case protocol document specifies the shared
+        question, the curated dataset, the climate scenarios, the geographic
+        scope, and the output submission process. Registered participants
+        receive the latest version of the protocol.
+      </p>
+      <p>
+        <Button href="/participate/">Request the protocol document</Button>
+      </p>
+      <p class="pending-note">
+        <span class="pending">[PENDING BELL APPROVAL]</span> whether the protocol
+        document is fully public or registration-gated. Default: registration-gated.
+      </p>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .page {
+    max-width: 48rem;
+    margin: 0 auto;
+    padding: var(--space-7) var(--space-3) var(--space-8);
+  }
+  @media (min-width: 768px) {
+    .page { padding: var(--space-8) var(--space-5); }
+  }
+  .page__header { margin-bottom: var(--space-7); }
+  .page__header h1 { margin: 0; }
+  .lede {
+    font-size: var(--text-body-lg);
+    line-height: var(--text-body-lg--line-height);
+    color: var(--color-ink-muted);
+    margin-top: var(--space-3);
+    max-width: 60ch;
+  }
+  .page section { margin-top: var(--space-7); }
+  .page h2 { margin: 0 0 var(--space-3); }
+  .page p { margin: 0 0 var(--space-3); max-width: 65ch; }
+  .page p:last-child { margin-bottom: 0; }
+
+  .geo {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
+    align-items: start;
+    margin-top: var(--space-3);
+  }
+  @media (min-width: 768px) {
+    .geo {
+      grid-template-columns: 3fr 2fr;
+      gap: var(--space-5);
+    }
+  }
+  .geo p { margin: 0; }
+
+  .verify {
+    color: var(--color-warning);
+    font-size: var(--text-caption);
+    font-weight: 500;
+  }
+  .pending {
+    color: var(--color-warning);
+    font-size: var(--text-caption);
+    font-weight: 500;
+  }
+  .pending-note {
+    font-size: var(--text-small);
+    color: var(--color-ink-muted);
+    margin-top: var(--space-3);
+  }
+</style>

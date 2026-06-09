@@ -1,0 +1,225 @@
+---
+/**
+ * About — src/pages/about.astro
+ *
+ * Per docs/CONTENT-INVENTORY.md § About. Six content sections plus shared shell.
+ */
+import Base from "../layouts/Base.astro";
+import Link from "../components/Link.astro";
+
+const jsonLd = {
+  "@context": "https://schema.org",
+  "@type": "AboutPage",
+  name: "About 3MIP",
+  description:
+    "3MIP grew out of a 2024 Princeton workshop. Co-leads at Cornell, Ohio State, VU Amsterdam. Advisory committee includes Oppenheimer, de Sherbinin, Aerts.",
+  isPartOf: {
+    "@type": "Organization",
+    name: "Mobility and Migration Modeling Intercomparison Project",
+    alternateName: "3MIP",
+  },
+};
+---
+
+<Base
+  title="About"
+  description="3MIP grew out of a 2024 Princeton workshop. Co-leads at Cornell, Ohio State, and VU Amsterdam. Advisory committee includes Oppenheimer, de Sherbinin, and Aerts."
+  jsonLd={jsonLd}
+>
+  <article class="page">
+    <header class="page__header">
+      <h1>About 3MIP</h1>
+      <p class="lede">
+        3MIP is a community of climate-migration modelers who agree to apply
+        their approaches to a shared benchmark case and synthesize the results.
+        The first benchmark case is coastal Bangladesh. The first public
+        synthesis takes place at iEMSs 2026 in Dublin.
+      </p>
+    </header>
+
+    <section aria-labelledby="origin-h">
+      <h2 id="origin-h">How 3MIP started</h2>
+      <p>
+        3MIP grew out of a workshop at Princeton's Center for Policy Research
+        on Energy and the Environment (C-PREE) on September 25–27, 2024,
+        organized by Nic Choquette-Levy (Penn State) and Fabien Cottier
+        (Geneva). More than thirty researchers from three continents agreed
+        that climate-migration modeling needed what crop modeling and
+        cross-sectoral impacts modeling already had: a coordinated
+        intercomparison.
+      </p>
+      <p>
+        The workshop's funding came from the Lamont-Doherty Earth Observatory
+        Climate Center at Columbia, the Carolee Bol and Scott Rosenberg '95
+        C-PREE Fund at Princeton, Cornell's Department of Global Development,
+        and the United Nations Global Centre for Climate Mobility.
+      </p>
+      <p>
+        <Link
+          href="https://cpree.princeton.edu/news/2024/researchers-around-world-attend-climate-migration-workshop-princeton"
+          variant="external"
+        >
+          Workshop summary at Princeton C-PREE
+        </Link>
+      </p>
+    </section>
+
+    <section aria-labelledby="lineage-h">
+      <h2 id="lineage-h">AgMIP, ISIMIP, and 3MIP</h2>
+      <p>
+        3MIP is modeled on two long-running model intercomparison projects:
+        AgMIP (Agricultural Model Intercomparison and Improvement Project),
+        launched in 2010, and ISIMIP (Inter-Sectoral Impact Model
+        Intercomparison Project), coordinated from PIK Potsdam since 2012.
+        Both have produced hundreds of papers, contributed to IPCC
+        assessments, and demonstrated that diverse modeling communities can
+        converge on shared protocols without surrendering methodological
+        autonomy.
+      </p>
+      <p>
+        3MIP applies that pattern to climate-migration modeling. The first
+        phase holds inputs constant — a curated, openly licensed dataset for
+        coastal Bangladesh — and lets participating teams choose their own
+        research questions, model architectures, and output variables. Future
+        phases may move toward harmonized outputs as the community converges.
+      </p>
+    </section>
+
+    <section aria-labelledby="gov-h">
+      <h2 id="gov-h">Governance</h2>
+
+      <h3>Leadership</h3>
+      <p>
+        Three co-leads coordinate the project: Andrew Bell (Cornell), Kelsea
+        Best (Ohio State), and Lars Tierolf (VU Amsterdam). They make
+        day-to-day decisions about protocol, communication, and scheduling.
+      </p>
+
+      <h3>Advisory committee</h3>
+      <p>
+        A 14-member advisory committee reviews protocol changes, advises on
+        case selection, and provides senior methodological perspective.
+        Members are listed on the <Link href="/team/">Team</Link> page.
+      </p>
+
+      <h3>Project management</h3>
+      <p>
+        Day-to-day coordination is handled by Mario Keputa (Cornell) through
+        June 2026, with Ishita Kashyap (Cornell) supporting
+        <span class="verify">[VERIFY]</span>.
+        After Mario's departure, project management transitions to
+        <span class="pending">[PENDING BELL APPROVAL]</span>.
+      </p>
+    </section>
+
+    <section aria-labelledby="isnot-h">
+      <h2 id="isnot-h">What 3MIP is and is not</h2>
+      <div class="isnot">
+        <div>
+          <h3 class="isnot__h">3MIP is</h3>
+          <ul>
+            <li>A coordinating layer for climate-migration modeling teams</li>
+            <li>A curator of openly licensed input datasets for benchmark cases</li>
+            <li>A synthesizer of model outputs across diverse architectures</li>
+            <li>A venue for publishing intercomparison findings in peer-reviewed journals and conference proceedings</li>
+          </ul>
+        </div>
+        <div>
+          <h3 class="isnot__h">3MIP is not</h3>
+          <ul>
+            <li>A single-model forecasting service</li>
+            <li>A policy advocacy organization</li>
+            <li>A funding body</li>
+            <li>A clearinghouse for individual modelers' research outputs (those remain with their authors)</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <section aria-labelledby="fund-h">
+      <h2 id="fund-h">Funding</h2>
+      <p>
+        3MIP's founding workshop in September 2024 was funded by the
+        Lamont-Doherty Earth Observatory Climate Center (Columbia), the
+        Carolee Bol and Scott Rosenberg '95 C-PREE Fund (Princeton), the
+        Department of Global Development (Cornell), and the United Nations
+        Global Centre for Climate Mobility.
+      </p>
+      <p>
+        Operating-phase funding for 2025–2027 is
+        <span class="pending">[PENDING BELL APPROVAL — do not name specific funders without confirmation in writing]</span>.
+        The leadership team is preparing additional proposals, including an
+        application to the U.S. National Science Foundation Research
+        Coordination Network program <span class="verify">[VERIFY current status]</span>.
+      </p>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .page {
+    max-width: 45rem;
+    margin: 0 auto;
+    padding: var(--space-7) var(--space-3) var(--space-8);
+  }
+  @media (min-width: 768px) {
+    .page { padding: var(--space-8) var(--space-5); }
+  }
+  .page__header { margin-bottom: var(--space-7); }
+  .page__header h1 { margin: 0; }
+  .lede {
+    font-size: var(--text-body-lg);
+    line-height: var(--text-body-lg--line-height);
+    color: var(--color-ink-muted);
+    margin-top: var(--space-3);
+    max-width: 60ch;
+  }
+  .page section {
+    margin-top: var(--space-7);
+  }
+  .page h2 {
+    margin-top: 0;
+    margin-bottom: var(--space-3);
+  }
+  .page h3 {
+    margin-top: var(--space-5);
+    margin-bottom: var(--space-2);
+  }
+  .page p {
+    margin: 0 0 var(--space-3);
+  }
+  .page p:last-child { margin-bottom: 0; }
+
+  .verify {
+    color: var(--color-warning);
+    font-size: var(--text-caption);
+    font-weight: 500;
+    letter-spacing: 0.02em;
+  }
+  .pending {
+    color: var(--color-warning);
+    font-size: var(--text-caption);
+    font-weight: 500;
+  }
+
+  .isnot {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: 1fr;
+    margin-top: var(--space-4);
+  }
+  @media (min-width: 768px) {
+    .isnot { grid-template-columns: 1fr 1fr; gap: var(--space-6); }
+  }
+  .isnot__h {
+    margin: 0 0 var(--space-2);
+    font-size: var(--text-h4);
+  }
+  .isnot ul {
+    margin: 0;
+    padding-left: var(--space-4);
+    list-style-type: square;
+    color: var(--color-ink-muted);
+  }
+  .isnot li { padding-block: var(--space-1); max-width: 32ch; }
+</style>

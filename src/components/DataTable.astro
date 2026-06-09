@@ -1,0 +1,267 @@
+---
+/**
+ * DataTable — sortable HTML table for the Data page dataset list.
+ *
+ * Per docs/CONTENT-INVENTORY.md § Data § Section 3:
+ *   - 7 columns: Dataset, Variable, Resolution, Coverage, License, Citation, DOI
+ *   - Sortable: header click toggles asc/desc, aria-sort updates
+ *   - Each row has an `id` slug for direct linking from elsewhere
+ *   - Mobile: collapse to cards, columns stack with bold labels
+ *   - Sort behavior is delivered by an inline ~1.5KB vanilla script.
+ *
+ * Rows are passed in as a typed array so the page file owns the data.
+ */
+export interface DataRow {
+  /** URL-safe slug used as the row id and for anchor links. */
+  id: string;
+  dataset: string;
+  variable: string;
+  resolution: string;
+  coverage: string;
+  license: string;
+  citation: string;
+  /** DOI without the "https://doi.org/" prefix, or null if unavailable. */
+  doi?: string | null;
+  /** True if any field on this row carries a [VERIFY] tag. */
+  needsVerify?: boolean;
+}
+
+interface Props {
+  rows: DataRow[];
+  caption?: string;
+}
+
+const { rows, caption } = Astro.props;
+---
+
+<div class="data-table">
+  <table>
+    {caption && <caption class="vh">{caption}</caption>}
+    <thead>
+      <tr>
+        <th scope="col" aria-sort="none">
+          <button type="button" data-sort-key="dataset">
+            Dataset <span class="data-table__sort-indicator" aria-hidden="true"></span>
+          </button>
+        </th>
+        <th scope="col" aria-sort="none">
+          <button type="button" data-sort-key="variable">
+            Variable <span class="data-table__sort-indicator" aria-hidden="true"></span>
+          </button>
+        </th>
+        <th scope="col" aria-sort="none">
+          <button type="button" data-sort-key="resolution">
+            Resolution <span class="data-table__sort-indicator" aria-hidden="true"></span>
+          </button>
+        </th>
+        <th scope="col" aria-sort="none">
+          <button type="button" data-sort-key="coverage">
+            Coverage <span class="data-table__sort-indicator" aria-hidden="true"></span>
+          </button>
+        </th>
+        <th scope="col" aria-sort="none">
+          <button type="button" data-sort-key="license">
+            License <span class="data-table__sort-indicator" aria-hidden="true"></span>
+          </button>
+        </th>
+        <th scope="col">Citation</th>
+        <th scope="col">DOI</th>
+      </tr>
+    </thead>
+    <tbody data-rows>
+      {rows.map((row) => (
+        <tr
+          id={row.id}
+          data-dataset={row.dataset.toLowerCase()}
+          data-variable={row.variable.toLowerCase()}
+          data-resolution={row.resolution.toLowerCase()}
+          data-coverage={row.coverage.toLowerCase()}
+          data-license={row.license.toLowerCase()}
+        >
+          <td data-label="Dataset">
+            <span class="data-table__name">{row.dataset}</span>
+            {row.needsVerify && (
+              <span class="data-table__verify" title="Citation or detail needs verification before launch">[VERIFY]</span>
+            )}
+          </td>
+          <td data-label="Variable">{row.variable}</td>
+          <td data-label="Resolution">{row.resolution}</td>
+          <td data-label="Coverage">{row.coverage}</td>
+          <td data-label="License">{row.license}</td>
+          <td data-label="Citation" class="data-table__citation">{row.citation}</td>
+          <td data-label="DOI">
+            {row.doi ? (
+              <a
+                href={`https://doi.org/${row.doi}`}
+                rel="noopener noreferrer"
+                class="data-table__doi"
+              >{row.doi} <span aria-hidden="true">↗</span></a>
+            ) : (
+              <span class="data-table__missing">unavailable</span>
+            )}
+          </td>
+        </tr>
+      ))}
+    </tbody>
+  </table>
+</div>
+
+<style>
+  .data-table {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: var(--space-4);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+  }
+
+  .data-table table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 0;
+  }
+
+  .data-table th {
+    text-align: left;
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border-strong);
+    padding: 0;
+    font-size: var(--text-small);
+    color: var(--color-ink);
+    vertical-align: bottom;
+  }
+  .data-table th button {
+    width: 100%;
+    text-align: left;
+    background: transparent;
+    border: 0;
+    padding: var(--space-3);
+    font: inherit;
+    color: inherit;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    gap: var(--space-2);
+  }
+  .data-table th button:hover { color: var(--color-accent); }
+  .data-table th button:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: -2px;
+    border-radius: 2px;
+  }
+  .data-table th[aria-sort="none"] .data-table__sort-indicator::after { content: "↕"; opacity: 0.4; }
+  .data-table th[aria-sort="ascending"] .data-table__sort-indicator::after { content: "↑"; color: var(--color-accent); }
+  .data-table th[aria-sort="descending"] .data-table__sort-indicator::after { content: "↓"; color: var(--color-accent); }
+
+  .data-table th:not(:has(button)) {
+    padding: var(--space-3);
+  }
+
+  .data-table td {
+    padding: var(--space-3);
+    border-bottom: 1px solid var(--color-border);
+    vertical-align: top;
+    font-size: var(--text-small);
+    line-height: 1.5;
+  }
+  .data-table tbody tr:last-child td { border-bottom: 0; }
+
+  .data-table__name {
+    color: var(--color-ink);
+    font-weight: 500;
+  }
+  .data-table__citation {
+    color: var(--color-ink-muted);
+    max-width: 28rem;
+  }
+  .data-table__doi {
+    color: var(--color-ink);
+    text-decoration: underline;
+    text-decoration-color: var(--color-border-strong);
+    text-underline-offset: 0.2em;
+    word-break: break-all;
+  }
+  .data-table__doi:hover { color: var(--color-accent); text-decoration-color: var(--color-accent); }
+  .data-table__missing {
+    color: var(--color-ink-subtle);
+    font-style: italic;
+  }
+  .data-table__verify {
+    margin-left: var(--space-2);
+    color: var(--color-warning);
+    font-size: var(--text-caption);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+  }
+
+  /* Mobile: switch from table grid to stacked cards.
+     Hide the THEAD; render each TD as a labeled row. */
+  @media (max-width: 767px) {
+    .data-table { border-radius: var(--radius); overflow: visible; }
+    .data-table table { display: block; }
+    .data-table thead { display: none; }
+    .data-table tbody { display: block; }
+    .data-table tbody tr {
+      display: block;
+      padding: var(--space-3);
+      border-bottom: 1px solid var(--color-border);
+      background: var(--color-background);
+    }
+    .data-table tbody tr:last-child { border-bottom: 0; }
+    .data-table td {
+      display: grid;
+      grid-template-columns: 6rem 1fr;
+      gap: var(--space-3);
+      padding: var(--space-1) 0;
+      border: 0;
+    }
+    .data-table td::before {
+      content: attr(data-label);
+      font-size: var(--text-caption);
+      text-transform: uppercase;
+      letter-spacing: 0.08em;
+      color: var(--color-ink-subtle);
+      font-weight: 500;
+      padding-top: 2px;
+    }
+  }
+</style>
+
+<!--
+  Vanilla sort script (~1.4KB). Single-purpose; isolated to [data-rows].
+  - Click a sortable th's button to toggle asc/desc.
+  - Re-orders <tr> nodes by the data-{key} attribute (lowercased).
+  - Updates aria-sort on each th accordingly.
+-->
+<script is:inline>
+  (function () {
+    var tbodies = document.querySelectorAll('[data-rows]');
+    tbodies.forEach(function (tbody) {
+      var table = tbody.closest('table');
+      if (!table) return;
+      var headers = table.querySelectorAll('th[aria-sort]');
+      headers.forEach(function (th) {
+        var btn = th.querySelector('button[data-sort-key]');
+        if (!btn) return;
+        btn.addEventListener('click', function () {
+          var key = btn.getAttribute('data-sort-key');
+          if (!key) return;
+          var current = th.getAttribute('aria-sort');
+          var next = current === 'ascending' ? 'descending' : 'ascending';
+          // Reset all headers, then set this one.
+          headers.forEach(function (h) { h.setAttribute('aria-sort', 'none'); });
+          th.setAttribute('aria-sort', next);
+          var rows = Array.prototype.slice.call(tbody.querySelectorAll('tr'));
+          rows.sort(function (a, b) {
+            var av = (a.getAttribute('data-' + key) || '');
+            var bv = (b.getAttribute('data-' + key) || '');
+            if (av < bv) return next === 'ascending' ? -1 : 1;
+            if (av > bv) return next === 'ascending' ? 1 : -1;
+            return 0;
+          });
+          rows.forEach(function (r) { tbody.appendChild(r); });
+        });
+      });
+    });
+  })();
+</script>

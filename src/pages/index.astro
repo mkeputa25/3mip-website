@@ -1,0 +1,395 @@
+---
+/**
+ * Home — src/pages/index.astro
+ *
+ * Per docs/CONTENT-INVENTORY.md § Home. Nine sections:
+ *   1. Header (shared via Base)
+ *   2. Hero
+ *   3. Signature visualization
+ *   4. Current case (2-col text + key facts)
+ *   5. Next milestone (iEMSs 2026)
+ *   6. How 3MIP works (4 steps)
+ *   7. Registration CTA
+ *   8. Lineage strip
+ *   9. Footer (shared via Base)
+ *
+ * Headline + tagline are [PENDING BELL APPROVAL] — see DECISIONS.md D13, D14.
+ */
+import Base from "../layouts/Base.astro";
+import SignatureViz from "../components/SignatureViz.astro";
+import Button from "../components/Button.astro";
+import Link from "../components/Link.astro";
+
+const orgJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: "Mobility and Migration Modeling Intercomparison Project",
+  alternateName: "3MIP",
+  description:
+    "3MIP coordinates climate-migration modelers around shared benchmark cases. The first case is coastal Bangladesh.",
+  founder: [
+    { "@type": "Person", name: "Andrew Reid Bell", affiliation: "Cornell University" },
+    { "@type": "Person", name: "Kelsea Best", affiliation: "The Ohio State University" },
+    { "@type": "Person", name: "Lars Tierolf", affiliation: "Vrije Universiteit Amsterdam" },
+  ],
+  foundingDate: "2025-10",
+  url: "https://3mip.org",
+  sameAs: ["https://conference.iemss.org/streams/"],
+};
+---
+
+<Base
+  title="3MIP — Mobility and Migration Modeling Intercomparison Project"
+  bareTitle
+  description="3MIP coordinates climate-migration modelers around shared benchmark cases. First case: coastal Bangladesh. Synthesis at iEMSs Dublin, July 2026."
+  jsonLd={orgJsonLd}
+>
+  <!-- Section 2 — Hero -->
+  <section class="hero" aria-labelledby="hero-h">
+    <div class="hero__inner">
+      <h1 id="hero-h" class="hero__headline">
+        Different models. Same question. One coordinated answer.
+      </h1>
+      <p class="hero__subhead">
+        3MIP is a community of researchers who apply their climate-migration
+        models to a shared benchmark case. The first case is coastal Bangladesh.
+      </p>
+    </div>
+  </section>
+
+  <!-- Section 3 — Signature visualization -->
+  <section class="band" aria-labelledby="sigviz-h">
+    <div class="band__inner">
+      <h2 id="sigviz-h">Why the same question yields different answers</h2>
+      <p class="lede">
+        Different model architectures — agent-based, gravity, radiation,
+        integrated assessment, and machine learning — encode different
+        assumptions about how people decide to move. Run the same Bangladesh
+        migration question through each and you get different answers.
+        3MIP makes that divergence visible and synthesizes it.
+      </p>
+
+      <SignatureViz class="hero-viz" />
+
+      <p class="long-alt">
+        <strong>Long-form text alternative.</strong>
+        Each of the six panels above shows the same coastal silhouette of
+        Bangladesh with a different spatial pattern overlaid. Agent-based:
+        concentrated in a mid-elevation band with household-scale
+        heterogeneity. Gravity: smooth radial decay outward from the largest
+        population center. Radiation: similar to gravity with sharper falloff
+        and a secondary low-intensity pocket where intervening opportunities
+        absorb flow. Integrated assessment: coarse rectangular blocks of
+        uniform intensity at district scale. Machine learning: a small number
+        of blob-like clusters at varying intensities. Cellular automaton:
+        linear diagonal bands following coastal contour. The color ramp is
+        sequential from low to high intensity; panels share the ramp, a scale
+        bar, and the common research question.
+      </p>
+    </div>
+  </section>
+
+  <!-- Section 4 — Current case -->
+  <section class="band band--surface" aria-labelledby="case-h">
+    <div class="band__inner case-grid">
+      <div>
+        <h2 id="case-h">Case 1: Coastal Bangladesh</h2>
+        <p>
+          Bangladesh has 175.7 million people, much of it living in a low-lying
+          delta where sea-level rise, salinity, and flood dynamics interact
+          with economic and social drivers of migration. Bell et al. (2021)
+          projected continued migration toward Bangladesh's coast through 2100
+          under all studied scenarios — not away from it. The empirical density
+          and policy stakes make this the right place for a first benchmark.
+        </p>
+        <p>
+          <Link href="/case-bangladesh/" variant="in-prose">Read the case in full</Link>.
+        </p>
+      </div>
+      <aside class="case-facts" aria-label="Key facts about Case 1">
+        <h3 class="case-facts__h">Key facts</h3>
+        <dl>
+          <div>
+            <dt>Country population</dt>
+            <dd>175.7 million <span class="case-facts__source">(UNFPA SWOP 2025)</span></dd>
+          </div>
+          <div>
+            <dt>Time horizon</dt>
+            <dd>2025–2050 baseline; extensions to 2100</dd>
+          </div>
+          <div>
+            <dt>Climate scenarios</dt>
+            <dd>
+              SSP2-4.5 baseline; SSP1-2.6 and SSP5-8.5 sensitivity
+              <span class="verify">[VERIFY]</span>
+            </dd>
+          </div>
+          <div>
+            <dt>Curated dataset</dt>
+            <dd>
+              6+ open datasets with DOIs (<Link href="/data/" variant="in-prose">Data page</Link>)
+            </dd>
+          </div>
+        </dl>
+      </aside>
+    </div>
+  </section>
+
+  <!-- Section 5 — Next milestone -->
+  <section class="band" aria-labelledby="next-h">
+    <div class="band__inner band__inner--narrow">
+      <h2 id="next-h">Next milestone</h2>
+      <div class="milestone">
+        <p class="milestone__head"><strong>iEMSs 2026 — Dublin, July 2026</strong></p>
+        <p>
+          Session C7: <em>Mobility and Migration Modeling Intercomparison
+          Project (3MIP) – An open, first synthesis</em>
+        </p>
+        <p>
+          Workshop WSC7: <em>Panel Discussion – 3MIP</em>
+        </p>
+        <p class="milestone__note">
+          The first public synthesis of 3MIP results. Open to all conference
+          attendees.
+        </p>
+        <p>
+          <Link href="https://conference.iemss.org/streams/" variant="external">
+            Session details on the iEMSs program
+          </Link>
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section 6 — How 3MIP works -->
+  <section class="band band--surface" aria-labelledby="how-h">
+    <div class="band__inner">
+      <h2 id="how-h">How 3MIP works</h2>
+      <ol class="steps">
+        <li class="step">
+          <span class="step__num" aria-hidden="true">1</span>
+          <h3 class="step__h">Register</h3>
+          <p>Tell us your modeling approach and research interest.</p>
+        </li>
+        <li class="step">
+          <span class="step__num" aria-hidden="true">2</span>
+          <h3 class="step__h">Receive curated data</h3>
+          <p>Get access to the harmonized Bangladesh input dataset.</p>
+        </li>
+        <li class="step">
+          <span class="step__num" aria-hidden="true">3</span>
+          <h3 class="step__h">Run your model</h3>
+          <p>Apply your approach to the shared question. Your model stays yours.</p>
+        </li>
+        <li class="step">
+          <span class="step__num" aria-hidden="true">4</span>
+          <h3 class="step__h">Contribute to synthesis</h3>
+          <p>Submit outputs to the <em>Climatic Change</em> topical collection and present at iEMSs.</p>
+        </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- Section 7 — Registration CTA -->
+  <section class="band band--cta" aria-labelledby="cta-h">
+    <div class="band__inner band__inner--narrow cta">
+      <h2 id="cta-h" class="vh">Register</h2>
+      <Button href="/participate/" class="cta__button">Register to participate</Button>
+      <p class="cta__note">
+        Open to climate-migration modelers using ABM, gravity, radiation,
+        IAM, or ML approaches. No fee. Participation expectations on the
+        Participate page.
+      </p>
+    </div>
+  </section>
+
+  <!-- Section 8 — Lineage strip -->
+  <section class="lineage" aria-label="Lineage and institutional context">
+    <p>
+      Inspired by AgMIP and ISIMIP. Founded at Princeton C-PREE, September 2024.
+      Led from Cornell, Ohio State, and VU Amsterdam.
+    </p>
+  </section>
+</Base>
+
+<style>
+  /* ── Shared band layout ─────────────────────────────────────────── */
+  .band { padding-block: var(--space-7); }
+  @media (min-width: 1024px) { .band { padding-block: var(--space-8); } }
+  .band--surface { background: var(--color-surface); }
+  .band--cta {
+    background: var(--color-background);
+    border-top: 1px solid var(--color-border);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .band__inner {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding-inline: var(--space-3);
+  }
+  @media (min-width: 768px) { .band__inner { padding-inline: var(--space-5); } }
+  .band__inner--narrow {
+    max-width: 45rem;
+  }
+
+  /* ── Hero ──────────────────────────────────────────────────────── */
+  .hero {
+    padding-block: var(--space-7) var(--space-6);
+  }
+  @media (min-width: 1024px) {
+    .hero { padding-block: var(--space-8) var(--space-7); }
+  }
+  .hero__inner {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding-inline: var(--space-3);
+    max-width: 45rem; /* hero copy stays narrow */
+  }
+  @media (min-width: 768px) {
+    .hero__inner { padding-inline: var(--space-5); }
+  }
+  .hero__headline {
+    font-family: var(--font-serif);
+    font-size: clamp(2.25rem, 4vw + 1rem, 3.5rem);
+    line-height: 1.05;
+    letter-spacing: -0.02em;
+    color: var(--color-ink);
+    text-wrap: balance;
+    margin: 0;
+  }
+  .hero__subhead {
+    font-size: var(--text-body-lg);
+    line-height: var(--text-body-lg--line-height);
+    color: var(--color-ink-muted);
+    margin-top: var(--space-4);
+    max-width: 38rem;
+  }
+
+  /* ── Lede paragraph ────────────────────────────────────────────── */
+  .lede {
+    font-size: var(--text-body-lg);
+    line-height: var(--text-body-lg--line-height);
+    color: var(--color-ink);
+    margin-top: var(--space-3);
+    max-width: 60ch;
+  }
+  .long-alt {
+    margin-top: var(--space-4);
+    font-size: var(--text-small);
+    color: var(--color-ink-muted);
+    max-width: 65ch;
+  }
+  .long-alt strong { color: var(--color-ink); }
+
+  /* ── Section 4: current case ───────────────────────────────────── */
+  .case-grid {
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 1024px) {
+    .case-grid {
+      grid-template-columns: 3fr 2fr;
+      gap: var(--space-7);
+      align-items: start;
+    }
+  }
+  .case-facts {
+    background: var(--color-background);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+  }
+  .case-facts__h {
+    font-size: var(--text-caption);
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--color-ink-subtle);
+    font-weight: 500;
+    margin: 0 0 var(--space-3);
+  }
+  .case-facts dl { margin: 0; display: grid; gap: var(--space-3); }
+  .case-facts dt { font-weight: 500; color: var(--color-ink); font-size: var(--text-small); }
+  .case-facts dd { margin: var(--space-1) 0 0; color: var(--color-ink-muted); font-size: var(--text-small); }
+  .case-facts__source { color: var(--color-ink-subtle); font-size: var(--text-caption); }
+  .verify {
+    margin-left: var(--space-1);
+    color: var(--color-warning);
+    font-size: var(--text-caption);
+    font-weight: 500;
+  }
+
+  /* ── Section 5: next milestone ─────────────────────────────────── */
+  .milestone {
+    margin-top: var(--space-4);
+    padding: var(--space-5);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 4px solid var(--color-accent);
+    border-radius: var(--radius);
+  }
+  .milestone p { margin: 0 0 var(--space-3); max-width: 60ch; }
+  .milestone p:last-child { margin-bottom: 0; }
+  .milestone__head { font-size: var(--text-body-lg); color: var(--color-ink); }
+  .milestone__note { color: var(--color-ink-muted); font-style: italic; }
+
+  /* ── Section 6: how it works ───────────────────────────────────── */
+  .steps {
+    list-style: none;
+    margin: var(--space-5) 0 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-5);
+    grid-template-columns: 1fr;
+  }
+  @media (min-width: 640px) { .steps { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 1024px) { .steps { grid-template-columns: repeat(4, 1fr); } }
+  .step {
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-border);
+  }
+  .step__num {
+    font-family: var(--font-serif);
+    font-size: 2.75rem;
+    font-weight: 400;
+    line-height: 1;
+    color: var(--color-accent);
+    display: block;
+  }
+  .step__h {
+    font-size: var(--text-h4);
+    margin: var(--space-2) 0 var(--space-2);
+  }
+  .step p { color: var(--color-ink-muted); font-size: var(--text-small); margin: 0; }
+
+  /* ── Section 7: CTA ────────────────────────────────────────────── */
+  .cta {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-3);
+    align-items: center;
+    text-align: center;
+  }
+  .cta__button { font-size: var(--text-body-lg); padding: var(--space-3) var(--space-5); }
+  .cta__note {
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+    max-width: 38rem;
+    margin: 0;
+  }
+
+  /* ── Section 8: lineage strip ──────────────────────────────────── */
+  .lineage {
+    padding-block: var(--space-7);
+    text-align: center;
+  }
+  .lineage p {
+    max-width: 60ch;
+    margin: 0 auto;
+    padding-inline: var(--space-3);
+    font-size: var(--text-body-lg);
+    font-family: var(--font-serif);
+    color: var(--color-ink-muted);
+    line-height: 1.5;
+  }
+</style>

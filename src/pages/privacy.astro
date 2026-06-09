@@ -1,0 +1,89 @@
+---
+/**
+ * Privacy notice — v1 placeholder.
+ *
+ * Per DECISIONS.md D8: no analytics, no third-party trackers. The privacy
+ * posture is honest: the site collects nothing client-side. Form submissions
+ * via Formspree are covered by Formspree's own privacy practices, linked.
+ *
+ * Full notice text to be refined with Bell before launch.
+ * [PENDING BELL APPROVAL on final privacy notice wording]
+ */
+import Base from "../layouts/Base.astro";
+---
+
+<Base
+  title="Privacy"
+  description="3MIP runs no analytics and no third-party trackers. This notice explains what is and isn't collected when you use this site."
+>
+  <article class="page">
+    <h1>Privacy</h1>
+    <p class="lede">
+      3MIP runs no analytics and no third-party trackers on this site. We do
+      not set cookies. We do not log visits beyond what Vercel keeps for
+      operational purposes.
+    </p>
+
+    <h2>What we collect</h2>
+    <p>
+      <strong>When you visit a page:</strong> nothing client-side. No analytics
+      script, no fingerprinting. Vercel, our static host, retains standard
+      access logs (IP, user agent) for security and abuse prevention.
+    </p>
+    <p>
+      <strong>When you submit the participation form:</strong> the information
+      you enter (name, affiliation, email, modeling approach, research question)
+      is sent to Formspree, our form processor, and forwarded to project
+      coordination at Cornell. We use this information to follow up about
+      registration and to send dataset access. We do not share it with third
+      parties. Formspree's own
+      <a href="https://formspree.io/legal/privacy-policy/" rel="noopener noreferrer">privacy policy</a>
+      governs how they handle the submission in transit.
+    </p>
+
+    <h2>What we do not do</h2>
+    <ul>
+      <li>No Google Analytics, Vercel Analytics, Plausible, or any other analytics service.</li>
+      <li>No social-media tracking pixels.</li>
+      <li>No advertising scripts.</li>
+      <li>No cookies set by this site. (Formspree may set a session cookie during form submission.)</li>
+    </ul>
+
+    <h2>If you have questions or want your data deleted</h2>
+    <p>
+      Email <a href="mailto:mk2674@cornell.edu">mk2674@cornell.edu</a>.
+    </p>
+
+    <p class="pending-note">
+      <em>[PENDING BELL APPROVAL on final privacy notice wording — v1 placeholder.]</em>
+    </p>
+  </article>
+</Base>
+
+<style>
+  .page {
+    max-width: 45rem;
+    margin: 0 auto;
+    padding: var(--space-7) var(--space-3) var(--space-8);
+  }
+  @media (min-width: 768px) { .page { padding: var(--space-8) var(--space-5); } }
+  .lede {
+    font-size: var(--text-body-lg);
+    color: var(--color-ink-muted);
+    margin-top: var(--space-3);
+    max-width: 60ch;
+  }
+  .page h2 { margin: var(--space-6) 0 var(--space-3); }
+  .page p { margin: 0 0 var(--space-3); max-width: 65ch; }
+  .page ul {
+    list-style-type: square;
+    padding-left: var(--space-4);
+    color: var(--color-ink-muted);
+  }
+  .page li { padding-block: var(--space-1); max-width: 60ch; }
+  .pending-note {
+    margin-top: var(--space-6);
+    color: var(--color-ink-subtle);
+    font-size: var(--text-small);
+  }
+</style>

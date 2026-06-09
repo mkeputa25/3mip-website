@@ -1,0 +1,134 @@
+---
+/**
+ * BangladeshMap — stylized map of Bangladesh used on the Case 1 page
+ * § Geographic scope.
+ *
+ * Reuses the same BANGLADESH_PATH as SignatureViz so the silhouette never
+ * drifts between figures. Adds:
+ *  - A subtle highlight band over the southern (coastal) belt — the case area
+ *  - Dot markers for the named coastal districts in FACTS.md § Case 1
+ *  - A scale bar
+ *
+ * No satellite imagery, no district polygons. Schematic by design.
+ * Per DESIGN-PRINCIPLES.md § Imagery — diagrams over photos.
+ */
+import { BANGLADESH_PATH } from "../lib/bangladesh-outline";
+
+interface Props {
+  class?: string;
+}
+const { class: className = "" }: Props = Astro.props;
+
+// District markers — approximate positions in the 240×180 viewBox.
+// Not geo-accurate; positioned to read clearly along the coast.
+// VERIFY exact district list against the protocol document (see FACTS.md).
+const COASTAL_DISTRICTS = [
+  { name: "Khulna",     cx: 78,  cy: 150 },
+  { name: "Satkhira",   cx: 58,  cy: 148 },
+  { name: "Bagerhat",   cx: 92,  cy: 155 },
+  { name: "Barguna",    cx: 122, cy: 156 },
+  { name: "Patuakhali", cx: 138, cy: 152 },
+  { name: "Pirojpur",   cx: 108, cy: 145 },
+  { name: "Bhola",      cx: 156, cy: 156 },
+  { name: "Noakhali",   cx: 188, cy: 152 },
+  { name: "Chattogram", cx: 220, cy: 150 },
+];
+---
+
+<figure class={`bd-map ${className}`}>
+  <svg
+    viewBox="0 0 240 180"
+    role="img"
+    aria-labelledby="bd-map-title bd-map-desc"
+    class="bd-map__svg"
+  >
+    <title id="bd-map-title">Coastal Bangladesh case study area.</title>
+    <desc id="bd-map-desc">
+      Stylized outline of Bangladesh with a highlighted southern coastal belt and
+      labeled dots marking the case study's named districts: Khulna, Satkhira,
+      Bagerhat, Barguna, Patuakhali, Pirojpur, Bhola, Noakhali, and Chattogram.
+      Not satellite-accurate; schematic for orientation only.
+    </desc>
+
+    <defs>
+      <clipPath id="bd-map-clip">
+        <path d={BANGLADESH_PATH} />
+      </clipPath>
+    </defs>
+
+    {/* Country fill */}
+    <path
+      d={BANGLADESH_PATH}
+      fill="var(--color-surface)"
+      stroke="var(--color-border-strong)"
+      stroke-width="1.25"
+    />
+
+    {/* Coastal belt highlight — accent at low opacity, clipped to country */}
+    <g clip-path="url(#bd-map-clip)">
+      <rect
+        x="0"
+        y="130"
+        width="240"
+        height="60"
+        fill="var(--color-accent)"
+        opacity="0.18"
+      />
+    </g>
+
+    {/* Outline on top so the highlight doesn't bleed */}
+    <path
+      d={BANGLADESH_PATH}
+      fill="none"
+      stroke="var(--color-ink)"
+      stroke-width="1.25"
+      stroke-linejoin="round"
+    />
+
+    {/* District markers */}
+    <g>
+      {COASTAL_DISTRICTS.map((d) => (
+        <g>
+          <circle
+            cx={d.cx}
+            cy={d.cy}
+            r="2.4"
+            fill="var(--color-accent)"
+            stroke="var(--color-background)"
+            stroke-width="0.8"
+          />
+          <text
+            x={d.cx}
+            y={d.cy - 5}
+            text-anchor="middle"
+            font-size="6"
+            font-family="var(--font-sans)"
+            fill="var(--color-ink)"
+          >{d.name}</text>
+        </g>
+      ))}
+    </g>
+
+    {/* Scale bar bottom-left */}
+    <g transform="translate(8, 172)">
+      <rect x="0" y="0" width="36" height="2.5" fill="var(--color-ink)" />
+      <text x="40" y="3" font-size="6" font-family="var(--font-sans)" fill="var(--color-ink-muted)">
+        ~ 50 km
+      </text>
+    </g>
+  </svg>
+</figure>
+
+<style>
+  .bd-map {
+    margin: 0;
+    width: 100%;
+  }
+  .bd-map__svg {
+    width: 100%;
+    height: auto;
+    display: block;
+    background: var(--color-background);
+    border-radius: var(--radius);
+  }
+</style>

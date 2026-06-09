@@ -1,0 +1,81 @@
+---
+/**
+ * Accessibility statement — v1 placeholder.
+ *
+ * Per docs/DESIGN-PRINCIPLES.md § Accessibility. WCAG 2.2 AA is the floor.
+ * This statement names the standard, the audit cadence, the known gaps,
+ * and the contact channel for accessibility issues.
+ *
+ * Full statement refined after Phase 6 a11y audit. [PENDING BELL APPROVAL]
+ */
+import Base from "../layouts/Base.astro";
+---
+
+<Base
+  title="Accessibility"
+  description="3MIP targets WCAG 2.2 AA. This statement explains our standard, audit process, and how to report accessibility issues."
+>
+  <article class="page">
+    <h1>Accessibility</h1>
+    <p class="lede">
+      3MIP targets <a href="https://www.w3.org/WAI/standards-guidelines/wcag/" rel="noopener noreferrer">WCAG 2.2 Level AA</a>
+      across the entire site. We audit before every deployment.
+    </p>
+
+    <h2>How we test</h2>
+    <ul>
+      <li>Automated WCAG checks via axe-core on every page during CI.</li>
+      <li>Manual keyboard-only traversal of every page before each release.</li>
+      <li>Color contrast verified against the actual rendered pairs on the design system page.</li>
+      <li><code>prefers-reduced-motion</code> respected; no auto-playing motion of any kind.</li>
+      <li>Screen reader spot-checks (VoiceOver) on Home, Case, Participate, and Data.</li>
+    </ul>
+
+    <h2>Known gaps</h2>
+    <p>
+      Known gaps are tracked in <code>A11Y-AUDIT.md</code> in the source
+      repository. We document deferred issues honestly rather than hide them.
+    </p>
+
+    <h2>How to report an issue</h2>
+    <p>
+      If something blocks you, email
+      <a href="mailto:mk2674@cornell.edu">mk2674@cornell.edu</a>
+      with the page, what you tried, what went wrong, and the assistive
+      technology you were using. Specific reports get faster fixes than
+      general ones.
+    </p>
+
+    <p class="pending-note">
+      <em>[PENDING BELL APPROVAL on final accessibility statement — v1 placeholder; will be refined after Phase 6 audit.]</em>
+    </p>
+  </article>
+</Base>
+
+<style>
+  .page {
+    max-width: 45rem;
+    margin: 0 auto;
+    padding: var(--space-7) var(--space-3) var(--space-8);
+  }
+  @media (min-width: 768px) { .page { padding: var(--space-8) var(--space-5); } }
+  .lede {
+    font-size: var(--text-body-lg);
+    color: var(--color-ink-muted);
+    margin-top: var(--space-3);
+    max-width: 60ch;
+  }
+  .page h2 { margin: var(--space-6) 0 var(--space-3); }
+  .page p { margin: 0 0 var(--space-3); max-width: 65ch; }
+  .page ul {
+    list-style-type: square;
+    padding-left: var(--space-4);
+    color: var(--color-ink-muted);
+  }
+  .page li { padding-block: var(--space-1); max-width: 60ch; }
+  .pending-note {
+    margin-top: var(--space-6);
+    color: var(--color-ink-subtle);
+    font-size: var(--text-small);
+  }
+</style>

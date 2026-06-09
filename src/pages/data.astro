@@ -1,0 +1,182 @@
+---
+/**
+ * Data — src/pages/data.astro
+ *
+ * Per docs/CONTENT-INVENTORY.md § Data. Citation policy callout, sortable
+ * dataset table (DataTable component), and "extending the dataset" section.
+ *
+ * Row data is hand-encoded here from docs/FACTS.md § Datasets curated for
+ * the Bangladesh case. Each row's `needsVerify` flag is set when the source
+ * doc carries an inline [VERIFY] tag — surfaced in OPEN-QUESTIONS.md at Phase 6.
+ */
+import Base from "../layouts/Base.astro";
+import Link from "../components/Link.astro";
+import Callout from "../components/Callout.astro";
+import DataTable from "../components/DataTable.astro";
+import type { DataRow } from "../components/DataTable.astro";
+
+const rows: DataRow[] = [
+  {
+    id: "ghsl-population",
+    dataset: "JRC/Copernicus GHSL Population Grid",
+    variable: "Population",
+    resolution: "250 m",
+    coverage: "1975, 1990, 2000, 2015",
+    license: "CC BY 4.0",
+    citation:
+      "Schiavina, M., Freire, S., MacManus, K. (2019). GHS-POP R2019A — GHS population grid multitemporal. European Commission, Joint Research Centre.",
+    doi: "10.2905/0C6B9751-A71F-4062-830B-43C9F432370F",
+  },
+  {
+    id: "gpwv4",
+    dataset: "CIESIN Gridded Population of the World v4 (GPWv4)",
+    variable: "Population",
+    resolution: "30 arc-sec",
+    coverage: "2000–2020",
+    license: "CC BY 4.0",
+    citation:
+      "Center for International Earth Science Information Network — CIESIN — Columbia University. (2018). Gridded Population of the World, Version 4 (GPWv4). NASA SEDAC.",
+    doi: "10.7927/H4PG1PPM",
+    needsVerify: true,
+  },
+  {
+    id: "sorichetta-flows",
+    dataset: "Sorichetta et al. modeled internal migration flows",
+    variable: "Migration flows",
+    resolution: "District",
+    coverage: "Multi-year (2010s)",
+    license: "CC BY 4.0",
+    citation:
+      "Sorichetta, A., Bird, T. J., Ruktanonchai, N. W., et al. (2016). Mapping internal connectivity through human migration in malaria endemic countries. Scientific Data, 3, 160066.",
+    doi: "10.1038/sdata.2016.66",
+  },
+  {
+    id: "hassani-salinity",
+    dataset: "Hassani et al. soil salinity",
+    variable: "Soil salinity",
+    resolution: "Global gridded",
+    coverage: "1980–2018",
+    license: "CC BY 4.0",
+    citation:
+      "Hassani, A., Azapagic, A., Shokri, N. (2020). Predicting long-term dynamics of soil salinity and sodicity on a global scale. PNAS, 117(52), 33017–33027.",
+    doi: "10.1073/pnas.2013771117",
+  },
+  {
+    id: "tellman-floods",
+    dataset: "Tellman et al. global flood database",
+    variable: "Flood extent",
+    resolution: "Daily, 250 m",
+    coverage: "2000–2018",
+    license: "CC BY 4.0",
+    citation:
+      "Tellman, B., Sullivan, J. A., Kuhn, C., et al. (2021). Satellite imaging reveals increased proportional flood exposure. Nature, 596, 80–86.",
+    doi: "10.1038/s41586-021-03695-w",
+    needsVerify: true,
+  },
+  {
+    id: "bbs-migration",
+    dataset: "Bangladesh Bureau of Statistics internal migration survey",
+    variable: "Internal migration",
+    resolution: "District",
+    coverage: "2023",
+    license: "BBS terms",
+    citation:
+      "Bangladesh Bureau of Statistics (2023). Internal Migration Survey, Bangladesh. Full citation to be confirmed.",
+    doi: null,
+    needsVerify: true,
+  },
+];
+
+const datasetJsonLd = {
+  "@context": "https://schema.org",
+  "@graph": rows.map((r) => ({
+    "@type": "Dataset",
+    name: r.dataset,
+    description: r.citation,
+    variableMeasured: r.variable,
+    license: r.license,
+    ...(r.doi ? { identifier: `https://doi.org/${r.doi}` } : {}),
+  })),
+};
+---
+
+<Base
+  title="Data"
+  description="Curated, openly licensed datasets for 3MIP's Bangladesh case: population grids, migration flows, salinity, flood extent, socioeconomic indicators."
+  jsonLd={datasetJsonLd}
+>
+  <article class="page">
+    <header class="page__header">
+      <h1>Curated input data</h1>
+      <p class="lede">
+        3MIP curates an openly licensed dataset for the Bangladesh case.
+        Each dataset is documented below with its source, variable, spatial
+        and temporal coverage, full citation, DOI, and license. Teams may
+        extend this dataset with additional sources; the curation provides a
+        shared baseline.
+      </p>
+    </header>
+
+    <section aria-labelledby="cite-h">
+      <h2 id="cite-h" class="vh">Citation policy</h2>
+      <Callout variant="note" label="How to cite the 3MIP curated dataset">
+        When using these datasets through the 3MIP curation, cite both the
+        original publication of each dataset (listed below) and the 3MIP
+        curated package:
+        <em>Bell, Best, Tierolf &amp; the 3MIP Consortium (2025). 3MIP Curated
+        Input Dataset for Coastal Bangladesh, Version 1.0.</em>
+        [DOI when minted]
+        <span class="pending">[PENDING BELL APPROVAL on exact citation format]</span>
+      </Callout>
+    </section>
+
+    <section aria-labelledby="table-h">
+      <h2 id="table-h" class="vh">Dataset table</h2>
+      <DataTable rows={rows} caption="3MIP curated input datasets for the Bangladesh case." />
+    </section>
+
+    <section aria-labelledby="extend-h">
+      <h2 id="extend-h">Adding your own data</h2>
+      <p>
+        Teams may incorporate additional data sources if their model
+        architecture requires inputs not present in the curated set. Document
+        additional sources in your output submission so the synthesis paper
+        can attribute methodological differences to data choices.
+      </p>
+      <p>
+        For questions about the curated dataset or to suggest an addition,
+        contact <Link href="/contact/" variant="in-prose">project management</Link>.
+      </p>
+    </section>
+  </article>
+</Base>
+
+<style>
+  .page {
+    max-width: 72rem;
+    margin: 0 auto;
+    padding: var(--space-7) var(--space-3) var(--space-8);
+  }
+  @media (min-width: 768px) {
+    .page { padding: var(--space-8) var(--space-5); }
+  }
+  .page__header { margin-bottom: var(--space-7); max-width: 60ch; }
+  .page__header h1 { margin: 0; }
+  .lede {
+    font-size: var(--text-body-lg);
+    line-height: var(--text-body-lg--line-height);
+    color: var(--color-ink-muted);
+    margin-top: var(--space-3);
+  }
+  .page section { margin-top: var(--space-7); }
+  .page section:first-of-type { margin-top: var(--space-5); }
+  .page h2 { margin: 0 0 var(--space-3); }
+  .page p { margin: 0 0 var(--space-3); max-width: 65ch; }
+  .page p:last-child { margin-bottom: 0; }
+
+  .pending {
+    color: var(--color-warning);
+    font-size: var(--text-caption);
+    font-weight: 500;
+  }
+</style>
