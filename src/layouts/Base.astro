@@ -61,11 +61,11 @@ const ogImageUrl = ogImage ?? `${SITE_URL}/og-default.png`;
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
 
-    {/* Favicon + theme color (matches token --color-background). */}
+    {/* Favicon + theme color. Light-only by mandate (DECISIONS-V2 V3):
+        a single theme-color, no dark variant, no color-scheme dark. */}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#FAF7F2" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#14110E" media="(prefers-color-scheme: dark)" />
-    <meta name="color-scheme" content="light dark" />
+    <meta name="theme-color" content="#F5EFE4" />
+    <meta name="color-scheme" content="light" />
 
     {/* Open Graph */}
     <meta property="og:type" content="website" />

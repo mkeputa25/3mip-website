@@ -1,111 +1,102 @@
 /* =========================================================================
-   3MIP — global styles
+   3MIP — global styles, v2 (DECISIONS-V2.md)
    =========================================================================
 
-   Reading order:
-   1. Self-hosted variable fonts (Source Serif 4, Inter) via Fontsource
-   2. Tailwind 4 import + @theme token mapping
-   3. CSS variable declarations (light + dark) — single source of truth
-   4. Base reset, focus, motion preferences
-   5. Prose defaults
+   Register: institutional monograph — warm parchment, deep ink-brown,
+   terracotta as the sole chromatic signal. LIGHT-ONLY by mandate (V3):
+   dark mode was removed, not deferred. There is deliberately no
+   prefers-color-scheme block in this file.
 
-   Why CSS vars + @theme inline rather than @theme alone:
-     Tailwind 4's @theme directive sets variables at :root, but it does not
-     compose with @media queries. We need both light and dark palettes, so
-     we declare the actual values as CSS vars below (where @media works
-     normally) and use @theme inline to tell Tailwind to consume them.
+   Typography (V1):
+     Fraunces  — display, headings, prose. Variable axes opsz/wght/SOFT/WONK
+                 (full-axes file). Old-style figures in prose, lining in tables.
+     Geist     — nav, captions, metadata, buttons, eyebrows, panel labels.
+                 Weights 400/500 only.
+     Geist Mono — code and data attributions. Rare.
 
-   Why no analytics, no third-party CSS, no Google Fonts:
-     Privacy posture per docs/BRIEF.md. Every byte ships from our origin.
+   Payload (measured at install, C4): Fraunces full-normal 121.0KB +
+   Fraunces wght-italic 45.7KB + Geist 29.4KB + Geist Mono 12.8KB = 209KB.
+   29KB over the 180KB target — the overage is the cost of true italics and
+   the full axis set, both mandated. Trim options documented at the 1c gate.
+
+   No text-transform: uppercase anywhere (V4). Tracking carries the register.
    ========================================================================= */
 
-@import "@fontsource-variable/source-serif-4";
-@import "@fontsource-variable/source-serif-4/wght-italic.css";
-@import "@fontsource-variable/inter";
+@import "@fontsource-variable/fraunces/full.css";
+@import "@fontsource-variable/fraunces/wght-italic.css";
+@import "@fontsource-variable/geist/wght.css";
+@import "@fontsource/geist-mono/400.css";
 
 @import "tailwindcss";
 
 /* -----------------------------------------------------------------------
-   1. Design tokens — declared as CSS custom properties.
-   These are the single source of truth referenced by both Tailwind utility
-   classes (via @theme inline below) and any direct CSS.
+   1. Design tokens — single light theme (V2 hex, verbatim from directive).
    ----------------------------------------------------------------------- */
 :root {
-  /* Color — light mode */
-  --color-background: #faf7f2;
-  --color-surface: #f2ede4;
-  --color-surface-elevated: #ffffff;
-  --color-ink: #1a1715;
-  --color-ink-muted: #5c544d;
-  --color-ink-subtle: #8a8077;
-  --color-accent: #b7472a;
-  --color-accent-dim: #8e3520;
-  --color-accent-ink: #faf7f2;
-  --color-border: #e0d9cc;
-  --color-border-strong: #b8ac99;
-  --color-focus-ring: #2d5a87;
-  --color-success: #3f6b3f;
-  --color-warning: #a86b12;
-  --color-error: #9a2e1f;
+  /* Color */
+  --color-background: #f5efe4;       /* warm parchment — the whole site sits on this */
+  --color-surface: #eee7d7;          /* cards step DEEPER than background, not white */
+  --color-surface-elevated: #ffffff; /* dropdowns/overlays only */
+  --color-ink: #1a1612;              /* deep ink-brown, not pure black */
+  --color-ink-muted: #6b6358;
+  --color-ink-subtle: #9a9085;       /* C1: decorative use only — fails AA as text */
+  --color-accent: #b85a35;           /* terracotta — the sole chromatic signal */
+  --color-accent-dim: #d08a6e;       /* C2: fills/borders only, never text */
+  --color-accent-deep: #6b1f1f;      /* rare emphasis; carries [VERIFY]/[PENDING] tags (C3) */
+  --color-accent-ink: #ffffff;
+  --color-border: #e8e2d5;
+  --color-border-strong: #c9c0ae;
+  --color-focus-ring: #2f6cb3;       /* ink blue — the ONLY blue on the site */
+  --color-success: #3f6d2f;
+  --color-warning: #c88a1a;          /* C3: labeled callout borders only, never text */
+  --color-error: #8e2424;
 
   /* Typography */
-  --font-sans: "Inter Variable", ui-sans-serif, system-ui, -apple-system,
-    BlinkMacSystemFont, sans-serif;
-  --font-serif: "Source Serif 4 Variable", ui-serif, Georgia, Cambria,
-    "Times New Roman", Times, serif;
+  --font-serif: "Fraunces Variable", "Iowan Old Style", Georgia, serif;
+  --font-sans: "Geist Variable", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
 
-  /* Spacing scale — 8pt base. Names match docs/DESIGN-PRINCIPLES.md § Spacing. */
-  --space-1: 0.25rem; /*   4px */
-  --space-2: 0.5rem;  /*   8px */
-  --space-3: 1rem;    /*  16px */
-  --space-4: 1.5rem;  /*  24px */
-  --space-5: 2rem;    /*  32px */
-  --space-6: 3rem;    /*  48px */
-  --space-7: 4rem;    /*  64px */
-  --space-8: 6rem;    /*  96px */
-  --space-9: 8rem;    /* 128px */
+  /* Fraunces axis presets (V1). Weight stays on font-weight so the cascade
+     works; variation settings carry the named custom axes only. */
+  --fraunces-display: "opsz" 96, "SOFT" 50, "WONK" 1;
+  --fraunces-h2: "opsz" 36, "SOFT" 25, "WONK" 0;
+  --fraunces-h3: "opsz" 24, "SOFT" 0, "WONK" 0;
+  --fraunces-text: "opsz" 14, "SOFT" 0, "WONK" 0;
+  --fraunces-wordmark: "opsz" 72, "SOFT" 100, "WONK" 1;
 
-  /* Radii, borders, shadow — one of each, per DESIGN-PRINCIPLES.md § Border. */
+  /* Spacing scale — 8pt base (unchanged from v1). */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 1rem;
+  --space-4: 1.5rem;
+  --space-5: 2rem;
+  --space-6: 3rem;
+  --space-7: 4rem;
+  --space-8: 6rem;
+  --space-9: 8rem;
+
+  /* Rules and radii. Hairline is the editorial divider weight (V4). */
   --radius: 4px;
   --border-width: 1px;
-  --shadow-popover: 0 8px 24px -8px rgb(0 0 0 / 0.18);
+  --hairline: 0.5px;
+  --shadow-popover: 0 8px 24px -8px rgb(26 22 18 / 0.18);
 
-  /* Motion — two durations, two easings. */
+  /* Motion (unchanged). */
   --duration-hover: 150ms;
   --duration-layout: 250ms;
   --ease-out: cubic-bezier(0.2, 0, 0, 1);
   --ease-in-out: cubic-bezier(0.4, 0, 0.2, 1);
 
   /* Grid */
-  --content-max: 80rem; /* 1280px */
+  --content-max: 80rem;
   --prose-max: 65ch;
-}
 
-/* Dark mode — auto via prefers-color-scheme. No user toggle in v1 (see DECISIONS.md D11). */
-@media (prefers-color-scheme: dark) {
-  :root {
-    --color-background: #14110e;
-    --color-surface: #1f1a15;
-    --color-surface-elevated: #2a231d;
-    --color-ink: #f1ece2;
-    --color-ink-muted: #b8ac99;
-    --color-ink-subtle: #8a8077;
-    --color-accent: #d26b4d;
-    --color-accent-dim: #b7472a;
-    --color-accent-ink: #14110e;
-    --color-border: #2d2620;
-    --color-border-strong: #4a3f35;
-    --color-focus-ring: #6ba0d6;
-    --color-success: #7aa67a;
-    --color-warning: #d49a52;
-    --color-error: #d67566;
-  }
+  /* Eyebrow / section-label register (V4). */
+  --tracking-label: 0.18em;
 }
 
 /* -----------------------------------------------------------------------
-   2. Tailwind 4 @theme — expose the CSS vars as utility tokens.
-   `inline` means Tailwind uses the var() at render time, so dark mode
-   propagates to bg-background, text-ink, etc. automatically.
+   2. Tailwind 4 @theme — expose tokens as utilities.
    ----------------------------------------------------------------------- */
 @theme inline {
   --color-background: var(--color-background);
@@ -116,6 +107,7 @@
   --color-ink-subtle: var(--color-ink-subtle);
   --color-accent: var(--color-accent);
   --color-accent-dim: var(--color-accent-dim);
+  --color-accent-deep: var(--color-accent-deep);
   --color-accent-ink: var(--color-accent-ink);
   --color-border: var(--color-border);
   --color-border-strong: var(--color-border-strong);
@@ -126,23 +118,23 @@
 
   --font-sans: var(--font-sans);
   --font-serif: var(--font-serif);
+  --font-mono: var(--font-mono);
 
-  /* Type scale — name : size / line-height. Tailwind picks these up as text-* utilities. */
+  /* Type scale (sizes unchanged from v1; faces reassigned). */
   --text-display: 3.5rem;
   --text-display--line-height: 1.05;
-  --text-display--letter-spacing: -0.02em;
+  --text-display--letter-spacing: -0.01em;
 
   --text-h1: 2.5rem;
   --text-h1--line-height: 1.15;
-  --text-h1--letter-spacing: -0.015em;
+  --text-h1--letter-spacing: -0.01em;
 
   --text-h2: 1.875rem;
   --text-h2--line-height: 1.2;
-  --text-h2--letter-spacing: -0.01em;
+  --text-h2--letter-spacing: -0.005em;
 
   --text-h3: 1.375rem;
   --text-h3--line-height: 1.3;
-  --text-h3--letter-spacing: -0.005em;
 
   --text-h4: 1.125rem;
   --text-h4--line-height: 1.35;
@@ -160,70 +152,70 @@
   --text-caption--line-height: 1.4;
   --text-caption--letter-spacing: 0.02em;
 
-  /* Spacing — match utility names like p-2 etc. */
-  --spacing: 0.25rem; /* base for Tailwind's numeric spacing utilities (1 = 4px) */
-
+  --spacing: 0.25rem;
   --radius: var(--radius);
   --container-content: var(--content-max);
 }
 
 /* -----------------------------------------------------------------------
    3. Base reset + element defaults.
-   We start from Tailwind's preflight and add the project's specifics.
    ----------------------------------------------------------------------- */
 @layer base {
   html {
-    /* Prevent iOS text autoinflate. Honor user font-size preferences. */
     -webkit-text-size-adjust: 100%;
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-    color-scheme: light dark;
+    /* Light-only (V3): form controls and scrollbars must not auto-darken. */
+    color-scheme: light;
   }
 
   body {
     background-color: var(--color-background);
     color: var(--color-ink);
-    font-family: var(--font-sans);
+    /* Prose face is Fraunces at text optical size with old-style figures —
+       the monograph register. UI elements opt into Geist explicitly. */
+    font-family: var(--font-serif);
+    font-variation-settings: var(--fraunces-text);
+    font-feature-settings: "kern", "liga", "onum";
     font-size: var(--text-body);
     line-height: var(--text-body--line-height);
-    font-feature-settings: "kern", "liga", "calt", "ss01";
-  }
-
-  /* Headings */
-  h1, h2, h3, h4 {
-    color: var(--color-ink);
-    text-wrap: balance;
-  }
-
-  h1 {
-    font-family: var(--font-serif);
-    font-size: var(--text-h1);
-    line-height: var(--text-h1--line-height);
-    letter-spacing: var(--text-h1--letter-spacing);
     font-weight: 400;
   }
 
+  h1, h2, h3, h4 {
+    font-family: var(--font-serif);
+    color: var(--color-ink);
+    text-wrap: balance;
+    font-weight: 500;
+    /* Headings use lining figures — "Case 1", "2026" should not dip. */
+    font-feature-settings: "kern", "liga", "lnum";
+  }
+
+  h1 {
+    font-size: var(--text-h1);
+    line-height: var(--text-h1--line-height);
+    letter-spacing: var(--text-h1--letter-spacing);
+    font-variation-settings: var(--fraunces-display);
+  }
+
   h2 {
-    font-family: var(--font-sans);
     font-size: var(--text-h2);
     line-height: var(--text-h2--line-height);
     letter-spacing: var(--text-h2--letter-spacing);
-    font-weight: 600;
+    font-variation-settings: var(--fraunces-h2);
   }
 
   h3 {
-    font-family: var(--font-sans);
     font-size: var(--text-h3);
     line-height: var(--text-h3--line-height);
-    font-weight: 600;
+    font-variation-settings: var(--fraunces-h3);
   }
 
   h4 {
-    font-family: var(--font-sans);
     font-size: var(--text-h4);
     line-height: var(--text-h4--line-height);
-    font-weight: 600;
+    font-variation-settings: var(--fraunces-h3);
   }
 
   p {
@@ -231,8 +223,7 @@
     text-wrap: pretty;
   }
 
-  /* In-prose links: ink color, persistent underline, accent on hover.
-     Underline is not removed; color-only links fail accessibility. */
+  /* In-prose links: ink with persistent underline; terracotta on hover. */
   .prose a,
   a.prose-link {
     color: var(--color-ink);
@@ -249,40 +240,36 @@
     text-decoration-color: var(--color-accent);
   }
 
-  /* Focus ring — visible on every interactive element. 2px ring, 2px offset.
-     Per WCAG 2.2 AA Focus Appearance (1.4.11). */
   :focus-visible {
     outline: 2px solid var(--color-focus-ring);
     outline-offset: 2px;
     border-radius: 2px;
   }
-
-  /* Hide outline when not from keyboard. Tailwind v4 preflight already drops
-     the default outline, so we only define :focus-visible. */
   :focus:not(:focus-visible) {
     outline: none;
   }
 
-  /* Selection */
   ::selection {
     background-color: var(--color-accent);
     color: var(--color-accent-ink);
   }
 
-  /* Images: explicit aspect, no overflow */
   img, svg, video, picture {
     max-width: 100%;
     height: auto;
   }
 
-  /* Tables */
+  /* Tables are data: Geist with lining figures (V1). */
   table {
     border-collapse: collapse;
     width: 100%;
+    font-family: var(--font-sans);
+    font-variation-settings: normal;
+    font-feature-settings: "kern", "lnum", "tnum";
   }
   th {
     text-align: left;
-    font-weight: 600;
+    font-weight: 500;
     border-bottom: 1px solid var(--color-border-strong);
     padding: var(--space-3);
   }
@@ -291,22 +278,68 @@
     padding: var(--space-3);
   }
 
-  /* Code (used sparingly — DOIs, dataset IDs, occasional snippets) */
-  code, kbd, samp, pre {
-    font-family: ui-monospace, "SF Mono", Menlo, Consolas, monospace;
-    font-size: 0.92em;
+  /* Buttons, form controls, nav default to Geist. */
+  button, input, select, textarea {
+    font-family: var(--font-sans);
+    font-variation-settings: normal;
   }
 
-  /* HR — used as a section break inside a long page only. */
+  code, kbd, samp, pre {
+    font-family: var(--font-mono);
+    font-variation-settings: normal;
+    font-size: 0.9em;
+  }
+
   hr {
     border: 0;
-    border-top: 1px solid var(--color-border);
+    border-top: var(--hairline) solid var(--color-border-strong);
     margin-block: var(--space-6);
   }
 }
 
 /* -----------------------------------------------------------------------
-   4. Motion preferences — respect prefers-reduced-motion.
+   4. Editorial register utilities (V4).
+   ----------------------------------------------------------------------- */
+
+/* Eyebrow — Geist 500, 12px, 0.18em tracking, accent. No uppercase; the
+   tracking carries the register. C2: accent at this size measures 4.03:1 —
+   a documented near-miss accepted for this one redundant-label use. */
+.eyebrow {
+  font-family: var(--font-sans);
+  font-variation-settings: normal;
+  font-size: 0.75rem;
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  color: var(--color-accent);
+}
+
+/* Section divider — hairline + "Sec. 01 / Name" label. */
+.section-divider {
+  border-top: var(--hairline) solid var(--color-border-strong);
+  padding-top: var(--space-2);
+}
+.section-label {
+  font-family: var(--font-sans);
+  font-variation-settings: normal;
+  font-size: 0.6875rem; /* 11px */
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  color: var(--color-ink-muted);
+}
+
+/* Inline review tags — [VERIFY] / [PENDING ...]. C3: warning fails contrast
+   as text, so these carry accent-deep (9.97:1). */
+.verify, .pending {
+  color: var(--color-accent-deep);
+  font-family: var(--font-sans);
+  font-variation-settings: normal;
+  font-size: var(--text-caption);
+  font-weight: 500;
+  letter-spacing: 0.02em;
+}
+
+/* -----------------------------------------------------------------------
+   5. Motion preferences.
    ----------------------------------------------------------------------- */
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
@@ -318,8 +351,7 @@
 }
 
 /* -----------------------------------------------------------------------
-   5. Skip link — visible on focus only.
-   First focusable element on every page; jumps to <main>.
+   6. Skip link.
    ----------------------------------------------------------------------- */
 .skip-link {
   position: absolute;
@@ -330,6 +362,7 @@
   color: var(--color-background);
   padding: var(--space-2) var(--space-3);
   border-radius: var(--radius);
+  font-family: var(--font-sans);
   font-weight: 500;
   text-decoration: none;
 }
@@ -338,8 +371,7 @@
 }
 
 /* -----------------------------------------------------------------------
-   6. Visually-hidden utility (for accessible labels on icon controls,
-      long descriptions paired with SVG figures, etc.)
+   7. Visually-hidden utility.
    ----------------------------------------------------------------------- */
 .vh {
   position: absolute;

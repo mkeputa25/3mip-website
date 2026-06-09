@@ -1,17 +1,23 @@
 ---
 /**
- * /_design — the design system showcase. This page is the project's
- * living style guide; it is not linked from anywhere visitor-facing
- * and is excluded from the sitemap (filter in astro.config.mjs).
+ * /design — the design system showcase, v2 (DECISIONS-V2.md).
  *
- * Reading order matches docs/DESIGN-PRINCIPLES.md:
- *   1. Color tokens with measured WCAG contrast
- *   2. Type scale with real copy from COPY-GUIDE.md
- *   3. Spacing scale
- *   4. Grid demonstration
- *   5. Component primitives (Button, Link, Card, Callout, Figure, Form, Table, Citation)
+ * Not linked from the public site; excluded from sitemap; noindex.
  *
- * Anything that fails its target on this page does not ship.
+ * Order:
+ *   1. Color tokens with measured WCAG contrast (incl. C1–C3 annotations)
+ *   2. Fraunces axis specimens (display vs text optical sizes, SOFT/WONK,
+ *      old-style vs lining figures)
+ *   3. Type scale with real copy
+ *   4. Editorial register: eyebrows, section dividers, hairlines
+ *   5. Spacing scale
+ *   6. Grid demonstration
+ *   7. Component primitives (rendered under v2 tokens; full component
+ *      restyle lands in Phase 4e)
+ *   8. Signature visualization (atlas-plate rebuild lands in Phase 2c)
+ *
+ * Anything that fails its target on this page does not ship — except the
+ * two documented exceptions (C2 eyebrow near-miss; see annotations).
  */
 import "../styles/global.css";
 import Button from "../components/Button.astro";
@@ -20,31 +26,30 @@ import Card from "../components/Card.astro";
 import Callout from "../components/Callout.astro";
 import CitationBlock from "../components/CitationBlock.astro";
 import FormField from "../components/FormField.astro";
-import Footnote from "../components/Footnote.astro";
 import ColorSwatch from "../components/ColorSwatch.astro";
-import TypeSpecimen from "../components/TypeSpecimen.astro";
 import SignatureViz from "../components/SignatureViz.astro";
 
-// Light-mode token hexes mirror the values declared in src/styles/global.css.
-// We list them here for the contrast calculator; the actual rendering uses
-// CSS vars so dark mode swaps automatically.
+// v2 token hexes (DECISIONS-V2 V2) — mirrors src/styles/global.css.
 const LIGHT = {
-  background: "#FAF7F2",
-  surface: "#F2EDE4",
+  background: "#F5EFE4",
+  surface: "#EEE7D7",
   surfaceElevated: "#FFFFFF",
-  ink: "#1A1715",
-  inkMuted: "#5C544D",
-  inkSubtle: "#8A8077",
-  accent: "#B7472A",
-  accentDim: "#8E3520",
-  accentInk: "#FAF7F2",
-  border: "#E0D9CC",
-  borderStrong: "#B8AC99",
-  focusRing: "#2D5A87",
-  success: "#3F6B3F",
-  warning: "#A86B12",
-  error: "#9A2E1F",
+  ink: "#1A1612",
+  inkMuted: "#6B6358",
+  inkSubtle: "#9A9085",
+  accent: "#B85A35",
+  accentDim: "#D08A6E",
+  accentDeep: "#6B1F1F",
+  accentInk: "#FFFFFF",
+  border: "#E8E2D5",
+  borderStrong: "#C9C0AE",
+  focusRing: "#2F6CB3",
+  success: "#3F6D2F",
+  warning: "#C88A1A",
+  error: "#8E2424",
 } as const;
+
+const RAMP = ["#F5EFE4", "#E8B98A", "#D08A6E", "#B85A35", "#8E3A22", "#6B1F1F"] as const;
 ---
 
 <html lang="en">
@@ -52,18 +57,15 @@ const LIGHT = {
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <meta name="robots" content="noindex,nofollow" />
-    <title>3MIP — design system</title>
+    <meta name="theme-color" content="#F5EFE4" />
+    <title>3MIP — design system v2</title>
     <style>
-      /* Local utility for the showcase only. */
       .section { padding-block: var(--space-7); border-bottom: 1px solid var(--color-border); }
       .section:last-of-type { border-bottom: 0; }
       .container { max-width: var(--content-max); padding-inline: var(--space-4); margin-inline: auto; }
       @media (min-width: 768px) { .container { padding-inline: var(--space-5); } }
       .swatch-grid { display: grid; gap: var(--space-3); grid-template-columns: repeat(auto-fill, minmax(13rem, 1fr)); }
-      .grid-demo {
-        display: grid; gap: var(--space-3);
-        grid-template-columns: repeat(4, 1fr);
-      }
+      .grid-demo { display: grid; gap: var(--space-3); grid-template-columns: repeat(4, 1fr); }
       @media (min-width: 768px) { .grid-demo { grid-template-columns: repeat(6, 1fr); } }
       @media (min-width: 1024px) { .grid-demo { grid-template-columns: repeat(12, 1fr); } }
       .grid-demo > div {
@@ -71,130 +73,215 @@ const LIGHT = {
         border: 1px solid var(--color-border);
         padding: var(--space-2);
         text-align: center;
+        font-family: var(--font-sans);
         font-size: var(--text-caption);
         color: var(--color-ink-muted);
         border-radius: var(--radius);
       }
-      .space-row {
-        display: grid;
-        grid-template-columns: 6rem 1fr;
-        align-items: center;
-        gap: var(--space-4);
-        padding-block: var(--space-2);
-      }
+      .space-row { display: grid; grid-template-columns: 6rem 1fr; align-items: center; gap: var(--space-4); padding-block: var(--space-2); }
       .space-row .bar { background: var(--color-accent); height: 0.5rem; border-radius: 2px; }
+      .note { font-family: var(--font-sans); font-size: var(--text-small); color: var(--color-ink-muted); max-width: 65ch; }
+      .annotation { font-family: var(--font-sans); font-size: var(--text-caption); color: var(--color-accent-deep); max-width: 65ch; }
+      .specimen { padding-block: var(--space-4); border-bottom: 1px solid var(--color-border); }
+      .specimen__meta { font-family: var(--font-sans); font-size: var(--text-caption); color: var(--color-ink-muted); letter-spacing: 0.02em; margin-bottom: var(--space-2); }
+      .ramp-row { display: flex; gap: 0; border: 1px solid var(--color-border); border-radius: 2px; overflow: hidden; width: fit-content; }
+      .ramp-row span { display: inline-block; width: 56px; height: 32px; }
+      .ramp-labels { display: flex; gap: 0; width: fit-content; }
+      .ramp-labels span { display: inline-block; width: 56px; font-family: var(--font-mono); font-size: 10px; color: var(--color-ink-muted); text-align: center; }
     </style>
   </head>
   <body>
     <header class="container" style="padding-block: var(--space-6);">
-      <p class="text-caption" style="color: var(--color-ink-subtle); text-transform: uppercase; letter-spacing: 0.08em;">
-        Internal · not linked from the public site
-      </p>
-      <h1 style="margin-top: var(--space-2);">3MIP design system</h1>
-      <p class="text-body-lg" style="color: var(--color-ink-muted); max-width: 65ch; margin-top: var(--space-3);">
-        This page renders every token, type setting, and component primitive used across the site.
-        It is the QA artifact for Phase 1: any contrast pair that does not meet its WCAG target
-        ships as <strong style="color: var(--color-error);">FAIL</strong> and is fixed before merge.
+      <p class="eyebrow">Internal · not linked from the public site</p>
+      <h1 style="margin-top: var(--space-2);">3MIP design system, v2</h1>
+      <p class="note" style="font-size: var(--text-body-lg); margin-top: var(--space-3);">
+        Fraunces and Geist on warm parchment with a terracotta accent — light-only by mandate.
+        Every contrast pair below shows its measured WCAG ratio. Two documented exceptions
+        (C2 eyebrow near-miss; warning-as-border) are annotated where they appear.
       </p>
     </header>
 
     <main class="container" id="main">
 
-      <!-- ──────────────────────────────────────────────────────────────
-           1. Color tokens
-           ────────────────────────────────────────────────────────────── -->
+      <!-- 1. Color tokens -->
       <section class="section" aria-labelledby="color-h">
         <h2 id="color-h">1 · Color tokens</h2>
-        <p style="color: var(--color-ink-muted); margin-top: var(--space-2);">
-          Each swatch shows the token value and its measured contrast against the surface it's most
-          commonly placed on. Light-mode hexes are used for the calculation; dark mode is verified
-          by switching the OS theme — both palettes hit the same WCAG targets.
+        <p class="note" style="margin-top: var(--space-2);">
+          Single light theme. Cards step deeper than the page (surface is darker than
+          background, not white). The focus ring is the only blue on the site.
         </p>
 
         <h3 style="margin-top: var(--space-5);">Text on background</h3>
         <div class="swatch-grid" style="margin-top: var(--space-3);">
-          <ColorSwatch name="ink"        hex={LIGHT.ink}        pairedWith={LIGHT.background} pairedName="background" kind="body" />
-          <ColorSwatch name="ink-muted"  hex={LIGHT.inkMuted}   pairedWith={LIGHT.background} pairedName="background" kind="body" />
-          <ColorSwatch name="ink-subtle" hex={LIGHT.inkSubtle}  pairedWith={LIGHT.background} pairedName="background" kind="large" />
+          <ColorSwatch name="ink"        hex={LIGHT.ink}       pairedWith={LIGHT.background} pairedName="background" kind="body" />
+          <ColorSwatch name="ink-muted"  hex={LIGHT.inkMuted}  pairedWith={LIGHT.background} pairedName="background" kind="body" />
+          <ColorSwatch name="ink-muted"  hex={LIGHT.inkMuted}  pairedWith={LIGHT.surface}    pairedName="surface"    kind="body" />
         </div>
+        <p class="annotation" style="margin-top: var(--space-3);">
+          C1 — ink-subtle #9A9085 measures 2.74:1 and is therefore restricted to decorative
+          glyphs (compass marks, separators). All text formerly in ink-subtle now uses ink-muted.
+          It is intentionally absent from the text swatches above.
+        </p>
 
         <h3 style="margin-top: var(--space-5);">Accent and interactive</h3>
         <div class="swatch-grid" style="margin-top: var(--space-3);">
-          <ColorSwatch name="accent"     hex={LIGHT.accent}     pairedWith={LIGHT.background} pairedName="background" kind="large" />
-          <ColorSwatch name="accent-ink" hex={LIGHT.accentInk}  pairedWith={LIGHT.accent}     pairedName="accent"     kind="body" />
-          <ColorSwatch name="focus-ring" hex={LIGHT.focusRing}  pairedWith={LIGHT.background} pairedName="background" kind="ui" />
+          <ColorSwatch name="accent"      hex={LIGHT.accent}     pairedWith={LIGHT.background} pairedName="background" kind="large" />
+          <ColorSwatch name="accent-deep" hex={LIGHT.accentDeep} pairedWith={LIGHT.background} pairedName="background" kind="body" />
+          <ColorSwatch name="accent-ink"  hex={LIGHT.accentInk}  pairedWith={LIGHT.accent}     pairedName="accent"     kind="body" />
+          <ColorSwatch name="focus-ring"  hex={LIGHT.focusRing}  pairedWith={LIGHT.background} pairedName="background" kind="ui" />
         </div>
+        <p class="annotation" style="margin-top: var(--space-3);">
+          C2 — accent at 4.03:1 passes AA-large/UI but misses small-text AA (4.5:1). It is used
+          as small text in exactly one place: eyebrows (12px Geist 500), accepted as a documented
+          near-miss because the eyebrow is always a redundant label adjacent to a compliant
+          heading. accent-dim (2.43:1) is fills and borders only, never text.
+        </p>
 
         <h3 style="margin-top: var(--space-5);">Status</h3>
         <div class="swatch-grid" style="margin-top: var(--space-3);">
-          <ColorSwatch name="success"    hex={LIGHT.success}    pairedWith={LIGHT.background} pairedName="background" kind="body" />
-          <ColorSwatch name="warning"    hex={LIGHT.warning}    pairedWith={LIGHT.background} pairedName="background" kind="body" />
-          <ColorSwatch name="error"      hex={LIGHT.error}      pairedWith={LIGHT.background} pairedName="background" kind="body" />
+          <ColorSwatch name="success" hex={LIGHT.success} pairedWith={LIGHT.background} pairedName="background" kind="body" />
+          <ColorSwatch name="error"   hex={LIGHT.error}   pairedWith={LIGHT.background} pairedName="background" kind="body" />
         </div>
+        <p class="annotation" style="margin-top: var(--space-3);">
+          C3 — warning #C88A1A measures 2.58:1 and never carries text or sole meaning; it
+          survives only as the caution callout's border, always paired with a label in ink.
+          [VERIFY]/[PENDING] tags now render in accent-deep (9.97:1).
+        </p>
 
-        <h3 style="margin-top: var(--space-5);">Surfaces and borders</h3>
+        <h3 style="margin-top: var(--space-5);">Surfaces and rules</h3>
         <div class="swatch-grid" style="margin-top: var(--space-3);">
-          <ColorSwatch name="surface"        hex={LIGHT.surface}        pairedWith={LIGHT.ink}        pairedName="ink (on surface)" kind="body" />
-          <ColorSwatch name="surface-elev."  hex={LIGHT.surfaceElevated} pairedWith={LIGHT.ink}       pairedName="ink"              kind="body" />
-          <ColorSwatch name="border"         hex={LIGHT.border}         pairedWith={LIGHT.background} pairedName="background"       kind="ui" />
-          <ColorSwatch name="border-strong"  hex={LIGHT.borderStrong}   pairedWith={LIGHT.background} pairedName="background"       kind="ui" />
+          <ColorSwatch name="surface"       hex={LIGHT.surface}        pairedWith={LIGHT.ink} pairedName="ink (on surface)" kind="body" />
+          <ColorSwatch name="surface-elev." hex={LIGHT.surfaceElevated} pairedWith={LIGHT.ink} pairedName="ink"             kind="body" />
+        </div>
+
+        <h3 style="margin-top: var(--space-5);">Signature-viz sequential ramp</h3>
+        <div class="ramp-row" style="margin-top: var(--space-3);" aria-label="Six-stop sequential ramp from parchment to deep oxblood">
+          {RAMP.map((hex) => <span style={`background:${hex}`}></span>)}
+        </div>
+        <div class="ramp-labels">
+          {RAMP.map((hex) => <span>{hex.slice(1)}</span>)}
+        </div>
+        <p class="note" style="margin-top: var(--space-2);">No blue in any figure.</p>
+      </section>
+
+      <!-- 2. Fraunces axis specimens -->
+      <section class="section" aria-labelledby="axes-h">
+        <h2 id="axes-h">2 · Fraunces axes</h2>
+        <p class="note" style="margin-top: var(--space-2);">
+          One variable file carries opsz, wght, SOFT, and WONK. Display settings are warm and
+          wonky; text settings are sober. The difference below is the system's voice.
+        </p>
+
+        <div class="specimen">
+          <p class="specimen__meta">display — opsz 96 · SOFT 50 · WONK 1 · weight 500</p>
+          <p style="font-family: var(--font-serif); font-variation-settings: 'opsz' 96, 'SOFT' 50, 'WONK' 1; font-weight: 500; font-size: 3.5rem; line-height: 1.05; margin: 0;">
+            Different models. Same question.
+          </p>
+        </div>
+
+        <div class="specimen">
+          <p class="specimen__meta">wordmark — opsz 72 · SOFT 100 · WONK 1 · weight 500</p>
+          <p style="font-family: var(--font-serif); font-variation-settings: 'opsz' 72, 'SOFT' 100, 'WONK' 1; font-weight: 500; font-size: 3rem; margin: 0;">
+            3MIP
+          </p>
+        </div>
+
+        <div class="specimen">
+          <p class="specimen__meta">text — opsz 14 · SOFT 0 · WONK 0 · weight 400 · old-style figures (onum)</p>
+          <p style="margin: 0; max-width: 65ch;">
+            Bangladesh has 175.7 million people, much of it living in a low-lying delta.
+            Bell et al. (2021) projected that migration toward Bangladesh's coast — not away
+            from it — will continue through 2100 under all sea-level rise scenarios studied.
+          </p>
+        </div>
+
+        <div class="specimen">
+          <p class="specimen__meta">same text, lining figures (lnum) — used in tables and headings</p>
+          <p style="margin: 0; max-width: 65ch; font-feature-settings: 'kern', 'liga', 'lnum';">
+            Bangladesh has 175.7 million people. 2025–2050 baseline; extensions to 2100.
+          </p>
+        </div>
+
+        <div class="specimen">
+          <p class="specimen__meta">italic — Fraunces wght-italic file (true italics, not slanted roman)</p>
+          <p style="margin: 0; font-style: italic;">
+            Climatic Change · Environmental Research Letters · Bay of Bengal
+          </p>
         </div>
       </section>
 
-      <!-- ──────────────────────────────────────────────────────────────
-           2. Type scale (real copy from docs/COPY-GUIDE.md examples)
-           ────────────────────────────────────────────────────────────── -->
+      <!-- 3. Type scale -->
       <section class="section" aria-labelledby="type-h">
-        <h2 id="type-h">2 · Type scale</h2>
-        <p style="color: var(--color-ink-muted); margin-top: var(--space-2);">
-          Source Serif 4 (display, H1, prose emphasis) + Inter (everything else). Both variable,
-          both self-hosted. Lorem ipsum is forbidden by COPY-GUIDE.md, so every sample below
-          is real copy that the site will ship.
-        </p>
-
+        <h2 id="type-h">3 · Type scale</h2>
         <div style="margin-top: var(--space-4);">
-          <TypeSpecimen token="display" family="serif" description="56/1.05/-2%" className="text-[3.5rem] leading-[1.05] tracking-[-0.02em]">
-            Different models. Same question. One coordinated answer.
-          </TypeSpecimen>
-          <TypeSpecimen token="h1" family="serif" description="40/1.15/-1.5%" className="text-[2.5rem] leading-[1.15] tracking-[-0.015em]">
-            About 3MIP
-          </TypeSpecimen>
-          <TypeSpecimen token="h2" family="sans" description="30/1.2/-1%" className="text-[1.875rem] leading-[1.2] tracking-[-0.01em] font-semibold">
-            Why Bangladesh is the first case
-          </TypeSpecimen>
-          <TypeSpecimen token="h3" family="sans" description="22/1.3" className="text-[1.375rem] leading-[1.3] font-semibold">
-            Advisory committee
-          </TypeSpecimen>
-          <TypeSpecimen token="h4" family="sans" description="18/1.35" className="text-[1.125rem] leading-[1.35] font-semibold">
-            What participation involves
-          </TypeSpecimen>
-          <TypeSpecimen token="body-lg" family="sans" description="18/1.65" className="text-[1.125rem] leading-[1.65]">
-            3MIP is a community of climate-migration modelers who agree to apply their approaches
-            to a shared benchmark case and synthesize the results.
-          </TypeSpecimen>
-          <TypeSpecimen token="body" family="sans" description="16/1.65" className="text-[1rem] leading-[1.65]">
-            Bangladesh has 175.7 million people, much of it living in a low-lying delta. Bell et al.
-            (2021) projected that migration toward Bangladesh's coast — not away from it — will
-            continue through 2100 under all sea-level rise scenarios studied.
-          </TypeSpecimen>
-          <TypeSpecimen token="small" family="sans" description="14/1.5" className="text-[0.875rem] leading-[1.5]">
-            Source: United Nations Population Fund, State of World Population 2025.
-          </TypeSpecimen>
-          <TypeSpecimen token="caption" family="sans" description="12/1.4/+2%" className="text-[0.75rem] leading-[1.4] tracking-[0.02em] uppercase font-medium">
-            Figure 1 · Illustrative
-          </TypeSpecimen>
+          <div class="specimen">
+            <p class="specimen__meta">h1 · Fraunces display axes · 40/1.15</p>
+            <h1 style="margin: 0;">About 3MIP</h1>
+          </div>
+          <div class="specimen">
+            <p class="specimen__meta">h2 · opsz 36 · SOFT 25 · 30/1.2</p>
+            <h2 style="margin: 0;">Why Bangladesh is the first case</h2>
+          </div>
+          <div class="specimen">
+            <p class="specimen__meta">h3 · opsz 24 · 22/1.3</p>
+            <h3 style="margin: 0;">Advisory committee</h3>
+          </div>
+          <div class="specimen">
+            <p class="specimen__meta">body-lg · Fraunces text · 18/1.65</p>
+            <p style="font-size: var(--text-body-lg); margin: 0; max-width: 60ch;">
+              3MIP is a community of climate-migration modelers who agree to apply their
+              approaches to a shared benchmark case and synthesize the results.
+            </p>
+          </div>
+          <div class="specimen">
+            <p class="specimen__meta">body · Fraunces text · 16/1.65</p>
+            <p style="margin: 0; max-width: 65ch;">
+              Teams choose how to operationalize "migration" within their own model
+              architecture. Where outputs diverge — and they will — the synthesis paper
+              documents the divergence and the methodological choices that drive it.
+            </p>
+          </div>
+          <div class="specimen">
+            <p class="specimen__meta">small / metadata · Geist 400 · 14/1.5</p>
+            <p style="font-family: var(--font-sans); font-size: var(--text-small); color: var(--color-ink-muted); margin: 0;">
+              Source: United Nations Population Fund, State of World Population 2025.
+            </p>
+          </div>
+          <div class="specimen">
+            <p class="specimen__meta">mono / data attribution · Geist Mono · rare</p>
+            <p style="font-family: var(--font-mono); font-size: var(--text-small); color: var(--color-ink-muted); margin: 0;">
+              10.1088/1748-9326/abdc5b · GHS-POP R2019A · SSP2-4.5
+            </p>
+          </div>
         </div>
       </section>
 
-      <!-- ──────────────────────────────────────────────────────────────
-           3. Spacing scale
-           ────────────────────────────────────────────────────────────── -->
-      <section class="section" aria-labelledby="space-h">
-        <h2 id="space-h">3 · Spacing scale</h2>
-        <p style="color: var(--color-ink-muted); margin-top: var(--space-2);">
-          8pt base. Vertical rhythm uses space-3 between paragraphs, space-7 between sections,
-          space-8 between major page regions.
+      <!-- 4. Editorial register -->
+      <section class="section" aria-labelledby="register-h">
+        <h2 id="register-h">4 · Editorial register</h2>
+
+        <h3 style="margin-top: var(--space-5);">Eyebrow</h3>
+        <div style="margin-top: var(--space-3);">
+          <p class="eyebrow" style="margin: 0 0 var(--space-2);">Fig. 01 · Illustrative</p>
+          <h3 style="margin: 0;">Six architectures, one question</h3>
+        </div>
+
+        <h3 style="margin-top: var(--space-6);">Section divider</h3>
+        <div class="section-divider" style="margin-top: var(--space-3);">
+          <p class="section-label" style="margin: 0;">Sec. 03 / The shared question</p>
+        </div>
+
+        <h3 style="margin-top: var(--space-6);">Dash conventions</h3>
+        <p class="note" style="margin-top: var(--space-2);">
+          En-dash for ranges: 2025–2050, July 12–16. Em-dash for parentheticals — like
+          this one — set open. No text-transform: uppercase anywhere on the site;
+          tracking carries the label register.
         </p>
+      </section>
+
+      <!-- 5. Spacing -->
+      <section class="section" aria-labelledby="space-h">
+        <h2 id="space-h">5 · Spacing scale</h2>
         <div style="margin-top: var(--space-4);">
           {[
             ["space-1", "4px"], ["space-2", "8px"], ["space-3", "16px"],
@@ -202,7 +289,7 @@ const LIGHT = {
             ["space-7", "64px"], ["space-8", "96px"], ["space-9", "128px"],
           ].map(([token, px]) => (
             <div class="space-row">
-              <div class="text-small" style="color: var(--color-ink-muted);">
+              <div class="note">
                 <span style="color: var(--color-ink); font-weight: 500;">{token}</span> · {px}
               </div>
               <div class="bar" style={`width: ${px};`}></div>
@@ -211,25 +298,26 @@ const LIGHT = {
         </div>
       </section>
 
-      <!-- ──────────────────────────────────────────────────────────────
-           4. Grid demo
-           ────────────────────────────────────────────────────────────── -->
+      <!-- 6. Grid -->
       <section class="section" aria-labelledby="grid-h">
-        <h2 id="grid-h">4 · Grid</h2>
-        <p style="color: var(--color-ink-muted); margin-top: var(--space-2);">
-          12 columns at ≥1024px, 6 columns at 768–1023, 4 columns at &lt;768. Max content width 1280px.
-          Resize this window to see the rearrangement.
+        <h2 id="grid-h">6 · Grid</h2>
+        <p class="note" style="margin-top: var(--space-2);">
+          12 columns at ≥1024px, 6 at 768–1023, 4 below. Max content width 1280px. The v2
+          register permits asymmetric placement — section heads at column 2, captions hanging
+          in the margin — demonstrated page-by-page in Phase 4e.
         </p>
         <div class="grid-demo" style="margin-top: var(--space-4);">
           {Array.from({ length: 12 }, (_, i) => <div>col {i + 1}</div>)}
         </div>
       </section>
 
-      <!-- ──────────────────────────────────────────────────────────────
-           5. Components
-           ────────────────────────────────────────────────────────────── -->
+      <!-- 7. Components (v2 tokens; full restyle in 4e) -->
       <section class="section" aria-labelledby="comp-h">
-        <h2 id="comp-h">5 · Components</h2>
+        <h2 id="comp-h">7 · Components</h2>
+        <p class="note" style="margin-top: var(--space-2);">
+          Rendered under v2 tokens. The full component restyle (hairlines, Geist labels,
+          de-uppercasing) lands in Phase 4e — what you see here is the token swap only.
+        </p>
 
         <h3 style="margin-top: var(--space-5);">Buttons</h3>
         <div style="display: flex; gap: var(--space-3); flex-wrap: wrap; margin-top: var(--space-3);">
@@ -242,35 +330,23 @@ const LIGHT = {
 
         <h3 style="margin-top: var(--space-6);">Links</h3>
         <p>
-          In prose, the dataset citation reads <Link href="/data/">curated input data</Link> for the
-          coastal Bangladesh case. Standalone navigation uses
-          <Link href="/about/" variant="standalone">About</Link>. External references like
+          In prose, the dataset citation reads <Link href="/data/">curated input data</Link> for
+          the coastal Bangladesh case. External references like
           <Link href="https://cpree.princeton.edu/news/2024/researchers-around-world-attend-climate-migration-workshop-princeton">Princeton C-PREE</Link>
           carry an unobtrusive glyph.
         </p>
 
-        <h3 style="margin-top: var(--space-6);">Cards</h3>
+        <h3 style="margin-top: var(--space-6);">Cards — surface steps deeper, not white</h3>
         <div class="swatch-grid" style="margin-top: var(--space-3);">
           <Card>
-            <p class="text-caption" style="color: var(--color-ink-subtle); text-transform: uppercase; letter-spacing: 0.08em;">Dataset</p>
-            <h4 style="margin-top: var(--space-2);">GHSL Population Grid</h4>
-            <p class="text-small" style="color: var(--color-ink-muted); margin-top: var(--space-2);">
-              Schiavina, Freire, MacManus (2019). 250m resolution. CC BY 4.0.
-            </p>
+            <p class="section-label" style="margin: 0 0 var(--space-2);">Dataset</p>
+            <h4 style="margin: 0 0 var(--space-2);">GHSL population density</h4>
+            <p class="note" style="margin: 0;">Schiavina, Freire, MacManus (2019). 100 m – 1 km. CC BY 4.0.</p>
           </Card>
           <Card href="/outputs/">
-            <p class="text-caption" style="color: var(--color-ink-subtle); text-transform: uppercase; letter-spacing: 0.08em;">Webinar</p>
-            <h4 style="margin-top: var(--space-2);">February 2025 webinar</h4>
-            <p class="text-small" style="color: var(--color-ink-muted); margin-top: var(--space-2);">
-              45 min · Speaker [VERIFY]
-            </p>
-          </Card>
-          <Card emphasized>
-            <p class="text-caption" style="color: var(--color-ink-subtle); text-transform: uppercase; letter-spacing: 0.08em;">News</p>
-            <h4 style="margin-top: var(--space-2);">3MIP launches</h4>
-            <p class="text-small" style="color: var(--color-ink-muted); margin-top: var(--space-2);">
-              October 2025 — registration opens for the coastal Bangladesh benchmark case.
-            </p>
+            <p class="section-label" style="margin: 0 0 var(--space-2);">Webinar</p>
+            <h4 style="margin: 0 0 var(--space-2);">February Webinar Presentation</h4>
+            <p class="note" style="margin: 0;">Watch recording ↗</p>
           </Card>
         </div>
 
@@ -278,39 +354,11 @@ const LIGHT = {
         <div style="display: grid; gap: var(--space-3); margin-top: var(--space-3);">
           <Callout variant="note" label="The shared question">
             Net internal migration in coastal Bangladesh districts, 2025–2050, under SSP2-4.5.
-            Teams may extend to SSP1-2.6 and SSP5-8.5 as sensitivity scenarios.
-          </Callout>
-          <Callout variant="citation">
-            Bell, A. R., Wrathall, D. J., Mueller, V., et al. (2021). Migration towards Bangladesh
-            coastlines projected to increase with sea-level rise through 2100. <em>Environmental
-            Research Letters</em>, 16(2), 024045.
           </Callout>
           <Callout variant="caution" label="Empty state">
             Working papers from participating teams will appear here as they are released.
           </Callout>
         </div>
-
-        <h3 style="margin-top: var(--space-6);">Signature visualization</h3>
-        <p style="color: var(--color-ink-muted); max-width: 65ch;">
-          The figure below is the centerpiece of the home page. Six small panels, the same
-          stylized Bangladesh outline, the same question. The synthetic data tells the story of
-          how six model archetypes tend to produce visibly different spatial patterns for the
-          same input — which is the entire reason 3MIP exists.
-        </p>
-        <SignatureViz />
-        <p class="text-small" style="color: var(--color-ink-muted); max-width: 65ch; margin-top: var(--space-3);">
-          <strong style="color: var(--color-ink);">Long-form text alternative.</strong>
-          Each of the six panels shows the same coastal silhouette of Bangladesh with a different
-          spatial pattern overlaid. Agent-based: concentrated in a mid-elevation band with
-          household-scale heterogeneity. Gravity: smooth radial decay outward from the largest
-          population center in the north-central area. Radiation: similar to gravity with sharper
-          falloff and a secondary low-intensity pocket where intervening opportunities absorb flow.
-          Integrated assessment: coarse rectangular blocks of uniform intensity at district scale.
-          Machine learning: a small number of blob-like clusters at varying intensities. Cellular
-          automaton: linear diagonal bands following coastal contour. The color ramp is sequential
-          from low (almost invisible) to high (full accent color); panels share the ramp, a scale
-          bar, and the common research question shown above the grid.
-        </p>
 
         <h3 style="margin-top: var(--space-6);">Citation block</h3>
         <CitationBlock
@@ -322,112 +370,27 @@ const LIGHT = {
           doi="10.1088/1748-9326/abdc5b"
         />
 
-        <h3 style="margin-top: var(--space-6);">Footnote markers</h3>
-        <p>
-          Bangladesh has 175.7 million people<Footnote id="1" />, much of it living in a low-lying
-          delta<Footnote id="2" />. The footnote markers point to entries in an end-of-page list
-          (rendered as a real component on the Case and Outputs pages, not on this showcase).
-        </p>
-
         <h3 style="margin-top: var(--space-6);">Form inputs</h3>
-        <form aria-label="Registration form preview" style="max-width: 32rem;">
+        <form aria-label="Form preview" style="max-width: 32rem;">
           <FormField id="name" name="name" label="Name" required placeholder="First and last" />
-          <FormField id="email" name="email" type="email" label="Email" required />
-          <FormField
-            id="approach"
-            name="approach"
-            type="select"
-            label="Modeling approach"
-            required
-            options={[
-              { value: "abm", label: "Agent-based" },
-              { value: "gravity", label: "Gravity" },
-              { value: "radiation", label: "Radiation" },
-              { value: "iam", label: "Integrated assessment" },
-              { value: "ml", label: "Machine learning" },
-              { value: "other", label: "Other" },
-            ]}
-          />
-          <FormField
-            id="question"
-            name="question"
-            type="textarea"
-            label="Research question of interest"
-            required
-            help="2–4 sentences on what you intend to study with the curated dataset."
-          />
-          <FormField
-            id="orcid"
-            name="orcid"
-            label="ORCID"
-            pattern="\d{4}-\d{4}-\d{4}-\d{4}"
-            help="Optional. Format: 0000-0000-0000-0000"
-          />
-          <FormField
-            id="broken"
-            name="broken"
-            label="Field with error (preview)"
-            error="This field is required."
-          />
+          <FormField id="broken" name="broken" label="Field with error (preview)" error="This field is required." />
           <Button type="submit">Submit registration</Button>
         </form>
-
-        <h3 style="margin-top: var(--space-6);">Table</h3>
-        <p style="color: var(--color-ink-muted);">
-          Static rendering. Sortable behavior (≤2KB client JS) lands in Phase 4A on the Data page.
-        </p>
-        <table style="margin-top: var(--space-3);">
-          <thead>
-            <tr>
-              <th scope="col">Dataset</th>
-              <th scope="col">Variable</th>
-              <th scope="col">Resolution</th>
-              <th scope="col">License</th>
-              <th scope="col">DOI</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>GHSL Population Grid</td>
-              <td>population</td>
-              <td>250 m</td>
-              <td>CC BY 4.0</td>
-              <td><Link href="https://doi.org/10.2905/0C6B9751-A71F-4062-830B-43C9F432370F">10.2905/0C6B9751…</Link></td>
-            </tr>
-            <tr>
-              <td>Sorichetta et al. flows</td>
-              <td>migration</td>
-              <td>district</td>
-              <td>CC BY 4.0</td>
-              <td><Link href="https://doi.org/10.1038/sdata.2016.66">10.1038/sdata.2016.66</Link></td>
-            </tr>
-            <tr>
-              <td>Hassani et al. salinity</td>
-              <td>soil salinity</td>
-              <td>30 arc-sec</td>
-              <td>CC BY 4.0</td>
-              <td><Link href="https://doi.org/10.1073/pnas.2013771117">10.1073/pnas.2013771117</Link></td>
-            </tr>
-          </tbody>
-        </table>
       </section>
 
-      <!-- ──────────────────────────────────────────────────────────────
-           6. Motion preferences
-           ────────────────────────────────────────────────────────────── -->
-      <section class="section" aria-labelledby="motion-h">
-        <h2 id="motion-h">6 · Motion</h2>
-        <p style="color: var(--color-ink-muted); margin-top: var(--space-2);">
-          Two durations (150ms hover, 250ms layout). `prefers-reduced-motion: reduce` collapses
-          everything to 0.01ms via the rule in <code>global.css</code>. Hover any button above
-          while reduced motion is on (System Settings → Accessibility → Display → Reduce motion)
-          to verify.
+      <!-- 8. Signature visualization -->
+      <section class="section" aria-labelledby="viz-h">
+        <h2 id="viz-h">8 · Signature visualization</h2>
+        <p class="note" style="margin-top: var(--space-2);">
+          Currently the Phase 2 uniform-grid build rendering under v2 tokens. The atlas-plate
+          rebuild — six per-architecture visual grammars — lands in Phase 2c and replaces this.
         </p>
+        <SignatureViz />
       </section>
     </main>
 
-    <footer class="container" style="padding-block: var(--space-6); color: var(--color-ink-subtle); font-size: var(--text-small);">
-      Internal design system · not shipped to visitors · excluded from sitemap · noindex.
+    <footer class="container" style="padding-block: var(--space-6);">
+      <p class="note">Internal design system · excluded from sitemap · noindex.</p>
     </footer>
   </body>
 </html>

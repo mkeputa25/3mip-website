@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32">
-  <!-- Typographic favicon: numeral "3" set in a serif-like geometric form.
-       Single-color, scales cleanly, no dependency on font availability. -->
-  <rect width="32" height="32" rx="4" fill="#1A1715"/>
+  <!-- Typographic favicon, v2 palette: deep ink-brown tile, parchment "3".
+       The full "3M" wordmark-derived raster variant lands with the
+       Wordmark rebuild in Phase 4e (DECISIONS-V2 V6). -->
+  <rect width="32" height="32" rx="4" fill="#1A1612"/>
   <path d="M9 9 h11 v3 l-5 4 q5 0 5 5 t-6 6 q-4 0 -5 -3"
-        fill="none" stroke="#FAF7F2" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+        fill="none" stroke="#F5EFE4" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
 </svg>
