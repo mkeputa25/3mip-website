@@ -1,35 +1,44 @@
 ---
 /**
- * SignatureViz — the 3MIP signature figure, v2 atlas plate (DECISIONS-V2 V5).
+ * SignatureViz — the 3MIP signature figure: atlas plate (Phase 2c) made
+ * kinetic (Phase 2d, DECISIONS-V2 V9 Tier 3).
  *
- * Six panels, one stylized Bangladesh, one question — but unlike the v1
- * uniform cell grid, each panel now uses the visual grammar of its own
- * model architecture:
+ * THE CORE IDEA: each panel's motion grammar mirrors its model's
+ * computational logic. The animation is the methodological argument,
+ * kinetic. One shared ~14s loop represents simulation time 2025 → 2050,
+ * labeled by a Geist Mono year readout beneath the plate furniture.
  *
- *   01 Agent-based   — individual dots (household clusters), size by weight,
- *                      density trending coastal-southwest + Dhaka corridor
- *   02 Gravity       — flow arcs from coastal origins to three destinations,
- *                      stroke weight proportional to flow
- *   03 Radiation     — nested catchment rings from one focal point, decay
- *                      visible in spacing and stroke
- *   04 Integrated    — five flat regional polygons, no interior detail:
- *      assessment      the model is aggregated and the visual says so
- *   05 Machine       — smooth nested contour bands, no hard edges
- *      learning
- *   06 Cellular      — the one panel keeping a discrete grid (~10×8),
- *                      so 05-smooth vs 06-discrete reads at a glance
+ *   01 Agent-based   dots drift toward the Dhaka corridor; three dots
+ *                    fade out at origin and re-fade-in displaced
+ *                    (individual-level simulation)
+ *   02 Gravity       arcs draw in (stroke-dashoffset, first ~2s), then
+ *                    pulse opacity with flow weight (steady-state flows)
+ *   03 Radiation     rings ripple outward sequentially, 2.8s cascade
+ *                    (distance-decay propagation; 2.8 × 5 = the 14s loop)
+ *   04 IAM           region fills JUMP through 5 discrete states — no
+ *                    tweening; the jump cut is the meaning (time steps)
+ *   05 ML            contour surface crossfades between 3 precomputed
+ *                    states (continuous prediction surface)
+ *   06 Cellular      cells die/appear in discrete generations, one tick
+ *                    per 1.4s (the CA update rule made visible)
  *
- * What survives from v1 (by mandate): the shared viewBox, the outline
- * module (src/lib/bangladesh-outline.ts), deterministic generation (all
- * geometry below is hand-authored or pure-function — no randomness), the
- * accessibility structure, and the 3×2 / 2×3 / 1×6 responsive grid.
+ * MOTION ARCHITECTURE — class-gated, not play-state-paused:
+ * every animation exists only under `.sigviz.is-playing`. The base
+ * (non-playing) document IS today's static plate — exactly what no-JS
+ * visitors, reduced-motion users, and the Phase 6 static SVG export get.
+ * "Pause" therefore returns to the canonical figure rather than freezing
+ * mid-frame (WCAG 2.2.2 permits pause or stop; stop is cleaner here).
  *
- * Cartographic treatment (all panels): 0.6 ink outline, 0.3 internal
- * district hairlines at 25% ink, N compass lower-right, "Bay of Bengal"
- * italic on bottom-row panels (desktop 3×2 row = panels 04–06).
+ * Controls: plays when scrolled into view, pauses out of view (own
+ * IntersectionObserver); visible ghost pause/play button (hidden until
+ * the controller enables it; never enabled under reduced motion).
+ * Nothing changes faster than ~1 event per 0.7s in any region
+ * (WCAG 2.3.1: well under 3/sec; no flashing).
  *
- * Ramp (figure-locked hex stops, DECISIONS-V2 V2): #F5EFE4 → #E8B98A →
- * #D08A6E → #B85A35 → #8E3A22 → #6B1F1F. No blue anywhere.
+ * Everything is deterministic: hand-authored geometry, pure-function
+ * cell states, fixed delays. Same animation every load. No rAF, no
+ * canvas, no library. Controller ≈0.8KB; system total ≈1.3KB of the
+ * ≤3KB budget.
  *
  * [PENDING BELL APPROVAL]: archetype choice + per-panel pattern story.
  */
@@ -48,11 +57,11 @@ interface Props {
 const { class: className = "", idBase = "sigviz" } = Astro.props;
 
 const RAMP = ["#F5EFE4", "#E8B98A", "#D08A6E", "#B85A35", "#8E3A22", "#6B1F1F"] as const;
+const LOOP_S = 14;
 
-/* ── 01 Agent-based: hand-authored dot field (deterministic by construction).
-      Denser along the south coast and the corridor toward Dhaka (~112,62). */
+/* ── 01 Agent-based: dot field + drift vectors toward the Dhaka corridor. */
 type Tone = "accent" | "deep" | "dim";
-const ABM_DOTS: ReadonlyArray<{ x: number; y: number; r: number; t: Tone }> = [
+const ABM_DOTS_BASE: ReadonlyArray<{ x: number; y: number; r: number; t: Tone }> = [
   { x: 55, y: 150, r: 3.2, t: "deep" },
   { x: 70, y: 142, r: 2.2, t: "accent" },
   { x: 84, y: 152, r: 4.2, t: "deep" },
@@ -74,21 +83,35 @@ const ABM_DOTS: ReadonlyArray<{ x: number; y: number; r: number; t: Tone }> = [
   { x: 74, y: 112, r: 2.0, t: "dim" },
   { x: 58, y: 128, r: 2.4, t: "accent" },
 ];
+const DHAKA = { x: 112, y: 62 } as const;
+/* Indices of the 2–3 dots that relocate (fade out at origin, re-fade-in
+   displaced further along the corridor). */
+const ABM_FADERS = new Set([3, 9, 17]);
+const ABM_DOTS = ABM_DOTS_BASE.map((d, i) => {
+  const vx = DHAKA.x - d.x;
+  const vy = DHAKA.y - d.y;
+  const len = Math.hypot(vx, vy) || 1;
+  const mag = Math.min(9, len * 0.1);
+  const dx = +((vx / len) * mag).toFixed(1);
+  const dy = +((vy / len) * mag).toFixed(1);
+  return { ...d, i, dx, dy, dx2: +(dx * 2.6).toFixed(1), dy2: +(dy * 2.6).toFixed(1), fades: ABM_FADERS.has(i) };
+});
 const TONE_VAR: Record<Tone, string> = {
   accent: "var(--color-accent)",
   deep: "var(--color-accent-deep)",
   dim: "var(--color-accent-dim)",
 };
 
-/* ── 02 Gravity: five coastal origins, three destinations, eight arcs. */
+/* ── 02 Gravity: origins, destinations, arcs. pathLength=100 normalizes
+   the dash draw-in regardless of true arc length. */
 const GRAVITY_ORIGINS = [
   { x: 58, y: 148 }, { x: 92, y: 154 }, { x: 128, y: 150 },
   { x: 162, y: 150 }, { x: 196, y: 148 },
 ] as const;
 const GRAVITY_DESTS = [
-  { x: 112, y: 62, r: 5 },   // Dhaka
-  { x: 78, y: 124, r: 4 },   // Khulna
-  { x: 214, y: 128, r: 4 },  // Chattogram
+  { x: 112, y: 62, r: 5 },
+  { x: 78, y: 124, r: 4 },
+  { x: 214, y: 128, r: 4 },
 ] as const;
 const GRAVITY_ARCS: ReadonlyArray<{ o: number; d: number; cx: number; cy: number; w: number; op: number }> = [
   { o: 0, d: 0, cx: 70, cy: 95, w: 2.6, op: 0.85 },
@@ -101,8 +124,8 @@ const GRAVITY_ARCS: ReadonlyArray<{ o: number; d: number; cx: number; cy: number
   { o: 0, d: 1, cx: 66, cy: 140, w: 1.0, op: 0.5 },
 ];
 
-/* ── 03 Radiation: focal point + five rings, spacing and stroke decaying
-      outward, color fading outermost-light → innermost-dark. */
+/* ── 03 Radiation: focal point + rings; cascade delay = index × 0.35s,
+   ripple period 2.8s (×5 = the 14s loop). */
 const RADIATION_FOCUS = { x: 112, y: 62 } as const;
 const RADIATION_RINGS: ReadonlyArray<{ r: number; w: number; color: string }> = [
   { r: 12, w: 1.4, color: RAMP[5] },
@@ -112,17 +135,19 @@ const RADIATION_RINGS: ReadonlyArray<{ r: number; w: number; color: string }> = 
   { r: 92, w: 0.5, color: RAMP[1] },
 ];
 
-/* ── 04 IAM: five flat regional polygons (overshoot freely; clip handles
-      the coastline). Highest intensities on the coast. */
-const IAM_REGIONS: ReadonlyArray<{ d: string; fill: string }> = [
-  { d: "M 20 25 L 105 25 L 100 80 L 60 95 L 18 80 Z", fill: RAMP[2] },
-  { d: "M 105 25 L 245 25 L 240 95 L 165 100 L 100 80 Z", fill: RAMP[1] },
-  { d: "M 18 80 L 60 95 L 100 80 L 110 130 L 60 140 L 20 130 Z", fill: RAMP[3] },
-  { d: "M 20 130 L 110 130 L 165 135 L 160 185 L 15 185 Z", fill: RAMP[5] },
-  { d: "M 165 100 L 240 95 L 248 185 L 160 185 L 165 135 Z", fill: RAMP[4] },
+/* ── 04 IAM: regions + 5 precomputed fill states each. State 1 is the
+   static figure; the loop jumps 1→2→3→4→5→1 with no tweening. */
+const IAM_REGIONS: ReadonlyArray<{ d: string; states: readonly [number, number, number, number, number] }> = [
+  { d: "M 20 25 L 105 25 L 100 80 L 60 95 L 18 80 Z", states: [2, 2, 3, 3, 2] },
+  { d: "M 105 25 L 245 25 L 240 95 L 165 100 L 100 80 Z", states: [1, 2, 2, 3, 2] },
+  { d: "M 18 80 L 60 95 L 100 80 L 110 130 L 60 140 L 20 130 Z", states: [3, 3, 4, 4, 3] },
+  { d: "M 20 130 L 110 130 L 165 135 L 160 185 L 15 185 Z", states: [5, 4, 4, 5, 5] },
+  { d: "M 165 100 L 240 95 L 248 185 L 160 185 L 165 135 Z", states: [4, 3, 4, 5, 4] },
 ];
 
-/* ── 05 ML: nested smooth contour bands, light → dark toward a coastal core. */
+/* ── 05 ML: one band set, three precomputed surface states (the predicted
+   surface migrates toward the corridor over simulation time). State A is
+   the static figure; B and C are group-transformed copies that crossfade. */
 const ML_BANDS: ReadonlyArray<{ d: string; fill: string }> = [
   {
     d: "M 30 95 C 55 70, 95 60, 130 75 C 170 90, 200 115, 195 140 C 188 165, 130 172, 90 165 C 50 158, 18 130, 30 95 Z",
@@ -141,60 +166,80 @@ const ML_BANDS: ReadonlyArray<{ d: string; fill: string }> = [
     fill: RAMP[4],
   },
 ];
+const ML_STATES = [
+  { transform: undefined, delay: 0, base: 1 },
+  { transform: "translate(7 -5)", delay: +(LOOP_S / 3).toFixed(3), base: 0 },
+  { transform: "translate(13 -9)", delay: +((LOOP_S / 3) * 2).toFixed(3), base: 0 },
+] as const;
 
-/* ── 06 Cellular: ~10×8 discrete grid, ramp-colored states from a pure
-      function of (col, row). Bin 0 cells are not drawn. */
+/* ── 06 Cellular: static grid + generation ticks. ~8 cells die and ~6 are
+   born across 10 ticks of 1.4s — a handful of state changes per
+   generation, all deterministic from the cell index. */
 const CELL_COLS = 10;
 const CELL_ROWS = 8;
 const CELL_W = 240 / CELL_COLS;
 const CELL_H = 180 / CELL_ROWS;
 function cellBin(c: number, r: number): number {
-  // Tuned so roughly a third of cells stay parchment (bin 0): the discrete
-  // grammar needs empty cells to read as a grid rather than a solid quilt.
   const band = Math.sin((c + r * 1.4) * 0.7) * 2.8 + 1.6;
   const coastBoost = r > 4 ? (r - 4) * 0.7 : 0;
   return Math.max(0, Math.min(5, Math.round(band + coastBoost - 0.5)));
 }
-const CELLS = Array.from({ length: CELL_COLS * CELL_ROWS }, (_, i) => {
+const GRID = Array.from({ length: CELL_COLS * CELL_ROWS }, (_, i) => {
   const c = i % CELL_COLS;
   const r = Math.floor(i / CELL_COLS);
-  return { x: c * CELL_W, y: r * CELL_H, bin: cellBin(c, r) };
-}).filter((cell) => cell.bin > 0);
+  return { i, x: c * CELL_W, y: r * CELL_H, bin: cellBin(c, r) };
+});
+const CELLS = GRID.filter((cell) => cell.bin > 0);
+const TICK_S = 1.4;
+const DYING = CELLS.filter((cell) => cell.i % 6 === 2)
+  .slice(0, 8)
+  .map((cell) => ({ ...cell, tick: (cell.i * 7) % 10 }));
+const DYING_IDS = new Set(DYING.map((d) => d.i));
+const BORN = GRID.filter((cell) => cell.bin === 0)
+  .filter((cell) => cell.i % 5 === 1)
+  .slice(0, 6)
+  .map((cell) => ({ ...cell, tick: (cell.i * 3 + 5) % 10 }));
 
-/* ── Panel metadata. desc is the per-panel screen-reader description. */
+/* ── Year readout: six labels across the 14s loop (2.333s each). */
+const YEARS = ["2025", "2030", "2035", "2040", "2045", "2050"] as const;
+const YEAR_WIN_S = +(LOOP_S / YEARS.length).toFixed(4);
+
+/* ── Panel metadata: desc covers the static figure; motion is described in
+   the visible long-form alternatives on the consuming pages. */
 const PANELS = [
   {
     id: "abm", num: "01", title: "Agent-based",
-    desc: "About twenty dots of varying size, denser along the southwest coast and the corridor toward Dhaka; each dot is one simulated household cluster.",
+    desc: "About twenty dots of varying size, denser along the southwest coast and the corridor toward Dhaka; each dot is one simulated household cluster. In motion, dots drift toward the corridor and a few relocate.",
   },
   {
     id: "gravity", num: "02", title: "Gravity",
-    desc: "Flow arcs of varying thickness from five coastal origin points to three destination cities; thicker arcs are larger modeled flows.",
+    desc: "Flow arcs of varying thickness from five coastal origin points to three destination cities; thicker arcs are larger modeled flows. In motion, arcs draw in and pulse with flow weight.",
   },
   {
     id: "radiation", num: "03", title: "Radiation",
-    desc: "Nested rings spreading from one focal point, spacing widening and color fading outward — distance-decaying catchments.",
+    desc: "Nested rings spreading from one focal point, spacing widening and color fading outward — distance-decaying catchments. In motion, rings ripple outward in sequence.",
   },
   {
     id: "iam", num: "04", title: "Integrated assessment",
-    desc: "Five regional polygons, each filled with a single flat intensity value; no detail inside regions, because the model aggregates.",
+    desc: "Five regional polygons, each filled with a single flat intensity value; no detail inside regions, because the model aggregates. In motion, fills jump between discrete time-step states.",
   },
   {
     id: "ml", num: "05", title: "Machine learning",
-    desc: "Smooth nested contour bands deepening toward a coastal core — a continuous predicted surface with no hard edges.",
+    desc: "Smooth nested contour bands deepening toward a coastal core — a continuous predicted surface with no hard edges. In motion, the surface crossfades between predicted states.",
   },
   {
     id: "cellular", num: "06", title: "Cellular automaton",
-    desc: "A coarse grid of discrete cells in stepped intensities, clipped to the country outline — visibly discrete against the smooth panel beside it.",
+    desc: "A coarse grid of discrete cells in stepped intensities, clipped to the country outline. In motion, cells change state in discrete generations.",
   },
 ] as const;
 
-// Bottom row at the canonical 3×2 desktop layout = panels 04–06.
 const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
 ---
 
-<figure class={`sigviz ${className}`}>
-  <!-- Figure header: eyebrow + title + question, Illustrative tag right. -->
+<figure class={`sigviz ${className}`} data-kinetic>
+  <!-- Figure header: eyebrow + title + question; Illustrative tag and the
+       motion control right. The button stays hidden until the controller
+       enables it (never under reduced motion; never without JS). -->
   <div class="sigviz__head">
     <div>
       <p class="eyebrow sigviz__fig">Fig. 01</p>
@@ -203,7 +248,17 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
         Net internal migration, coastal Bangladesh, 2025–2050, SSP2-4.5
       </p>
     </div>
-    <span class="sigviz__tag" aria-hidden="true">Illustrative</span>
+    <div class="sigviz__head-tools">
+      <span class="sigviz__tag" aria-hidden="true">Illustrative</span>
+      <button
+        type="button"
+        class="sigviz__toggle"
+        data-viz-toggle
+        hidden
+        aria-pressed="false"
+        aria-label="Pause the figure animation"
+      >Pause</button>
+    </div>
   </div>
 
   <div class="sigviz__grid" role="group" aria-label="Six model architectures applied to the same question.">
@@ -228,20 +283,26 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
             </clipPath>
           </defs>
 
-          {/* Land fill — design-locked literal (DECISIONS-V2 V8): this is
-              part of the figure's print world, not the UI token system. */}
+          {/* Land fill — design-locked literal (DECISIONS-V2 V8). */}
           <path d={BANGLADESH_PATH} fill="#EEE7D7" />
 
           {/* ── Architecture grammar, clipped to the landmass ── */}
           <g clip-path={`url(#${idBase}-clip-${panel.id})`}>
             {panel.id === "abm" &&
               ABM_DOTS.map((d) => (
-                <circle cx={d.x} cy={d.y} r={d.r} fill={TONE_VAR[d.t]} />
+                <circle
+                  cx={d.x}
+                  cy={d.y}
+                  r={d.r}
+                  fill={TONE_VAR[d.t]}
+                  class={d.fades ? "ka-fade" : "ka-dot"}
+                  style={`--dx:${d.dx}px; --dy:${d.dy}px; --dx2:${d.dx2}px; --dy2:${d.dy2}px;`}
+                />
               ))}
 
             {panel.id === "radiation" && (
               <>
-                {RADIATION_RINGS.map((ring) => (
+                {RADIATION_RINGS.map((ring, i) => (
                   <circle
                     cx={RADIATION_FOCUS.x}
                     cy={RADIATION_FOCUS.y}
@@ -249,6 +310,8 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
                     fill="none"
                     stroke={ring.color}
                     stroke-width={ring.w}
+                    class="ka-ring"
+                    style={`--rd:${(i * 0.35).toFixed(2)}s;`}
                   />
                 ))}
                 <circle
@@ -256,6 +319,7 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
                   cy={RADIATION_FOCUS.y}
                   r="3"
                   fill="var(--color-accent-deep)"
+                  class="ka-focus"
                 />
               </>
             )}
@@ -264,38 +328,64 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
               IAM_REGIONS.map((region) => (
                 <path
                   d={region.d}
-                  fill={region.fill}
+                  fill={RAMP[region.states[0]]}
                   stroke="rgb(26 22 18 / 0.3)"
                   stroke-width="0.4"
+                  class="ka-region"
+                  style={`--f1:${RAMP[region.states[0]]}; --f2:${RAMP[region.states[1]]}; --f3:${RAMP[region.states[2]]}; --f4:${RAMP[region.states[3]]}; --f5:${RAMP[region.states[4]]};`}
                 />
               ))}
 
             {panel.id === "ml" &&
-              ML_BANDS.map((band) => <path d={band.d} fill={band.fill} />)}
-
-            {panel.id === "cellular" &&
-              CELLS.map((cell) => (
-                <rect
-                  x={cell.x}
-                  y={cell.y}
-                  width={CELL_W}
-                  height={CELL_H}
-                  fill={RAMP[cell.bin]}
-                />
+              ML_STATES.map((state) => (
+                <g
+                  class="ka-ml"
+                  transform={state.transform}
+                  style={`--md:${state.delay}s; opacity:${state.base};`}
+                >
+                  {ML_BANDS.map((band) => <path d={band.d} fill={band.fill} />)}
+                </g>
               ))}
+
+            {panel.id === "cellular" && (
+              <>
+                {CELLS.map((cell) =>
+                  DYING_IDS.has(cell.i) ? null : (
+                    <rect x={cell.x} y={cell.y} width={CELL_W} height={CELL_H} fill={RAMP[cell.bin]} />
+                  ),
+                )}
+                {DYING.map((cell) => (
+                  <rect
+                    x={cell.x}
+                    y={cell.y}
+                    width={CELL_W}
+                    height={CELL_H}
+                    fill={RAMP[cell.bin]}
+                    class="ka-cell-die"
+                    style={`--cd:${(cell.tick * TICK_S).toFixed(1)}s;`}
+                  />
+                ))}
+                {BORN.map((cell) => (
+                  <rect
+                    x={cell.x}
+                    y={cell.y}
+                    width={CELL_W}
+                    height={CELL_H}
+                    fill={RAMP[2]}
+                    class="ka-cell-born"
+                    style={`--cd:${(cell.tick * TICK_S).toFixed(1)}s; opacity:0;`}
+                  />
+                ))}
+              </>
+            )}
 
             {/* District hairlines — over fills, under outline. */}
             {BANGLADESH_DISTRICT_LINES.map((line) => (
-              <path
-                d={line}
-                fill="none"
-                stroke="rgb(26 22 18 / 0.25)"
-                stroke-width="0.3"
-              />
+              <path d={line} fill="none" stroke="rgb(26 22 18 / 0.25)" stroke-width="0.3" />
             ))}
           </g>
 
-          {/* Gravity arcs sit above the clip: flows are diagrammatic. */}
+          {/* Gravity flows sit above the clip: diagrammatic, not choropleth. */}
           {panel.id === "gravity" && (
             <>
               {GRAVITY_ARCS.map((arc) => {
@@ -309,6 +399,9 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
                     stroke-width={arc.w}
                     stroke-linecap="round"
                     opacity={arc.op}
+                    pathLength={100}
+                    class="ka-arc"
+                    style={`--op:${arc.op};`}
                   />
                 );
               })}
@@ -351,9 +444,7 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
             >N</text>
           </g>
 
-          {/* Bay of Bengal — bottom-row panels only (canonical 3×2 layout).
-              ink-subtle per directive: decorative cartographic furniture,
-              covered by the figure's visible text alternative (C1 note). */}
+          {/* Bay of Bengal — bottom-row panels only (canonical 3×2 layout). */}
           {BOTTOM_ROW_IDS.has(panel.id) && (
             <text
               x="120"
@@ -390,6 +481,19 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
     <span class="sigviz__scenario">SSP2-4.5</span>
   </div>
 
+  <!-- Simulation-time readout: labels the loop, 2025 → 2050. A progress
+       indicator for simulation time, not an animated counter — it only
+       exists while the figure plays. aria-hidden: the long-form text
+       alternative carries the information. -->
+  <div class="sigviz__timeline" aria-hidden="true">
+    <span class="sigviz__timeline-label">simulation year</span>
+    <span class="sigviz__year">
+      {YEARS.map((year, i) => (
+        <span class="ka-year" style={`--yd:${(i * YEAR_WIN_S).toFixed(3)}s; opacity:0;`}>{year}</span>
+      ))}
+    </span>
+  </div>
+
   <figcaption class="sigviz__attribution">
     <em>Illustrative.</em> Synthetic geometry tuned to show the spatial
     grammar each architecture tends to produce; 3MIP's purpose is to make
@@ -400,7 +504,7 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
   </figcaption>
 </figure>
 
-<style>
+<style define:vars={{ loop: `${LOOP_S}s`, tick: `${TICK_S}s` }}>
   .sigviz {
     margin-block: 0;
   }
@@ -431,8 +535,13 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
     color: var(--color-ink-muted);
     margin: var(--space-1) 0 0;
   }
-  .sigviz__tag {
+  .sigviz__head-tools {
     flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+  .sigviz__tag {
     font-family: var(--font-sans);
     font-size: var(--text-caption);
     font-weight: 500;
@@ -441,6 +550,30 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
     border: var(--hairline) solid var(--color-border-strong);
     border-radius: 2px;
     padding: var(--space-1) var(--space-2);
+  }
+
+  /* Pause/play — ghost button (WCAG 2.2.2). Hidden until the controller
+     enables it; display:none under reduced motion as a second guard. */
+  .sigviz__toggle {
+    font-family: var(--font-sans);
+    font-size: var(--text-small);
+    font-weight: 500;
+    color: var(--color-ink);
+    background: transparent;
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius);
+    padding: var(--space-2) var(--space-3);
+    min-height: 44px;
+    min-width: 64px;
+    cursor: pointer;
+    transition: border-color 150ms var(--ease-out), background-color 150ms var(--ease-out);
+  }
+  .sigviz__toggle:hover {
+    border-color: var(--color-ink);
+    background: var(--color-surface);
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .sigviz__toggle { display: none !important; }
   }
 
   /* ── Panel grid: 1 / 2 / 3 columns ─────────────────────────────── */
@@ -461,9 +594,6 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
     flex-direction: column;
     gap: var(--space-2);
   }
-  /* Panel titles are labels, not document headings — the group carries the
-     aria-label; using <p> avoids forcing a heading level onto every page
-     that embeds the figure. */
   .sigviz__panel-title {
     font-family: var(--font-sans);
     font-size: var(--text-small);
@@ -546,6 +676,41 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
     color: var(--color-ink-muted);
   }
 
+  /* ── Simulation-time readout ────────────────────────────────────── */
+  /* Only laid out when JS is present (no empty row for no-JS visitors);
+     removed entirely under reduced motion. Empty until the loop plays. */
+  .sigviz__timeline { display: none; }
+  :global(html.js) .sigviz__timeline {
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+    min-height: 1.4em;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    :global(html.js) .sigviz__timeline { display: none; }
+  }
+  .sigviz__timeline-label {
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
+    letter-spacing: 0.04em;
+    color: var(--color-ink-muted);
+  }
+  .sigviz__year {
+    position: relative;
+    display: inline-block;
+    min-width: 4ch;
+    height: 1.2em;
+    font-family: var(--font-mono);
+    font-size: var(--text-small);
+    color: var(--color-ink-muted);
+  }
+  .sigviz__year .ka-year {
+    position: absolute;
+    left: 0;
+    top: 0;
+  }
+
   /* ── Attribution ────────────────────────────────────────────────── */
   .sigviz__attribution {
     margin-top: var(--space-3);
@@ -558,4 +723,179 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
   .sigviz__attribution em {
     color: var(--color-ink);
   }
+
+  /* ═══════════════════════════════════════════════════════════════════
+     KINETIC GRAMMAR (Phase 2d) — class-gated: animations exist only under
+     .is-playing, so the base document is exactly the static plate. All
+     durations divide the shared 14s loop; everything is deterministic.
+     The global reduced-motion rule additionally neutralizes all of this.
+     ═══════════════════════════════════════════════════════════════════ */
+
+  /* 01 — agents drift toward the corridor; faders relocate. */
+  .sigviz.is-playing .ka-dot {
+    animation: abm-drift var(--loop) ease-in-out infinite;
+  }
+  .sigviz.is-playing .ka-fade {
+    animation: abm-relocate var(--loop) ease-in-out infinite;
+  }
+  @keyframes abm-drift {
+    0%, 100% { transform: translate(0, 0); }
+    50% { transform: translate(var(--dx), var(--dy)); }
+  }
+  @keyframes abm-relocate {
+    0%, 14% { opacity: 1; transform: translate(0, 0); }
+    20%, 24% { opacity: 0; transform: translate(0, 0); }
+    25% { opacity: 0; transform: translate(var(--dx2), var(--dy2)); }
+    32%, 72% { opacity: 1; transform: translate(var(--dx2), var(--dy2)); }
+    80%, 88% { opacity: 0; transform: translate(var(--dx2), var(--dy2)); }
+    89% { opacity: 0; transform: translate(0, 0); }
+    96%, 100% { opacity: 1; transform: translate(0, 0); }
+  }
+
+  /* 02 — arcs draw in over the first ~2s, then pulse with flow weight. */
+  .sigviz.is-playing .ka-arc {
+    stroke-dasharray: 100;
+    animation: arc-flow var(--loop) linear infinite;
+  }
+  @keyframes arc-flow {
+    0% { stroke-dashoffset: 100; opacity: 0; }
+    4% { opacity: var(--op); }
+    14% { stroke-dashoffset: 0; opacity: var(--op); }
+    25% { opacity: calc(var(--op) * 0.55); }
+    36% { opacity: var(--op); }
+    47% { opacity: calc(var(--op) * 0.55); }
+    58% { opacity: var(--op); }
+    69% { opacity: calc(var(--op) * 0.55); }
+    80% { opacity: var(--op); }
+    90% { opacity: calc(var(--op) * 0.55); }
+    100% { opacity: var(--op); }
+  }
+
+  /* 03 — rings ripple outward in sequence; 2.8s × 5 = the 14s loop. */
+  .sigviz.is-playing .ka-ring {
+    animation: ring-ripple 2.8s ease-out infinite;
+    animation-delay: var(--rd);
+  }
+  @keyframes ring-ripple {
+    0% { opacity: 1; }
+    25% { opacity: 0.35; }
+    60%, 100% { opacity: 1; }
+  }
+  .sigviz.is-playing .ka-focus {
+    transform-box: fill-box;
+    transform-origin: center;
+    animation: focus-pulse 2.8s ease-out infinite;
+  }
+  @keyframes focus-pulse {
+    0% { transform: scale(1); }
+    12% { transform: scale(1.3); }
+    35%, 100% { transform: scale(1); }
+  }
+
+  /* 04 — fills jump through five discrete states; steps(1, end) makes
+     every transition a cut, not a tween. The jump IS the meaning. */
+  .sigviz.is-playing .ka-region {
+    animation: region-steps var(--loop) steps(1, end) infinite;
+  }
+  @keyframes region-steps {
+    0% { fill: var(--f1); }
+    20% { fill: var(--f2); }
+    40% { fill: var(--f3); }
+    60% { fill: var(--f4); }
+    80% { fill: var(--f5); }
+    100% { fill: var(--f1); }
+  }
+
+  /* 05 — three surface states crossfade on staggered thirds of the loop. */
+  .sigviz.is-playing .ka-ml {
+    animation: ml-fade var(--loop) ease-in-out infinite;
+    animation-delay: var(--md);
+  }
+  @keyframes ml-fade {
+    0% { opacity: 1; }
+    28% { opacity: 1; }
+    36% { opacity: 0; }
+    92% { opacity: 0; }
+    100% { opacity: 1; }
+  }
+
+  /* 06 — generational ticks: dying cells vanish for ~4.5s windows, born
+     cells appear in theirs. steps(1, end) keeps changes discrete. */
+  .sigviz.is-playing .ka-cell-die {
+    animation: cell-die var(--loop) steps(1, end) infinite;
+    animation-delay: var(--cd);
+  }
+  .sigviz.is-playing .ka-cell-born {
+    animation: cell-born var(--loop) steps(1, end) infinite;
+    animation-delay: var(--cd);
+  }
+  @keyframes cell-die {
+    0% { opacity: 1; }
+    2% { opacity: 0; }
+    32% { opacity: 0; }
+    34% { opacity: 1; }
+    100% { opacity: 1; }
+  }
+  @keyframes cell-born {
+    0% { opacity: 0; }
+    2% { opacity: 1; }
+    32% { opacity: 1; }
+    34% { opacity: 0; }
+    100% { opacity: 0; }
+  }
+
+  /* Year readout windows: each label visible for its sixth of the loop. */
+  .sigviz.is-playing .ka-year {
+    animation: year-window var(--loop) infinite;
+    animation-delay: var(--yd);
+  }
+  @keyframes year-window {
+    0% { opacity: 1; }
+    16.6% { opacity: 1; }
+    16.7% { opacity: 0; }
+    100% { opacity: 0; }
+  }
 </style>
+
+<!--
+  Kinetic controller (~0.8KB): in-view play/pause + user toggle.
+  - Reduced motion: early return — the button never appears, the figure
+    stays the static plate, the timeline row is hidden by CSS.
+  - Without JS: same static plate, no button, no timeline row.
+  - "Pause" stops the loop (returns to the canonical static figure);
+    WCAG 2.2.2 permits pause or stop. Re-entering view restarts the
+    deterministic loop from 2025.
+-->
+<script is:inline>
+  (function () {
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+    document.querySelectorAll('[data-kinetic]').forEach(function (fig) {
+      var btn = fig.querySelector('[data-viz-toggle]');
+      var userPaused = false;
+      var inView = false;
+      function sync() {
+        var play = inView && !userPaused;
+        fig.classList.toggle('is-playing', play);
+        if (btn) {
+          btn.setAttribute('aria-pressed', String(userPaused));
+          btn.setAttribute('aria-label', userPaused ? 'Play the figure animation' : 'Pause the figure animation');
+          btn.textContent = userPaused ? 'Play' : 'Pause';
+        }
+      }
+      if (btn) {
+        btn.hidden = false;
+        btn.addEventListener('click', function () {
+          userPaused = !userPaused;
+          sync();
+        });
+      }
+      if ('IntersectionObserver' in window) {
+        new IntersectionObserver(function (entries) {
+          entries.forEach(function (e) { inView = e.isIntersecting; });
+          sync();
+        }, { threshold: 0.2 }).observe(fig);
+      }
+      sync();
+    });
+  })();
+</script>
