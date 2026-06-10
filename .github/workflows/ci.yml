@@ -1,0 +1,52 @@
+name: CI
+
+# Build + quality gates on every PR and on pushes to main.
+# Vercel handles the actual deploy via its GitHub integration; this workflow
+# is the correctness gate (build, types, accessibility, links, Lighthouse).
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  build-and-audit:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Node 20
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Chromium for Playwright (axe + Lighthouse)
+        run: npx playwright install --with-deps chromium
+
+      - name: Type check
+        run: npm run check
+
+      - name: Build
+        run: npm run build
+
+      - name: Internal link check
+        run: node scripts/check-links.mjs
+
+      - name: Accessibility audit (axe, WCAG 2.2 AA)
+        run: node scripts/audit.mjs
+
+      - name: Lighthouse CI
+        env:
+          # lhci's chrome-launcher uses the Playwright Chromium installed above.
+          LHCI_CHROME_PATH_HINT: playwright
+        run: |
+          export CHROME_PATH="$(node -e "console.log(require('playwright').chromium.executablePath())")"
+          npx lhci autorun
