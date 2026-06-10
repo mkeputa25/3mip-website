@@ -2,12 +2,19 @@
 /**
  * WebinarCard — one webinar on the Outputs page § Webinars.
  *
- * Phase 4e (V7.1): webinars are titled by month per the official site —
- * "February Webinar Presentation" — and no speaker names are displayed.
- * Speaker data may exist in frontmatter as metadata but is not rendered.
+ * Phase 4e (V7.1): titled by month; no speaker names displayed.
  *
- * Recording and slides links are external buttons, never embedded iframes
- * (DECISIONS archive/v1 D20).
+ * June 2026: each card now leads with a video poster — a 16:9 plate-colored
+ * thumbnail with a terracotta play control that IS the "watch recording"
+ * link. This is the "preview of the video" affordance without putting a
+ * third-party request on the Outputs page on load (the locked privacy
+ * posture, archive/v1 D8/D20): the recording still lives on Drive and opens
+ * on click; we don't embed an iframe or hot-link a Google thumbnail.
+ *
+ * If a real frame-grab is available, drop it in public/webinars/<slug>.jpg
+ * and set `poster: webinars/<slug>.jpg` in the webinar's frontmatter — the
+ * card renders the still behind the play control. Otherwise the designed
+ * poster (month + play glyph) ships, which always renders.
  */
 import Button from "./Button.astro";
 
@@ -15,13 +22,14 @@ interface Props {
   title: string;
   /** ISO date string for the <time> element. */
   date: string;
-  /** Long-format display date, e.g. "February 2026". */
+  /** Long-format display date, e.g. "May 2026". */
   dateLabel: string;
   lengthMinutes?: number;
   abstract?: string;
   recordingUrl?: string;
   slidesUrl?: string;
-  /** Render a [VERIFY] flag if details are unconfirmed. */
+  /** Optional real frame-grab under /public, e.g. "webinars/2026-05.jpg". */
+  poster?: string;
   needsVerify?: boolean;
 }
 
@@ -33,39 +41,116 @@ const {
   abstract,
   recordingUrl,
   slidesUrl,
+  poster,
   needsVerify = false,
 }: Props = Astro.props;
 ---
 
 <article class="webinar">
-  <div class="webinar__meta">
-    <time datetime={date} class="webinar__date">{dateLabel}</time>
-    {lengthMinutes && <span class="webinar__len">{lengthMinutes} min</span>}
-    {needsVerify && <span class="webinar__verify">[VERIFY]</span>}
-  </div>
-
-  <h3 class="webinar__title">{title}</h3>
-
-  {abstract && <p class="webinar__abstract">{abstract}</p>}
-
-  {(recordingUrl || slidesUrl) && (
-    <div class="webinar__actions">
-      {recordingUrl && (
-        <Button href={recordingUrl} external variant="secondary">Watch recording</Button>
-      )}
-      {slidesUrl && (
-        <Button href={slidesUrl} external variant="ghost">Slides</Button>
-      )}
+  {recordingUrl ? (
+    <a
+      class="webinar__poster"
+      href={recordingUrl}
+      rel="noopener noreferrer"
+      aria-label={`Watch the recording: ${title} (opens in Google Drive)`}
+      style={poster ? `background-image: url(/${poster}); background-size: cover; background-position: center;` : undefined}
+    >
+      <span class="webinar__play" aria-hidden="true">
+        <svg viewBox="0 0 64 64" width="56" height="56">
+          <circle cx="32" cy="32" r="31" fill="var(--color-accent)" />
+          <path d="M26 21 L46 32 L26 43 Z" fill="var(--color-accent-ink)" />
+        </svg>
+      </span>
+      <span class="webinar__poster-tag">{dateLabel}</span>
+    </a>
+  ) : (
+    <div class="webinar__poster webinar__poster--empty" aria-hidden="true">
+      <span class="webinar__poster-tag">{dateLabel}</span>
     </div>
   )}
+
+  <div class="webinar__body">
+    <div class="webinar__meta">
+      <time datetime={date} class="webinar__date">{dateLabel}</time>
+      {lengthMinutes && <span class="webinar__len">{lengthMinutes} min</span>}
+      {needsVerify && <span class="verify">[VERIFY]</span>}
+    </div>
+
+    <h3 class="webinar__title">{title}</h3>
+
+    {abstract && <p class="webinar__abstract">{abstract}</p>}
+
+    {(recordingUrl || slidesUrl) && (
+      <div class="webinar__actions">
+        {recordingUrl && (
+          <Button href={recordingUrl} external variant="secondary">Watch recording</Button>
+        )}
+        {slidesUrl && (
+          <Button href={slidesUrl} external variant="ghost">Slides</Button>
+        )}
+      </div>
+    )}
+  </div>
 </article>
 
 <style>
   .webinar {
     padding: var(--space-5) 0;
     border-top: 1px solid var(--color-border);
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-4);
   }
   .webinar:first-of-type { border-top: 0; }
+  @media (min-width: 640px) {
+    .webinar {
+      grid-template-columns: 16rem 1fr;
+      gap: var(--space-5);
+      align-items: start;
+    }
+  }
+
+  /* Poster — 16:9 plate thumbnail; the whole thing is the watch link. */
+  .webinar__poster {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    aspect-ratio: 16 / 9;
+    background-color: var(--color-plate);
+    border: 1px solid var(--color-border-strong);
+    border-radius: var(--radius);
+    overflow: hidden;
+    text-decoration: none;
+    transition: border-color 150ms var(--ease-out);
+  }
+  .webinar__poster:hover { border-color: var(--color-ink-muted); }
+  .webinar__poster:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+  .webinar__poster--empty { cursor: default; }
+
+  .webinar__play {
+    display: inline-flex;
+    transition: transform 150ms var(--ease-out);
+    filter: drop-shadow(0 2px 6px rgb(26 22 18 / 0.25));
+  }
+  .webinar__poster:hover .webinar__play { transform: scale(1.06); }
+
+  .webinar__poster-tag {
+    position: absolute;
+    left: var(--space-2);
+    bottom: var(--space-2);
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--color-ink);
+    background: color-mix(in srgb, var(--color-plate) 85%, transparent);
+    padding: 2px var(--space-2);
+    border-radius: 2px;
+  }
 
   .webinar__meta {
     display: flex;
@@ -74,6 +159,7 @@ const {
     flex-wrap: wrap;
   }
   .webinar__date {
+    font-family: var(--font-sans);
     font-size: var(--text-small);
     color: var(--color-ink-muted);
     font-weight: 500;
@@ -83,11 +169,6 @@ const {
     font-size: var(--text-caption);
     color: var(--color-ink-muted);
     letter-spacing: 0.06em;
-  }
-  .webinar__verify {
-    font-size: var(--text-caption);
-    color: var(--color-warning);
-    font-weight: 500;
   }
 
   .webinar__title {

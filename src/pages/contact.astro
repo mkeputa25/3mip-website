@@ -34,7 +34,11 @@ const jsonLd = {
       <div class="contact-block">
         <p class="contact-block__name">Mario Keputa</p>
         <p class="contact-block__role">Project coordinator, Cornell University</p>
-        <p><a href="mailto:mk2674@cornell.edu">mk2674@cornell.edu</a></p>
+        <ul class="contact-block__channels">
+          <li><a href="mailto:mk2674@cornell.edu">mk2674@cornell.edu</a></li>
+          <li><a href="mailto:mkeputa25@gmail.com">mkeputa25@gmail.com</a></li>
+          <li><Link href="https://www.linkedin.com/in/mariokeputa/" variant="external">LinkedIn</Link></li>
+        </ul>
       </div>
     </section>
 
@@ -98,6 +102,14 @@ const jsonLd = {
   .contact-block__role { color: var(--color-ink-muted); }
   .contact-block__note { color: var(--color-ink-muted); font-size: var(--text-small); margin-top: var(--space-2); }
   .contact-block a { color: var(--color-ink); }
+  .contact-block__channels {
+    list-style: none;
+    margin: var(--space-2) 0 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
 
   .contact-address {
     font-style: normal;

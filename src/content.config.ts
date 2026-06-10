@@ -61,6 +61,9 @@ const webinars = defineCollection({
     abstract: z.string().optional(),
     recordingUrl: z.string().url().optional(),
     slidesUrl: z.string().url().optional(),
+    /** Optional real frame-grab under /public, e.g. "webinars/2026-05.jpg".
+        Without it, the card shows the designed play-poster. */
+    poster: z.string().optional(),
   }),
 });
 

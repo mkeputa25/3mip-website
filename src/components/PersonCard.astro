@@ -125,7 +125,9 @@ const {
     height: 120px;
     object-fit: cover;
     border-radius: var(--radius);
-    filter: grayscale(100%) contrast(1.05);
+    /* Full color (June 2026 directive). A 1px warm border keeps the
+       portrait sitting on the parchment/white grounds without a hard edge. */
+    border: 1px solid var(--color-border-strong);
     background: var(--color-surface);
   }
 
