@@ -33,43 +33,18 @@ const jsonLd = {
       <h2 id="coord-h">Project coordination</h2>
       <div class="contact-block">
         <p class="contact-block__name">Mario Keputa</p>
-        <p class="contact-block__role">Project coordinator, Cornell University</p>
+        <p class="contact-block__role">Project coordinator</p>
         <ul class="contact-block__channels">
           <li><a href="mailto:mk2674@cornell.edu">mk2674@cornell.edu</a></li>
           <li><a href="mailto:mkeputa25@gmail.com">mkeputa25@gmail.com</a></li>
           <li><Link href="https://www.linkedin.com/in/mariokeputa/" variant="external">LinkedIn</Link></li>
         </ul>
       </div>
-    </section>
-
-    <section class="reveal" aria-labelledby="pi-h">
-      <h2 id="pi-h">Principal investigator</h2>
-      <div class="contact-block">
-        <p class="contact-block__name">Andrew Bell</p>
-        <p class="contact-block__role">Schleifer Family Professor of Sustainability, Cornell University</p>
-        <p>
-          Contact via the Cornell directory:
-          <Link href="https://einaudi.cornell.edu/discover/people/andrew-reid-bell" variant="external">Cornell page</Link>
-        </p>
-      </div>
-    </section>
-
-    <section class="reveal" aria-labelledby="press-h">
-      <h2 id="press-h">Press</h2>
-      <p>
-        Press inquiries are routed through Cornell University Relations.
-        For specific research questions, contact one of the co-leads directly
-        via their institutional pages on the <Link href="/team/" variant="in-prose">Team</Link> page.
+      <p class="contact-note">
+        For methodological questions about a specific model or case, contact
+        the relevant co-lead via their institutional page on the
+        <Link href="/team/" variant="in-prose">Team</Link> page.
       </p>
-    </section>
-
-    <section class="reveal" aria-labelledby="addr-h">
-      <h2 id="addr-h">Mailing address</h2>
-      <address class="contact-address">
-        Department of Global Development<br />
-        Cornell University<br />
-        Ithaca, NY
-      </address>
     </section>
   </article>
 </Base>
@@ -111,15 +86,10 @@ const jsonLd = {
     gap: var(--space-1);
   }
 
-  .contact-address {
-    font-style: normal;
-    color: var(--color-ink);
-    line-height: 1.7;
-  }
-
-  .pending, .verify {
-    color: var(--color-accent-deep);
-    font-size: var(--text-caption);
-    font-weight: 500;
+  .contact-note {
+    margin-top: var(--space-4);
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+    max-width: 60ch;
   }
 </style>

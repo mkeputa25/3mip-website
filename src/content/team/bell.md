@@ -3,7 +3,7 @@ name: Andrew Reid Bell
 surname: Bell
 affiliation: Schleifer Family Professor of Sustainability, Department of Global Development, Cornell University
 role: co-lead
-shortRole: Co-lead, primary PI
+shortRole: Co-lead
 publications:
   - citation: "Bell, A. R., et al. (2021). Migration towards Bangladesh coastlines projected to increase with sea-level rise through 2100. Environmental Research Letters, 16(2), 024045."
     doi: "https://doi.org/10.1088/1748-9326/abdc5b"

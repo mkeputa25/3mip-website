@@ -103,6 +103,27 @@ const jsonLd = {
       ))}
     </section>
 
+    <section class="reveal" aria-labelledby="pm-h">
+      <h2 id="pm-h">Project management</h2>
+      <p>
+        Day-to-day coordination — protocol logistics, the curated dataset,
+        scheduling, and participant communication — runs through project
+        management.
+      </p>
+      {pm.length === 0 && (
+        <p class="empty">Project management entries load from the team content collection (seeded in Phase 5).</p>
+      )}
+      {pm.map((e) => (
+        <PersonCard
+          name={e.data.name}
+          affiliation={e.data.affiliation}
+          shortRole={e.data.shortRole}
+          personalUrl={e.data.personalUrl}
+          photo={photoIfExists(e.data.photo)}
+        />
+      ))}
+    </section>
+
     <section class="reveal" aria-labelledby="advisory-h">
       <h2 id="advisory-h">Advisory committee</h2>
       {advisors.length === 0 && (
@@ -143,22 +164,6 @@ const jsonLd = {
           ))}
         </ul>
       )}
-    </section>
-
-    <section class="reveal" aria-labelledby="pm-h">
-      <h2 id="pm-h">Project management</h2>
-      {pm.length === 0 && (
-        <p class="empty">Project management entries load from the team content collection (seeded in Phase 5).</p>
-      )}
-      {pm.map((e) => (
-        <PersonCard
-          name={e.data.name}
-          affiliation={e.data.affiliation}
-          shortRole={e.data.shortRole}
-          personalUrl={e.data.personalUrl}
-          photo={photoIfExists(e.data.photo)}
-        />
-      ))}
     </section>
 
     <section class="reveal" aria-labelledby="modelers-h">

@@ -1,11 +1,20 @@
 ---
 /**
- * Wordmark — "3MIP" set in Fraunces at the wordmark axes
- * (opsz 72 / SOFT 100 / WONK 1, weight 500) with a hairline underrule at
- * half the wordmark width. DECISIONS-V2 V6.
+ * Wordmark — the 3MIP logo mark (DECISIONS-V2 V6, logo adopted June 2026).
  *
- * Used in the header, footer, and 404; the favicon carries a raster-style
- * "3M" variant of the same voice.
+ * Recreates the project's logo concept — a chevron "3" zigzag + "MIP" in a
+ * high-contrast serif + a play triangle, reading as "3MIP" — as a crisp,
+ * scalable inline SVG. Rendered in the site palette (terracotta + ink),
+ * NOT the sage green of the original raster: a green mark would fight the
+ * terracotta system and the brief's avoid-green-for-climate-work rule. The
+ * structure is faithful; the color is harmonized. [B11 resolved to this mark.]
+ *
+ * "MIP" is set in Fraunces (the loaded display face) via <text>, with a
+ * Didone fallback stack so it reads high-contrast even before the webfont
+ * settles. The whole SVG is decorative (aria-hidden); the accessible name
+ * comes from the link/span label.
+ *
+ * Renders as a link to "/" by default; Home passes as="span".
  */
 interface Props {
   as?: "a" | "span";
@@ -21,60 +30,65 @@ const {
 }: Props = Astro.props;
 
 const sizeClass = size === "small" ? "wordmark--small" : "";
+const Tag = as;
 ---
 
-{
-  as === "a" ? (
-    <a href="/" class={`wordmark ${sizeClass} ${className}`} aria-label="3MIP home">
-      <span class="wordmark__text" aria-hidden="true">3MIP</span>
-      <span class="vh">3MIP — Mobility and Migration Modeling Intercomparison Project</span>
-    </a>
-  ) : (
-    /* Span variant (Home, where the wordmark is not a link): plain visible
-       text — no aria-label (prohibited on a span with no role) and no
-       aria-hidden, so it reads naturally as "3MIP". */
-    <span class={`wordmark ${sizeClass} ${className}`}>
-      <span class="wordmark__text">3MIP</span>
-    </span>
-  )
-}
+<Tag
+  class={`wordmark ${sizeClass} ${className}`}
+  href={as === "a" ? "/" : undefined}
+  aria-label={as === "a" ? "3MIP home" : "3MIP"}
+>
+  <svg class="wordmark__svg" viewBox="0 0 84 30" role="img" aria-hidden="true" focusable="false">
+    {/* Chevron "3" — a continuous terracotta zigzag. */}
+    <path
+      d="M4 3 L13 9 L4 15 L13 21 L4 27"
+      fill="none"
+      stroke="var(--color-accent)"
+      stroke-width="2.4"
+      stroke-linecap="round"
+      stroke-linejoin="round"
+    />
+    {/* MIP — Fraunces display, ink, high contrast. */}
+    <text
+      x="20"
+      y="23"
+      class="wordmark__letters"
+      fill="var(--color-ink)"
+    >MIP</text>
+    {/* Play triangle — terracotta, tucked against the P, echoing the original mark. */}
+    <path d="M73 10.5 L81 15 L73 19.5 Z" fill="var(--color-accent)" />
+  </svg>
+  <span class="vh">3MIP — Mobility and Migration Modeling Intercomparison Project</span>
+</Tag>
 
 <style>
   .wordmark {
-    display: inline-block;
+    display: inline-flex;
+    align-items: center;
     text-decoration: none;
-    color: var(--color-ink);
-  }
-  a.wordmark:hover .wordmark__text {
-    color: var(--color-accent);
+    line-height: 0;
   }
   a.wordmark:focus-visible {
     outline: 2px solid var(--color-focus-ring);
-    outline-offset: 2px;
+    outline-offset: 3px;
     border-radius: 2px;
   }
 
-  .wordmark__text {
+  .wordmark__svg {
+    height: 30px;
+    width: auto;
     display: block;
-    font-family: var(--font-serif);
-    font-variation-settings: var(--fraunces-wordmark);
-    font-weight: 500;
-    font-size: 1.5rem;
-    line-height: 1;
-    letter-spacing: -0.01em;
-    transition: color 150ms var(--ease-out);
+    transition: opacity 150ms var(--ease-out);
   }
+  a.wordmark:hover .wordmark__svg { opacity: 0.82; }
 
-  /* Hairline underrule at half the wordmark width (V6). */
-  .wordmark__text::after {
-    content: "";
-    display: block;
-    width: 50%;
-    margin-top: 3px;
-    border-top: var(--hairline) solid var(--color-border-strong);
-  }
+  .wordmark--small .wordmark__svg { height: 24px; }
 
-  .wordmark--small .wordmark__text {
-    font-size: 1.125rem;
+  .wordmark__letters {
+    font-family: var(--font-serif), "Didot", "Bodoni 72", serif;
+    font-variation-settings: "opsz" 40, "SOFT" 0, "WONK" 0;
+    font-weight: 600;
+    font-size: 26px;
+    letter-spacing: -0.5px;
   }
 </style>
