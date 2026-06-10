@@ -48,3 +48,20 @@ export const BANGLADESH_BOUNDS = {
   width: 240,
   height: 180,
 } as const;
+
+/**
+ * Stylized internal district hairlines (Phase 2c cartographic treatment).
+ * Four schematic lines suggesting administrative divisions — drawn at
+ * 0.3 width, 25% ink, clipped to the outline. Not geo-accurate; they exist
+ * to give each atlas panel cartographic texture, per DECISIONS-V2 V5.
+ */
+export const BANGLADESH_DISTRICT_LINES: readonly string[] = [
+  // North–south spine, west of Dhaka
+  "M 104 29 L 99 78 L 107 128 L 103 172",
+  // East–west midline
+  "M 24 94 L 94 100 L 160 94 L 230 100",
+  // Western division
+  "M 62 33 L 71 90 L 60 142",
+  // Eastern division
+  "M 176 33 L 170 95 L 186 152",
+];

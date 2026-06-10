@@ -1,413 +1,558 @@
 ---
 /**
- * SignatureViz — the 3MIP signature small-multiples figure.
+ * SignatureViz — the 3MIP signature figure, v2 atlas plate (DECISIONS-V2 V5).
  *
- * Six panels, same coastal Bangladesh silhouette, same question, different
- * synthetic projections. Each panel encodes the spatial-pattern story of one
- * model archetype:
+ * Six panels, one stylized Bangladesh, one question — but unlike the v1
+ * uniform cell grid, each panel now uses the visual grammar of its own
+ * model architecture:
  *
- *   1. Agent-based         — household heterogeneity, mid-elevation corridor concentration
- *   2. Gravity             — smooth radial decay from the largest population center
- *   3. Radiation           — distance + intervening-opportunity dampening
- *   4. Integrated assess.  — coarse district-block uniformity (no within-block variation)
- *   5. Machine learning    — blob-like clusters learned from spatial features
- *   6. Cellular automaton  — banded patterns from neighborhood diffusion rules
+ *   01 Agent-based   — individual dots (household clusters), size by weight,
+ *                      density trending coastal-southwest + Dhaka corridor
+ *   02 Gravity       — flow arcs from coastal origins to three destinations,
+ *                      stroke weight proportional to flow
+ *   03 Radiation     — nested catchment rings from one focal point, decay
+ *                      visible in spacing and stroke
+ *   04 Integrated    — five flat regional polygons, no interior detail:
+ *      assessment      the model is aggregated and the visual says so
+ *   05 Machine       — smooth nested contour bands, no hard edges
+ *      learning
+ *   06 Cellular      — the one panel keeping a discrete grid (~10×8),
+ *                      so 05-smooth vs 06-discrete reads at a glance
  *
- * Hard constraints from kickoff Phase 2:
- *   - Pure inline SVG. No <img>, no JavaScript, no D3, no external libraries.
- *   - Color: sequential ramp keyed to the accent token (opacity steps on the
- *     accent fill). Not rainbow. Not diverging.
- *   - Shared legend, shared scale bar, panel titles, attribution line.
- *   - Responsive: 3×2 desktop, 2×3 tablet, 1×6 mobile (375px).
- *   - Accessible: role="img", aria-labelledby + describedby, title+desc inside
- *     the SVG, plus a visible long-form text alternative below (provided by
- *     the consuming page via the Figure component's long-description slot).
+ * What survives from v1 (by mandate): the shared viewBox, the outline
+ * module (src/lib/bangladesh-outline.ts), deterministic generation (all
+ * geometry below is hand-authored or pure-function — no randomness), the
+ * accessibility structure, and the 3×2 / 2×3 / 1×6 responsive grid.
  *
- * Synthetic data is generated deterministically from a per-panel pure function
- * of (column, row). Same input → same output → same rendered figure across
- * builds. Patterns are tuned for visual clarity, not numerical realism — the
- * "Illustrative" label is mandatory.
+ * Cartographic treatment (all panels): 0.6 ink outline, 0.3 internal
+ * district hairlines at 25% ink, N compass lower-right, "Bay of Bengal"
+ * italic on bottom-row panels (desktop 3×2 row = panels 04–06).
  *
- * NOTE on Bell sign-off: the choice of the six archetypes and the specific
- * pattern story per panel is the substantive pitch 3MIP makes. Mario reviews
- * before merge; Bell approves before launch. Tagged [PENDING BELL APPROVAL]
- * inline.
+ * Ramp (figure-locked hex stops, DECISIONS-V2 V2): #F5EFE4 → #E8B98A →
+ * #D08A6E → #B85A35 → #8E3A22 → #6B1F1F. No blue anywhere.
+ *
+ * [PENDING BELL APPROVAL]: archetype choice + per-panel pattern story.
  */
 
-import { BANGLADESH_PATH } from "../lib/bangladesh-outline";
+import {
+  BANGLADESH_PATH,
+  BANGLADESH_DISTRICT_LINES,
+} from "../lib/bangladesh-outline";
 
 interface Props {
   class?: string;
-  /** Unique id base for ARIA attributes when multiple figures appear on a page. */
+  /** Unique id base for ARIA/clip ids when the figure appears on multiple pages. */
   idBase?: string;
 }
 
 const { class: className = "", idBase = "sigviz" } = Astro.props;
 
-// ── Panel and grid geometry ────────────────────────────────────────────────
-const PANEL_W = 240;
-const PANEL_H = 180;
-const COLS = 14;
-const ROWS = 10;
-const CELL_W = PANEL_W / COLS; // ~17.14
-const CELL_H = PANEL_H / ROWS; // 18
+const RAMP = ["#F5EFE4", "#E8B98A", "#D08A6E", "#B85A35", "#8E3A22", "#6B1F1F"] as const;
 
-// Sequential ramp: bin 0 = invisible, bin 6 = full accent.
-// Opacity steps over a single hue produce a true sequential ramp that
-// inherits the accent CSS var, so dark mode rebalances automatically.
-const RAMP_OPACITY: readonly number[] = [0, 0.16, 0.30, 0.46, 0.62, 0.80, 1.0];
-
-function clampBin(n: number): number {
-  return Math.max(0, Math.min(6, Math.round(n)));
-}
-
-// ── Per-archetype generators ───────────────────────────────────────────────
-// Each takes (column, row) and returns an intensity bin 0..6.
-
-/** ABM: heterogeneous decisions, concentrated in a mid-elevation adaptive band. */
-function abm(c: number, r: number): number {
-  const band = Math.max(0, 6 - Math.abs(r - 5) * 1.4);
-  const noise = Math.sin(c * 1.7 + r * 1.1) * 1.6 + Math.cos(c * 0.9) * 0.8;
-  return clampBin(band + noise - 1);
-}
-
-/** Gravity: smooth radial attraction to Dhaka (top-center population center). */
-function gravity(c: number, r: number): number {
-  const dx = c - 7.5;
-  const dy = r - 1.5;
-  const d = Math.sqrt(dx * dx + dy * dy);
-  return clampBin(7 - d * 1.1);
-}
-
-/** Radiation: gravity-like, sharper falloff, intervening opportunities lower a region. */
-function radiation(c: number, r: number): number {
-  const dx = c - 7.5;
-  const dy = r - 1.5;
-  const d = Math.sqrt(dx * dx + dy * dy);
-  // A secondary "intervening" pocket near col 11 / row 4 absorbs flow.
-  const intervening = Math.max(0, 2.2 - Math.sqrt((c - 11) ** 2 + (r - 4) ** 2)) * 1.2;
-  return clampBin(7 - d * 1.6 - intervening);
-}
-
-/** IAM: coarse district blocks; no within-block variation. */
-function iam(c: number, r: number): number {
-  const block = [
-    [1, 3, 5, 3], // top row of blocks
-    [3, 5, 6, 2], // mid
-    [4, 6, 4, 1], // lower
-  ];
-  const blockC = Math.min(3, Math.floor(c / 4));
-  const blockR = Math.min(2, Math.floor(r / 4));
-  return clampBin(block[blockR][blockC]);
-}
-
-/** Machine learning: blob clusters learned from spatial features. */
-function ml(c: number, r: number): number {
-  const clusters = [
-    { cx: 4.0, cy: 5.5, peak: 6.4, decay: 1.1 },
-    { cx: 10.5, cy: 3.0, peak: 5.6, decay: 1.3 },
-    { cx: 7.5, cy: 8.0, peak: 4.6, decay: 1.5 },
-  ];
-  let val = 0;
-  for (const cl of clusters) {
-    const d = Math.sqrt((c - cl.cx) ** 2 + (r - cl.cy) ** 2);
-    val = Math.max(val, cl.peak - d * cl.decay);
-  }
-  return clampBin(val);
-}
-
-/** Cellular automaton: banded diffusion following coastal contour. */
-function cellular(c: number, r: number): number {
-  // Diagonal bands with a coast-parallel orientation.
-  const band = Math.sin((c + r * 1.5) * 0.55) * 3 + 3;
-  const coastBoost = r > 5 ? (r - 5) * 0.4 : 0; // intensify near south coast
-  return clampBin(band + coastBoost - 0.5);
-}
-
-type Panel = {
-  id: string;
-  title: string;
-  fn: (c: number, r: number) => number;
+/* ── 01 Agent-based: hand-authored dot field (deterministic by construction).
+      Denser along the south coast and the corridor toward Dhaka (~112,62). */
+type Tone = "accent" | "deep" | "dim";
+const ABM_DOTS: ReadonlyArray<{ x: number; y: number; r: number; t: Tone }> = [
+  { x: 55, y: 150, r: 3.2, t: "deep" },
+  { x: 70, y: 142, r: 2.2, t: "accent" },
+  { x: 84, y: 152, r: 4.2, t: "deep" },
+  { x: 96, y: 140, r: 2.8, t: "accent" },
+  { x: 108, y: 148, r: 3.6, t: "deep" },
+  { x: 122, y: 152, r: 2.4, t: "dim" },
+  { x: 135, y: 144, r: 3.0, t: "accent" },
+  { x: 150, y: 152, r: 2.0, t: "dim" },
+  { x: 166, y: 148, r: 2.6, t: "accent" },
+  { x: 185, y: 152, r: 2.2, t: "dim" },
+  { x: 90, y: 122, r: 2.6, t: "accent" },
+  { x: 104, y: 112, r: 3.4, t: "deep" },
+  { x: 98, y: 96, r: 2.4, t: "accent" },
+  { x: 112, y: 84, r: 2.8, t: "accent" },
+  { x: 107, y: 68, r: 3.8, t: "deep" },
+  { x: 120, y: 60, r: 2.4, t: "dim" },
+  { x: 131, y: 96, r: 2.2, t: "dim" },
+  { x: 144, y: 118, r: 2.6, t: "accent" },
+  { x: 74, y: 112, r: 2.0, t: "dim" },
+  { x: 58, y: 128, r: 2.4, t: "accent" },
+];
+const TONE_VAR: Record<Tone, string> = {
+  accent: "var(--color-accent)",
+  deep: "var(--color-accent-deep)",
+  dim: "var(--color-accent-dim)",
 };
 
-const PANELS: readonly Panel[] = [
-  { id: "abm", title: "Agent-based", fn: abm },
-  { id: "gravity", title: "Gravity", fn: gravity },
-  { id: "radiation", title: "Radiation", fn: radiation },
-  { id: "iam", title: "Integrated assessment", fn: iam },
-  { id: "ml", title: "Machine learning", fn: ml },
-  { id: "cellular", title: "Cellular automaton", fn: cellular },
+/* ── 02 Gravity: five coastal origins, three destinations, eight arcs. */
+const GRAVITY_ORIGINS = [
+  { x: 58, y: 148 }, { x: 92, y: 154 }, { x: 128, y: 150 },
+  { x: 162, y: 150 }, { x: 196, y: 148 },
+] as const;
+const GRAVITY_DESTS = [
+  { x: 112, y: 62, r: 5 },   // Dhaka
+  { x: 78, y: 124, r: 4 },   // Khulna
+  { x: 214, y: 128, r: 4 },  // Chattogram
+] as const;
+const GRAVITY_ARCS: ReadonlyArray<{ o: number; d: number; cx: number; cy: number; w: number; op: number }> = [
+  { o: 0, d: 0, cx: 70, cy: 95, w: 2.6, op: 0.85 },
+  { o: 1, d: 0, cx: 95, cy: 100, w: 3.0, op: 0.9 },
+  { o: 1, d: 1, cx: 82, cy: 142, w: 1.4, op: 0.6 },
+  { o: 2, d: 0, cx: 122, cy: 100, w: 2.2, op: 0.75 },
+  { o: 3, d: 0, cx: 140, cy: 100, w: 1.2, op: 0.55 },
+  { o: 3, d: 2, cx: 190, cy: 142, w: 1.6, op: 0.65 },
+  { o: 4, d: 2, cx: 208, cy: 140, w: 2.0, op: 0.7 },
+  { o: 0, d: 1, cx: 66, cy: 140, w: 1.0, op: 0.5 },
 ];
 
-// Pre-generate cell data for each panel so the markup loop is trivial.
-const panelCells = PANELS.map((p) => ({
-  ...p,
-  cells: Array.from({ length: COLS * ROWS }, (_, i) => {
-    const c = i % COLS;
-    const r = Math.floor(i / COLS);
-    return {
-      x: c * CELL_W,
-      y: r * CELL_H,
-      bin: p.fn(c, r),
-    };
-  }),
-}));
+/* ── 03 Radiation: focal point + five rings, spacing and stroke decaying
+      outward, color fading outermost-light → innermost-dark. */
+const RADIATION_FOCUS = { x: 112, y: 62 } as const;
+const RADIATION_RINGS: ReadonlyArray<{ r: number; w: number; color: string }> = [
+  { r: 12, w: 1.4, color: RAMP[5] },
+  { r: 26, w: 1.1, color: RAMP[4] },
+  { r: 44, w: 0.85, color: RAMP[3] },
+  { r: 66, w: 0.65, color: RAMP[2] },
+  { r: 92, w: 0.5, color: RAMP[1] },
+];
 
-const titleId = `${idBase}-title`;
-const descId = `${idBase}-desc`;
+/* ── 04 IAM: five flat regional polygons (overshoot freely; clip handles
+      the coastline). Highest intensities on the coast. */
+const IAM_REGIONS: ReadonlyArray<{ d: string; fill: string }> = [
+  { d: "M 20 25 L 105 25 L 100 80 L 60 95 L 18 80 Z", fill: RAMP[2] },
+  { d: "M 105 25 L 245 25 L 240 95 L 165 100 L 100 80 Z", fill: RAMP[1] },
+  { d: "M 18 80 L 60 95 L 100 80 L 110 130 L 60 140 L 20 130 Z", fill: RAMP[3] },
+  { d: "M 20 130 L 110 130 L 165 135 L 160 185 L 15 185 Z", fill: RAMP[5] },
+  { d: "M 165 100 L 240 95 L 248 185 L 160 185 L 165 135 Z", fill: RAMP[4] },
+];
+
+/* ── 05 ML: nested smooth contour bands, light → dark toward a coastal core. */
+const ML_BANDS: ReadonlyArray<{ d: string; fill: string }> = [
+  {
+    d: "M 30 95 C 55 70, 95 60, 130 75 C 170 90, 200 115, 195 140 C 188 165, 130 172, 90 165 C 50 158, 18 130, 30 95 Z",
+    fill: RAMP[1],
+  },
+  {
+    d: "M 50 105 C 70 85, 105 80, 132 95 C 158 108, 172 128, 162 145 C 150 160, 105 162, 78 152 C 55 143, 40 122, 50 105 Z",
+    fill: RAMP[2],
+  },
+  {
+    d: "M 68 115 C 84 100, 112 98, 130 110 C 146 121, 148 136, 136 146 C 122 155, 92 152, 78 142 C 66 133, 60 124, 68 115 Z",
+    fill: RAMP[3],
+  },
+  {
+    d: "M 86 122 C 96 114, 112 114, 122 122 C 130 129, 128 138, 118 142 C 106 146, 92 142, 86 134 C 82 129, 82 126, 86 122 Z",
+    fill: RAMP[4],
+  },
+];
+
+/* ── 06 Cellular: ~10×8 discrete grid, ramp-colored states from a pure
+      function of (col, row). Bin 0 cells are not drawn. */
+const CELL_COLS = 10;
+const CELL_ROWS = 8;
+const CELL_W = 240 / CELL_COLS;
+const CELL_H = 180 / CELL_ROWS;
+function cellBin(c: number, r: number): number {
+  const band = Math.sin((c + r * 1.4) * 0.7) * 2.5 + 2.5;
+  const coastBoost = r > 4 ? (r - 4) * 0.55 : 0;
+  return Math.max(0, Math.min(5, Math.round(band + coastBoost - 0.4)));
+}
+const CELLS = Array.from({ length: CELL_COLS * CELL_ROWS }, (_, i) => {
+  const c = i % CELL_COLS;
+  const r = Math.floor(i / CELL_COLS);
+  return { x: c * CELL_W, y: r * CELL_H, bin: cellBin(c, r) };
+}).filter((cell) => cell.bin > 0);
+
+/* ── Panel metadata. desc is the per-panel screen-reader description. */
+const PANELS = [
+  {
+    id: "abm", num: "01", title: "Agent-based",
+    desc: "About twenty dots of varying size, denser along the southwest coast and the corridor toward Dhaka; each dot is one simulated household cluster.",
+  },
+  {
+    id: "gravity", num: "02", title: "Gravity",
+    desc: "Flow arcs of varying thickness from five coastal origin points to three destination cities; thicker arcs are larger modeled flows.",
+  },
+  {
+    id: "radiation", num: "03", title: "Radiation",
+    desc: "Nested rings spreading from one focal point, spacing widening and color fading outward — distance-decaying catchments.",
+  },
+  {
+    id: "iam", num: "04", title: "Integrated assessment",
+    desc: "Five regional polygons, each filled with a single flat intensity value; no detail inside regions, because the model aggregates.",
+  },
+  {
+    id: "ml", num: "05", title: "Machine learning",
+    desc: "Smooth nested contour bands deepening toward a coastal core — a continuous predicted surface with no hard edges.",
+  },
+  {
+    id: "cellular", num: "06", title: "Cellular automaton",
+    desc: "A coarse grid of discrete cells in stepped intensities, clipped to the country outline — visibly discrete against the smooth panel beside it.",
+  },
+] as const;
+
+// Bottom row at the canonical 3×2 desktop layout = panels 04–06.
+const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
 ---
 
-<figure class={`signature-viz ${className}`}>
-  <!--
-    The figure label is rendered above the grid (not as figcaption) so that
-    screen reader users hear the question before navigating the panels.
-    Per docs/CONTENT-INVENTORY.md § Home § Section 3.
-  -->
-  <p class="signature-viz__question">
-    <span class="signature-viz__question-label">Question</span>
-    Net internal migration, coastal Bangladesh, 2025&ndash;2050, SSP2&ndash;4.5
-    <span class="signature-viz__illustrative">(illustrative)</span>
-  </p>
+<figure class={`sigviz ${className}`}>
+  <!-- Figure header: eyebrow + title + question, Illustrative tag right. -->
+  <div class="sigviz__head">
+    <div>
+      <p class="eyebrow sigviz__fig">Fig. 01</p>
+      <p class="sigviz__title">Six architectures, one question</p>
+      <p class="sigviz__question">
+        Net internal migration, coastal Bangladesh, 2025–2050, SSP2-4.5
+      </p>
+    </div>
+    <span class="sigviz__tag" aria-hidden="true">Illustrative</span>
+  </div>
 
-  <div class="signature-viz__grid" role="group" aria-label="Six model archetypes, same question.">
-    {panelCells.map((panel) => (
-      <div class="signature-viz__panel">
-        <h3 class="signature-viz__panel-title">{panel.title}</h3>
+  <div class="sigviz__grid" role="group" aria-label="Six model architectures applied to the same question.">
+    {PANELS.map((panel) => (
+      <div class="sigviz__panel">
+        <p class="sigviz__panel-title">
+          <span class="sigviz__panel-num">{panel.num}</span>
+          {panel.title}
+        </p>
         <svg
-          viewBox={`0 0 ${PANEL_W} ${PANEL_H}`}
+          viewBox="0 0 240 180"
           role="img"
-          aria-labelledby={`${titleId}-${panel.id} ${descId}-${panel.id}`}
-          class="signature-viz__svg"
+          aria-labelledby={`${idBase}-t-${panel.id} ${idBase}-d-${panel.id}`}
+          class="sigviz__svg"
         >
-          <title id={`${titleId}-${panel.id}`}>
-            {panel.title} archetype, same question.
-          </title>
-          <desc id={`${descId}-${panel.id}`}>
-            Stylized Bangladesh outline with synthetic spatial pattern showing
-            relative net migration intensity per cell under the {panel.title.toLowerCase()} model.
-          </desc>
+          <title id={`${idBase}-t-${panel.id}`}>{panel.title} architecture, same question.</title>
+          <desc id={`${idBase}-d-${panel.id}`}>{panel.desc}</desc>
 
-          {/* Country fill (light surface) and outline. */}
           <defs>
-            <clipPath id={`clip-${panel.id}`}>
+            <clipPath id={`${idBase}-clip-${panel.id}`}>
               <path d={BANGLADESH_PATH} />
             </clipPath>
           </defs>
 
-          <path
-            d={BANGLADESH_PATH}
-            fill="var(--color-surface)"
-            stroke="var(--color-border-strong)"
-            stroke-width="1.25"
-          />
+          {/* Land fill */}
+          <path d={BANGLADESH_PATH} fill="var(--color-surface)" />
 
-          {/* Cells, clipped to country outline. */}
-          <g clip-path={`url(#clip-${panel.id})`} fill="var(--color-accent)">
-            {panel.cells
-              .filter((cell) => cell.bin > 0)
-              .map((cell) => (
+          {/* ── Architecture grammar, clipped to the landmass ── */}
+          <g clip-path={`url(#${idBase}-clip-${panel.id})`}>
+            {panel.id === "abm" &&
+              ABM_DOTS.map((d) => (
+                <circle cx={d.x} cy={d.y} r={d.r} fill={TONE_VAR[d.t]} />
+              ))}
+
+            {panel.id === "radiation" && (
+              <>
+                {RADIATION_RINGS.map((ring) => (
+                  <circle
+                    cx={RADIATION_FOCUS.x}
+                    cy={RADIATION_FOCUS.y}
+                    r={ring.r}
+                    fill="none"
+                    stroke={ring.color}
+                    stroke-width={ring.w}
+                  />
+                ))}
+                <circle
+                  cx={RADIATION_FOCUS.x}
+                  cy={RADIATION_FOCUS.y}
+                  r="3"
+                  fill="var(--color-accent-deep)"
+                />
+              </>
+            )}
+
+            {panel.id === "iam" &&
+              IAM_REGIONS.map((region) => (
+                <path
+                  d={region.d}
+                  fill={region.fill}
+                  stroke="rgb(26 22 18 / 0.3)"
+                  stroke-width="0.4"
+                />
+              ))}
+
+            {panel.id === "ml" &&
+              ML_BANDS.map((band) => <path d={band.d} fill={band.fill} />)}
+
+            {panel.id === "cellular" &&
+              CELLS.map((cell) => (
                 <rect
                   x={cell.x}
                   y={cell.y}
                   width={CELL_W}
                   height={CELL_H}
-                  opacity={RAMP_OPACITY[cell.bin]}
+                  fill={RAMP[cell.bin]}
                 />
               ))}
+
+            {/* District hairlines — over fills, under outline. */}
+            {BANGLADESH_DISTRICT_LINES.map((line) => (
+              <path
+                d={line}
+                fill="none"
+                stroke="rgb(26 22 18 / 0.25)"
+                stroke-width="0.3"
+              />
+            ))}
           </g>
 
-          {/* Re-stroke outline on top so cells don't bleed visually. */}
+          {/* Gravity arcs sit above the clip: flows are diagrammatic. */}
+          {panel.id === "gravity" && (
+            <>
+              {GRAVITY_ARCS.map((arc) => {
+                const o = GRAVITY_ORIGINS[arc.o];
+                const d = GRAVITY_DESTS[arc.d];
+                return (
+                  <path
+                    d={`M ${o.x} ${o.y} Q ${arc.cx} ${arc.cy} ${d.x} ${d.y}`}
+                    fill="none"
+                    stroke="var(--color-accent)"
+                    stroke-width={arc.w}
+                    stroke-linecap="round"
+                    opacity={arc.op}
+                  />
+                );
+              })}
+              {GRAVITY_ORIGINS.map((o) => (
+                <circle cx={o.x} cy={o.y} r="2" fill="var(--color-accent-deep)" />
+              ))}
+              {GRAVITY_DESTS.map((d) => (
+                <circle
+                  cx={d.x}
+                  cy={d.y}
+                  r={d.r}
+                  fill="var(--color-background)"
+                  stroke="var(--color-ink)"
+                  stroke-width="1"
+                />
+              ))}
+            </>
+          )}
+
+          {/* Coastline on top so fills never bleed the edge. */}
           <path
             d={BANGLADESH_PATH}
             fill="none"
             stroke="var(--color-ink)"
-            stroke-width="1.25"
+            stroke-width="0.6"
             stroke-linejoin="round"
           />
+
+          {/* N compass, lower-right. Decorative. */}
+          <g transform="translate(224, 158)" aria-hidden="true">
+            <line x1="0" y1="10" x2="0" y2="0" stroke="var(--color-ink-muted)" stroke-width="0.7" />
+            <path d="M -2.2 3 L 0 -1.5 L 2.2 3 Z" fill="var(--color-ink-muted)" />
+            <text
+              x="0"
+              y="17"
+              text-anchor="middle"
+              font-size="6"
+              fill="var(--color-ink-muted)"
+              style="font-family: var(--font-sans);"
+            >N</text>
+          </g>
+
+          {/* Bay of Bengal — bottom-row panels only (canonical 3×2 layout).
+              ink-subtle per directive: decorative cartographic furniture,
+              covered by the figure's visible text alternative (C1 note). */}
+          {BOTTOM_ROW_IDS.has(panel.id) && (
+            <text
+              x="120"
+              y="176"
+              text-anchor="middle"
+              font-size="7"
+              font-style="italic"
+              fill="var(--color-ink-subtle)"
+              style="font-family: var(--font-serif);"
+              aria-hidden="true"
+            >Bay of Bengal</text>
+          )}
         </svg>
       </div>
     ))}
   </div>
 
-  {/* Shared legend + scale bar. */}
-  <div class="signature-viz__legend" aria-label="Color ramp and scale legend">
-    <div class="signature-viz__ramp">
-      <span class="signature-viz__ramp-label">Net migration intensity</span>
-      <span class="signature-viz__ramp-end">low</span>
-      <span class="signature-viz__ramp-track" aria-hidden="true">
-        {RAMP_OPACITY.slice(1).map((op) => (
-          <span class="signature-viz__ramp-step" style={`opacity: ${op}`}></span>
+  <!-- Figure footer: ramp legend, scale, scenario. -->
+  <div class="sigviz__footer">
+    <div class="sigviz__ramp" aria-label="Intensity ramp from low to high">
+      <span class="sigviz__ramp-label">Net migration intensity</span>
+      <span class="sigviz__ramp-end">low</span>
+      <span class="sigviz__ramp-track" aria-hidden="true">
+        {RAMP.slice(1).map((hex) => (
+          <span class="sigviz__ramp-step" style={`background:${hex}`}></span>
         ))}
       </span>
-      <span class="signature-viz__ramp-end">high</span>
+      <span class="sigviz__ramp-end">high</span>
     </div>
-
-    <div class="signature-viz__scale" aria-label="Approximate scale">
-      <span class="signature-viz__scale-bar" aria-hidden="true"></span>
-      <span class="signature-viz__scale-label">~ 50 km</span>
+    <div class="sigviz__scale" aria-label="Approximate scale">
+      <span class="sigviz__scale-bar" aria-hidden="true"></span>
+      <span>≈ 100 km</span>
     </div>
+    <span class="sigviz__scenario">SSP2-4.5</span>
   </div>
 
-  <p class="signature-viz__attribution">
-    <strong>Illustrative.</strong> Synthetic data tuned to show the spatial
-    signature each archetype tends to produce. 3MIP's purpose is to make this
-    divergence legible across real participating teams. <em>[PENDING BELL APPROVAL]</em>
-  </p>
+  <figcaption class="sigviz__attribution">
+    <em>Illustrative.</em> Synthetic geometry tuned to show the spatial
+    grammar each architecture tends to produce; 3MIP's purpose is to make
+    this divergence legible across real participating teams. Archetype
+    lineages: Bell et al. 2019; Simini et al. 2012; Stouffer 1940; Rigaud
+    et al. 2018; ISIMIP3 protocol; Schiavina et al. 2019.
+    <span class="pending">[PENDING BELL APPROVAL]</span>
+  </figcaption>
 </figure>
 
 <style>
-  .signature-viz {
-    /* The signature visualization governs its own vertical rhythm. */
+  .sigviz {
     margin-block: 0;
   }
 
-  .signature-viz__question {
-    font-family: var(--font-serif);
-    font-size: var(--text-h3);
-    line-height: var(--text-h3--line-height);
-    color: var(--color-ink);
-    text-wrap: balance;
-    max-width: 60ch;
+  /* ── Header ─────────────────────────────────────────────────────── */
+  .sigviz__head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: var(--space-4);
+    margin-bottom: var(--space-4);
   }
-  .signature-viz__question-label {
-    display: inline-block;
+  .sigviz__fig {
+    margin: 0 0 var(--space-1);
+  }
+  .sigviz__title {
+    font-family: var(--font-serif);
+    font-variation-settings: var(--fraunces-h2);
+    font-weight: 500;
+    font-size: var(--text-h3);
+    line-height: 1.25;
+    color: var(--color-ink);
+    margin: 0;
+  }
+  .sigviz__question {
+    font-family: var(--font-sans);
+    font-size: var(--text-small);
+    color: var(--color-ink-muted);
+    margin: var(--space-1) 0 0;
+  }
+  .sigviz__tag {
+    flex-shrink: 0;
     font-family: var(--font-sans);
     font-size: var(--text-caption);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-ink-subtle);
-    margin-right: var(--space-2);
-    vertical-align: middle;
     font-weight: 500;
-  }
-  .signature-viz__illustrative {
-    color: var(--color-ink-muted);
-    font-style: italic;
-    font-weight: 400;
-    font-size: var(--text-body);
-    font-family: var(--font-sans);
+    letter-spacing: var(--tracking-label);
+    color: var(--color-accent);
+    border: var(--hairline) solid var(--color-border-strong);
+    border-radius: 2px;
+    padding: var(--space-1) var(--space-2);
   }
 
-  /* ── Grid layout ──────────────────────────────────────────────────────
-     Mobile 375px: 1 column (1×6 stack).
-     Tablet ≥640px: 2 columns (2×3).
-     Desktop ≥1024px: 3 columns (3×2).
-     The kickoff Phase 2 spec calls for 3×2 desktop / 2×3 tablet / 1×6 mobile,
-     which is the breakpoint progression below. */
-  .signature-viz__grid {
+  /* ── Panel grid: 1 / 2 / 3 columns ─────────────────────────────── */
+  .sigviz__grid {
     display: grid;
     gap: var(--space-4);
     grid-template-columns: 1fr;
-    margin-top: var(--space-4);
   }
   @media (min-width: 640px) {
-    .signature-viz__grid {
-      grid-template-columns: repeat(2, 1fr);
-    }
+    .sigviz__grid { grid-template-columns: repeat(2, 1fr); }
   }
   @media (min-width: 1024px) {
-    .signature-viz__grid {
-      grid-template-columns: repeat(3, 1fr);
-    }
+    .sigviz__grid { grid-template-columns: repeat(3, 1fr); }
   }
 
-  .signature-viz__panel {
+  .sigviz__panel {
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
   }
-
-  .signature-viz__panel-title {
+  /* Panel titles are labels, not document headings — the group carries the
+     aria-label; using <p> avoids forcing a heading level onto every page
+     that embeds the figure. */
+  .sigviz__panel-title {
     font-family: var(--font-sans);
     font-size: var(--text-small);
-    font-weight: 600;
-    letter-spacing: 0;
+    font-weight: 500;
     color: var(--color-ink);
     margin: 0;
-    /* Title sits above the SVG; no decoration, no underline. */
+    display: flex;
+    align-items: baseline;
+    gap: var(--space-2);
+  }
+  .sigviz__panel-num {
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    color: var(--color-ink-muted);
   }
 
-  .signature-viz__svg {
+  .sigviz__svg {
     width: 100%;
     height: auto;
     display: block;
-    border-radius: var(--radius);
-    background: var(--color-background);
-    /* Subtle frame so panels read as separate things in a small-multiples set. */
   }
 
-  /* ── Legend ────────────────────────────────────────────────────────── */
-  .signature-viz__legend {
+  /* ── Footer furniture ───────────────────────────────────────────── */
+  .sigviz__footer {
     margin-top: var(--space-5);
     display: flex;
-    flex-direction: column;
-    gap: var(--space-3);
-    align-items: flex-start;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-4) var(--space-6);
   }
-  @media (min-width: 768px) {
-    .signature-viz__legend {
-      flex-direction: row;
-      align-items: center;
-      justify-content: space-between;
-      gap: var(--space-5);
-    }
-  }
-
-  .signature-viz__ramp {
+  .sigviz__ramp {
     display: flex;
     align-items: center;
     gap: var(--space-2);
     flex-wrap: wrap;
   }
-  .signature-viz__ramp-label {
+  .sigviz__ramp-label {
+    font-family: var(--font-sans);
     font-size: var(--text-small);
     color: var(--color-ink-muted);
     margin-right: var(--space-2);
   }
-  .signature-viz__ramp-end {
+  .sigviz__ramp-end {
+    font-family: var(--font-sans);
     font-size: var(--text-caption);
-    color: var(--color-ink-subtle);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
+    letter-spacing: 0.04em;
+    color: var(--color-ink-muted);
   }
-  .signature-viz__ramp-track {
+  .sigviz__ramp-track {
     display: inline-flex;
     height: 12px;
-    border: 1px solid var(--color-border);
+    border: var(--hairline) solid var(--color-border-strong);
     border-radius: 2px;
     overflow: hidden;
   }
-  .signature-viz__ramp-step {
+  .sigviz__ramp-step {
     display: inline-block;
-    width: 28px;
+    width: 26px;
     height: 100%;
-    background: var(--color-accent);
   }
-
-  .signature-viz__scale {
+  .sigviz__scale {
     display: inline-flex;
     align-items: center;
     gap: var(--space-2);
+    font-family: var(--font-sans);
     font-size: var(--text-small);
     color: var(--color-ink-muted);
   }
-  .signature-viz__scale-bar {
+  .sigviz__scale-bar {
     display: inline-block;
-    width: 48px;
-    height: 4px;
+    width: 88px;
+    height: 3px;
     background: var(--color-ink);
     border-radius: 1px;
   }
+  .sigviz__scenario {
+    margin-left: auto;
+    font-family: var(--font-mono);
+    font-size: var(--text-small);
+    color: var(--color-ink-muted);
+  }
 
-  /* ── Attribution ────────────────────────────────────────────────────── */
-  .signature-viz__attribution {
+  /* ── Attribution ────────────────────────────────────────────────── */
+  .sigviz__attribution {
     margin-top: var(--space-3);
+    font-style: italic;
     font-size: var(--text-small);
     line-height: var(--text-small--line-height);
     color: var(--color-ink-muted);
     max-width: 65ch;
   }
-  .signature-viz__attribution strong {
+  .sigviz__attribution em {
     color: var(--color-ink);
   }
 </style>
