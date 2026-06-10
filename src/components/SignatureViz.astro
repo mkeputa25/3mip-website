@@ -149,9 +149,11 @@ const CELL_ROWS = 8;
 const CELL_W = 240 / CELL_COLS;
 const CELL_H = 180 / CELL_ROWS;
 function cellBin(c: number, r: number): number {
-  const band = Math.sin((c + r * 1.4) * 0.7) * 2.5 + 2.5;
-  const coastBoost = r > 4 ? (r - 4) * 0.55 : 0;
-  return Math.max(0, Math.min(5, Math.round(band + coastBoost - 0.4)));
+  // Tuned so roughly a third of cells stay parchment (bin 0): the discrete
+  // grammar needs empty cells to read as a grid rather than a solid quilt.
+  const band = Math.sin((c + r * 1.4) * 0.7) * 2.8 + 1.6;
+  const coastBoost = r > 4 ? (r - 4) * 0.7 : 0;
+  return Math.max(0, Math.min(5, Math.round(band + coastBoost - 0.5)));
 }
 const CELLS = Array.from({ length: CELL_COLS * CELL_ROWS }, (_, i) => {
   const c = i % CELL_COLS;
