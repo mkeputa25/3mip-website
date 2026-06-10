@@ -1,0 +1,34 @@
+---
+/**
+ * SectionDivider — hairline rule + "Sec. 01 / Name" label (DECISIONS-V2 V4).
+ *
+ * The rule draws in left→right on reveal (reveal-rule, 400ms); the label
+ * sits in Geist 500 at 0.18em tracking. Decorative wayfinding — the real
+ * structure is the heading that follows, so the divider is aria-hidden.
+ */
+interface Props {
+  num: string;
+  name: string;
+  class?: string;
+}
+const { num, name, class: className = "" }: Props = Astro.props;
+---
+
+<div class={`sec-div ${className}`} aria-hidden="true">
+  <hr class="sec-div__rule reveal-rule" />
+  <p class="section-label sec-div__label">Sec. {num} / {name}</p>
+</div>
+
+<style>
+  .sec-div {
+    margin-bottom: var(--space-4);
+  }
+  .sec-div__rule {
+    margin: 0 0 var(--space-2);
+    border: 0;
+    border-top: var(--hairline) solid var(--color-border-strong);
+  }
+  .sec-div__label {
+    margin: 0;
+  }
+</style>

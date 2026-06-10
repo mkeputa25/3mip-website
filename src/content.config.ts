@@ -41,7 +41,9 @@ const papers = defineCollection({
   }),
 });
 
-// Webinars — past webinars with abstracts, speakers, and recordings.
+// Webinars — titled by month per the official site ("February Webinar
+// Presentation"); speakers are optional metadata and are NOT displayed
+// (Phase 4e, DECISIONS-V2 V7.1).
 const webinars = defineCollection({
   loader: glob({ pattern: "**/*.md", base: "./src/content/webinars" }),
   schema: z.object({
@@ -54,7 +56,7 @@ const webinars = defineCollection({
           affiliation: z.string(),
         }),
       )
-      .min(1),
+      .optional(),
     lengthMinutes: z.number().int().positive().optional(),
     abstract: z.string().optional(),
     recordingUrl: z.string().url().optional(),

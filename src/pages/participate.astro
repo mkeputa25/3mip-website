@@ -15,7 +15,7 @@
  *  - Data extension: additions go through project coordination and must be
  *    made available to all teams (not "document your own additions").
  *
- * Form strategy (DECISIONS.md D5): Formspree free tier; endpoint from
+ * Form strategy (archive/v1/DECISIONS.md D5): Formspree free tier; endpoint from
  * PUBLIC_FORMSPREE_ENDPOINT with a clearly-marked inert placeholder.
  */
 import Base from "../layouts/Base.astro";
@@ -121,7 +121,7 @@ const faqItems = [
       </p>
     </header>
 
-    <section aria-labelledby="who-h">
+    <section class="reveal" aria-labelledby="who-h">
       <h2 id="who-h">Who should participate</h2>
       <div class="who">
         <div>
@@ -152,7 +152,7 @@ const faqItems = [
       </div>
     </section>
 
-    <section aria-labelledby="involves-h">
+    <section class="reveal" aria-labelledby="involves-h">
       <h2 id="involves-h">What participation involves</h2>
       <ol class="involves">
         <li>
@@ -184,7 +184,7 @@ const faqItems = [
       </ol>
     </section>
 
-    <section aria-labelledby="register-h">
+    <section class="reveal" aria-labelledby="register-h">
       <h2 id="register-h">Register</h2>
 
       <!-- Success panel, revealed by JS after a successful AJAX submission. -->
@@ -298,11 +298,11 @@ const faqItems = [
       <p class="endpoint-note" data-endpoint-note hidden>
         <span class="pending">[PENDING]</span> Form endpoint not yet configured.
         Set <code>PUBLIC_FORMSPREE_ENDPOINT</code> in the Vercel environment
-        before launch (see DECISIONS.md D5).
+        before launch (see archive/v1/DECISIONS.md D5).
       </p>
     </section>
 
-    <section aria-labelledby="faq-h">
+    <section class="reveal" aria-labelledby="faq-h">
       <h2 id="faq-h">Frequently asked questions</h2>
       <Faq items={faqItems} />
     </section>

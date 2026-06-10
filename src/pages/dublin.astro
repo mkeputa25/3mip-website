@@ -1,14 +1,10 @@
 ---
 /**
- * /dublin — QR-code landing page for iEMSs 2026 (Phase 4D.7).
+ * /dublin — QR-code landing page for iEMSs 2026 (Phase 4D.7, restyled 4e).
  *
- * Purpose: someone scans a QR code during a talk in Dublin and lands here.
- * They get what 3MIP is in 90 seconds, where to find the sessions, the
- * signature figure, and one CTA. One screen-and-a-half, no more.
- *
- * Deliberately excluded from the primary nav (Header NAV_ITEMS unchanged);
- * linked from the home page milestone block and the Outputs page. Included
- * in the sitemap — it should rank for "3MIP Dublin".
+ * One screen-and-a-half: what 3MIP is in 90 seconds, the sessions, the
+ * kinetic figure on a full-bleed plate band, one CTA. Excluded from the
+ * primary nav; linked from the Home milestone block and Outputs.
  */
 import Base from "../layouts/Base.astro";
 import SignatureViz from "../components/SignatureViz.astro";
@@ -47,9 +43,9 @@ const jsonLd = {
   description="3MIP at iEMSs 2026 Dublin: Session C7 and Workshop WSC7. The climate-migration model intercomparison in 90 seconds, and how to join."
   jsonLd={jsonLd}
 >
-  <article class="page">
-    <header class="page__header">
-      <p class="kicker">iEMSs 2026 · University College Dublin · July 12–16, 2026</p>
+  <article>
+    <header class="page-narrow">
+      <p class="eyebrow">iEMSs 2026 · University College Dublin · July 12–16, 2026</p>
       <h1>3MIP in 90 seconds</h1>
       <p class="lede">
         3MIP — the Mobility and Migration Modeling Intercomparison Project —
@@ -63,7 +59,7 @@ const jsonLd = {
       </ul>
     </header>
 
-    <section aria-labelledby="sessions-h">
+    <section class="page-narrow reveal" aria-labelledby="sessions-h">
       <h2 id="sessions-h">Find us at the conference</h2>
       <div class="sessions">
         <p>
@@ -80,23 +76,26 @@ const jsonLd = {
       </div>
     </section>
 
-    <section aria-labelledby="viz-h">
-      <h2 id="viz-h">The pitch in one figure</h2>
-      <SignatureViz idBase="dublin-viz" />
-      <p class="viz-alt">
-        Six model architectures, the same Bangladesh outline, the same
-        question — six different visual grammars: household dots, flow arcs,
-        catchment rings, flat regional polygons, smooth contours, discrete
-        cells. When animated, each panel moves in its own model's logic
-        across a repeating 2025–2050 loop — drifting agents, drawing and
-        pulsing flows, rippling catchments, jumping time-steps, crossfading
-        surfaces, ticking generations. A pause control stops the loop; with
-        reduced motion the figure is static. 3MIP exists to make that
-        divergence legible and synthesize it.
-      </p>
+    <!-- Full-bleed plate band (4e) — the figure as a warm print. -->
+    <section class="viz-band reveal" aria-labelledby="viz-h">
+      <div class="viz-band__inner">
+        <h2 id="viz-h">The pitch in one figure</h2>
+        <SignatureViz idBase="dublin-viz" class="viz-band__fig" />
+        <p class="viz-alt">
+          Six model architectures, the same Bangladesh outline, the same
+          question — six different visual grammars: household dots, flow arcs,
+          catchment rings, flat regional polygons, smooth contours, discrete
+          cells. When animated, each panel moves in its own model's logic
+          across a repeating 2025–2050 loop — drifting agents, drawing and
+          pulsing flows, rippling catchments, jumping time-steps, crossfading
+          surfaces, ticking generations. A pause control stops the loop; with
+          reduced motion the figure is static. 3MIP exists to make that
+          divergence legible and synthesize it.
+        </p>
+      </div>
     </section>
 
-    <section aria-labelledby="join-h" class="join">
+    <section class="page-narrow join reveal" aria-labelledby="join-h">
       <h2 id="join-h" class="vh">Join</h2>
       <Button href="/participate/">Register to participate</Button>
       <p class="join__more">
@@ -108,28 +107,21 @@ const jsonLd = {
 </Base>
 
 <style>
-  .page {
+  .page-narrow {
     max-width: 45rem;
     margin: 0 auto;
-    padding: var(--space-6) var(--space-3) var(--space-8);
+    padding: var(--space-6) var(--space-3) 0;
   }
-  @media (min-width: 768px) { .page { padding: var(--space-7) var(--space-5) var(--space-8); } }
+  @media (min-width: 768px) { .page-narrow { padding: var(--space-7) var(--space-5) 0; } }
 
-  .kicker {
-    font-size: var(--text-caption);
-    text-transform: uppercase;
-    letter-spacing: 0.1em;
-    color: var(--color-ink-subtle);
-    font-weight: 500;
-    margin: 0 0 var(--space-2);
-  }
-  .page__header h1 { margin: 0; }
+  header.page-narrow h1 { margin: 0; }
   .lede {
     font-size: var(--text-body-lg);
     color: var(--color-ink-muted);
     margin-top: var(--space-3);
     max-width: 60ch;
   }
+  .eyebrow { margin: 0 0 var(--space-2); }
   .facts {
     margin: var(--space-4) 0 0;
     padding-left: var(--space-4);
@@ -138,8 +130,8 @@ const jsonLd = {
   }
   .facts li { padding-block: var(--space-1); max-width: 60ch; }
 
-  .page section { margin-top: var(--space-6); }
-  .page h2 { margin: 0 0 var(--space-3); }
+  section.page-narrow { padding-top: var(--space-6); }
+  h2 { margin: 0 0 var(--space-3); }
 
   .sessions {
     border: 1px solid var(--color-border);
@@ -150,15 +142,24 @@ const jsonLd = {
   }
   .sessions p { margin: 0 0 var(--space-2); max-width: 65ch; }
   .sessions p:last-child { margin-bottom: 0; }
-  .sessions__note { color: var(--color-ink-muted); font-size: var(--text-small); }
-  .pending {
-    color: var(--color-warning);
-    font-size: var(--text-caption);
-    font-weight: 500;
-  }
+  .sessions__note { font-family: var(--font-sans); color: var(--color-ink-muted); font-size: var(--text-small); }
 
+  /* Full-bleed plate band — parchment edge-to-edge, space-8 breathing. */
+  .viz-band {
+    background: var(--color-plate);
+    margin-block: var(--space-8);
+    padding-block: var(--space-7);
+  }
+  .viz-band__inner {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding-inline: var(--space-3);
+  }
+  @media (min-width: 768px) { .viz-band__inner { padding-inline: var(--space-5); } }
+  .viz-band__fig { margin-top: var(--space-5); }
   .viz-alt {
-    margin-top: var(--space-3);
+    margin-top: var(--space-4);
+    font-family: var(--font-sans);
     font-size: var(--text-small);
     color: var(--color-ink-muted);
     max-width: 65ch;
@@ -169,11 +170,11 @@ const jsonLd = {
     flex-direction: column;
     align-items: flex-start;
     gap: var(--space-3);
-    padding-top: var(--space-5);
-    border-top: 1px solid var(--color-border);
+    padding-bottom: var(--space-7);
   }
   .join__more {
     margin: 0;
+    font-family: var(--font-sans);
     font-size: var(--text-small);
     color: var(--color-ink-muted);
   }

@@ -29,7 +29,8 @@ const base =
   "block bg-surface border rounded-[4px] p-4 md:p-6 " +
   "transition-colors duration-150 ease-out";
 const borderClass = emphasized ? "border-border-strong" : "border-border";
-const hoverClass = href ? "hover:border-ink" : "";
+// 4e card hover: border lifts to border-strong. No translation, no shadow.
+const hoverClass = href ? "hover:border-border-strong" : "";
 const focusClass = href
   ? "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 " +
     "focus-visible:outline-[color:var(--color-focus-ring)]"

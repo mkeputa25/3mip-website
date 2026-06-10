@@ -154,11 +154,15 @@ the project launch; the recorded webinars are February and March **2026**
 
 ### Webinar recordings (Drive links from the official site)
 
-- **February 2026** — Hedda Bonatz (University of Kiel). Title `[VERIFY — Mario supplies]`. Recording: https://drive.google.com/file/d/1UA-KpVOobspNNLXdW1pD4ctI4v0y9UJi/view
-- **March 2026** — Simona `[VERIFY surname and affiliation — Mario supplies]`. Title `[VERIFY]`. Recording: https://drive.google.com/file/d/1Of1ndcRHtXi54mnlKnaBDDHida04ak29/view
-- **Date `[VERIFY]`** — Andrew Bell (Cornell). Title `[VERIFY — Mario supplies]`. Recording: https://drive.google.com/file/d/1-qAABRtk0wHcn95Gu0LjAypfRUkPIAqT/view
+**Corrected in Phase 4e (V7.1):** webinars are titled by month per the
+official site, and no speaker names are displayed on the website. Speaker
+identities below are internal metadata only.
 
-Hosting: recordings stay on Google Drive in v1 (see DECISIONS.md D20); linked as external buttons, never embedded iframes.
+- **"February Webinar Presentation"** (February 2026) — speaker metadata: Hedda Bonatz (University of Kiel). Recording: https://drive.google.com/file/d/1UA-KpVOobspNNLXdW1pD4ctI4v0y9UJi/view
+- **"March Webinar Presentation"** (March 2026). Recording: https://drive.google.com/file/d/1Of1ndcRHtXi54mnlKnaBDDHida04ak29/view
+- **"November Webinar Presentation"** `[VERIFY month — provisional, per the early-November-2025 first-webinar timeline]` — speaker metadata: Andrew Bell (Cornell). Recording: https://drive.google.com/file/d/1-qAABRtk0wHcn95Gu0LjAypfRUkPIAqT/view
+
+Hosting: recordings stay on Google Drive in v1 (see archive/v1/DECISIONS.md D20); linked as external buttons, never embedded iframes.
 
 ## iEMSs 2026 Dublin
 
@@ -209,7 +213,7 @@ framing was wrong — do not use it anywhere on the site.
 8. **Inundation** — 30 arc-sec; 2015, 2030, 2050, 2080. Ward, P. J., et al. (2020), WRI Aqueduct Floods. Data: https://wri-projects.s3.amazonaws.com/AqueductFloodTool/download/v2/index.html
 9. **Flood extent and duration** — 250m, 2000–2018. Tellman, B., Sullivan, J. A., Kuhn, C., et al. (2021). "Satellite imaging reveals increased proportional population exposure to floods." *Nature*, 596, 80–86. DOI: 10.1038/s41586-021-03695-w. Data: http://global-flood-database.cloudtostreet.ai/#interactive-map
 10. **Soil salinity** — 30 arc-sec, 1980–2018. Hassani, A., Azapagic, A., Shokri, N. (2020), *PNAS*, 117(52), 33017–33027. DOI: 10.1073/pnas.2013771117. CC BY 4.0. Data: https://doi.org/10.6084/m9.figshare.13295918.v1
-11. **Soil salinity and effects on yield** — Upazila level, 2010. Soil Resource Development Institute, Government of the People's Republic of Bangladesh (SRDI report, November 2010). Data: PDF on srdi.portal.gov.bd `[VERIFY exact PDF URL — copy from archived Weebly data.html]`
+11. **Soil salinity and effects on yield** — Upazila level, 2010. Soil Resource Development Institute, Government of the People's Republic of Bangladesh (SRDI report, November 2010). Data (exact URL from the archived Weebly data.html, resolved Phase 4e): https://srdi.portal.gov.bd/sites/default/files/files/srdi.portal.gov.bd/publications/bc598e7a_df21_49ee_882e_0302c974015f/Soil%20salinity%20report-Nov%202010.pdf
 12. **Precipitation** — 0.01° gridded, 1901–2018. Dewan, A., et al. (2022), *Scientific Data*, DOI: 10.1038/s41597-022-01568-z. Data: https://figshare.com/articles/dataset/Long_term_high_resolution_gridded_rainfall_product_for_Bangladesh/16607912
 
 ### Mobility data
@@ -296,3 +300,12 @@ Additions: dual-track participation policy, code-and-findings-sharing policy,
 data-extension policy, domain experts (4), leads' personal sites, official
 logo existence. The live site is the official record; where this file
 conflicted with it, this file was corrected.
+
+**Phase 4e update (June 2026, V7):** webinars retitled by month ("February
+Webinar Presentation" etc.) with no speaker names displayed — speaker
+identities kept as internal metadata; the Simona-surname `[VERIFY]` is moot
+under month naming. SRDI exact PDF URL resolved from the archived Weebly
+data.html. Mallick, Best, Carrico, Ghosh, Priodarshini, Sultana & Samanta
+(2023) title confirmed: "How do migration decisions and drivers differ
+against extreme environmental events?" *Environmental Hazards*,
+DOI 10.1080/17477891.2023.2195152.

@@ -2,26 +2,21 @@
 /**
  * WebinarCard — one webinar on the Outputs page § Webinars.
  *
- * Per docs/CONTENT-INVENTORY.md § Outputs § Section 2: title, date,
- * speaker(s) + affiliation, length, abstract, watch/slides buttons.
+ * Phase 4e (V7.1): webinars are titled by month per the official site —
+ * "February Webinar Presentation" — and no speaker names are displayed.
+ * Speaker data may exist in frontmatter as metadata but is not rendered.
  *
- * Detail-rich card (single column), not a browse tile. Recording and slides
- * links are external; rendered as buttons only when a URL is present.
+ * Recording and slides links are external buttons, never embedded iframes
+ * (DECISIONS archive/v1 D20).
  */
 import Button from "./Button.astro";
-
-interface Speaker {
-  name: string;
-  affiliation: string;
-}
 
 interface Props {
   title: string;
   /** ISO date string for the <time> element. */
   date: string;
-  /** Long-format display date, e.g. "February 2025". */
+  /** Long-format display date, e.g. "February 2026". */
   dateLabel: string;
-  speakers: Speaker[];
   lengthMinutes?: number;
   abstract?: string;
   recordingUrl?: string;
@@ -34,7 +29,6 @@ const {
   title,
   date,
   dateLabel,
-  speakers,
   lengthMinutes,
   abstract,
   recordingUrl,
@@ -51,14 +45,6 @@ const {
   </div>
 
   <h3 class="webinar__title">{title}</h3>
-
-  <p class="webinar__speakers">
-    {speakers.map((s, i) => (
-      <span>
-        {s.name} <span class="webinar__affil">({s.affiliation})</span>{i < speakers.length - 1 ? "; " : ""}
-      </span>
-    ))}
-  </p>
 
   {abstract && <p class="webinar__abstract">{abstract}</p>}
 
@@ -93,9 +79,9 @@ const {
     font-weight: 500;
   }
   .webinar__len {
+    font-family: var(--font-sans);
     font-size: var(--text-caption);
-    color: var(--color-ink-subtle);
-    text-transform: uppercase;
+    color: var(--color-ink-muted);
     letter-spacing: 0.06em;
   }
   .webinar__verify {
@@ -108,12 +94,6 @@ const {
     margin: var(--space-2) 0 var(--space-2);
     font-size: var(--text-h3);
   }
-  .webinar__speakers {
-    margin: 0;
-    color: var(--color-ink);
-    font-size: var(--text-body);
-  }
-  .webinar__affil { color: var(--color-ink-muted); }
   .webinar__abstract {
     margin: var(--space-3) 0 0;
     color: var(--color-ink-muted);

@@ -2,23 +2,29 @@
 /**
  * Home — src/pages/index.astro
  *
- * Per docs/CONTENT-INVENTORY.md § Home, amended in Phase 4D. Ten sections:
+ * Per docs/CONTENT-INVENTORY.md § Home, amended in Phases 4D and 4e.
+ * Ten sections:
  *   1. Header (shared via Base)
- *   2. Hero
- *   3. Signature visualization
+ *   2. Hero — oversized Fraunces display, ambience field in the right third
+ *   3. Signature visualization — FULL-BLEED parchment plate band: the
+ *      boldest compositional moment on the site (4e)
  *   4. Current case (2-col text + key facts)
- *   5. Next milestone (iEMSs 2026 — confirmed July 12–16, UC Dublin)
- *   6. How 3MIP works (4 steps)
- *   7. Leadership (4D.5 — cards from the team collection + coordination line)
+ *   5. Next milestone (iEMSs 2026 — July 12–16, UC Dublin)
+ *   6. How 3MIP works — hairline-ruled text blocks, hanging Fraunces
+ *      numerals; deliberately NOT a SaaS feature grid (V4)
+ *   7. Leadership (cards from the team collection + coordination line)
  *   8. Registration CTA
  *   9. Lineage strip
  *  10. Footer (shared via Base)
  *
- * Headline + tagline are [PENDING BELL APPROVAL] — see DECISIONS.md D13, D14.
+ * Scroll-reveal applies to sections below the fold; the hero never waits
+ * for a reveal (V9). Headline + tagline [PENDING BELL APPROVAL].
  */
 import { getCollection } from "astro:content";
 import Base from "../layouts/Base.astro";
 import SignatureViz from "../components/SignatureViz.astro";
+import HeroAmbience from "../components/HeroAmbience.astro";
+import SectionDivider from "../components/SectionDivider.astro";
 import Button from "../components/Button.astro";
 import Link from "../components/Link.astro";
 
@@ -38,6 +44,25 @@ const coordinators = team
     const bCoord = b.data.shortRole.toLowerCase().includes("coordinator") ? 0 : 1;
     return aCoord - bCoord || a.data.surname.localeCompare(b.data.surname);
   });
+
+const WORKS_STEPS = [
+  {
+    h: "Register",
+    p: "Tell us your modeling approach and research interest.",
+  },
+  {
+    h: "Receive curated data",
+    p: "Get access to the harmonized Bangladesh input dataset.",
+  },
+  {
+    h: "Run your model",
+    p: "Apply your approach to the shared question. Your model stays yours.",
+  },
+  {
+    h: "Contribute to synthesis",
+    p: "Submit outputs to the Climatic Change topical collection and present at iEMSs.",
+  },
+];
 
 const orgJsonLd = {
   "@context": "https://schema.org",
@@ -63,8 +88,11 @@ const orgJsonLd = {
   description="3MIP coordinates climate-migration modelers around shared benchmark cases. First case: coastal Bangladesh. Synthesis at iEMSs Dublin, July 2026."
   jsonLd={orgJsonLd}
 >
-  <!-- Section 2 — Hero -->
+  <!-- Section 2 — Hero (never waits for a reveal). -->
   <section class="hero" aria-labelledby="hero-h">
+    <div class="hero__ambience" aria-hidden="true">
+      <HeroAmbience />
+    </div>
     <div class="hero__inner">
       <h1 id="hero-h" class="hero__headline">
         Different models. Same question. One coordinated answer.
@@ -76,9 +104,9 @@ const orgJsonLd = {
     </div>
   </section>
 
-  <!-- Section 3 — Signature visualization -->
-  <section class="band" aria-labelledby="sigviz-h">
-    <div class="band__inner">
+  <!-- Section 3 — Signature visualization: full-bleed plate band. -->
+  <section class="viz-band reveal" aria-labelledby="sigviz-h">
+    <div class="viz-band__inner">
       <h2 id="sigviz-h">Why the same question yields different answers</h2>
       <p class="lede">
         Different model architectures — agent-based, gravity, radiation,
@@ -88,7 +116,7 @@ const orgJsonLd = {
         3MIP makes that divergence visible and synthesizes it.
       </p>
 
-      <SignatureViz class="hero-viz" />
+      <SignatureViz class="viz-band__fig" />
 
       <p class="long-alt">
         <strong>Long-form text alternative.</strong>
@@ -119,54 +147,58 @@ const orgJsonLd = {
   </section>
 
   <!-- Section 4 — Current case -->
-  <section class="band band--surface" aria-labelledby="case-h">
-    <div class="band__inner case-grid">
-      <div>
-        <h2 id="case-h">Case 1: Coastal Bangladesh</h2>
-        <p>
-          Bangladesh has 175.7 million people, much of it living in a low-lying
-          delta where sea-level rise, salinity, and flood dynamics interact
-          with economic and social drivers of migration. Bell et al. (2021)
-          projected continued migration toward Bangladesh's coast through 2100
-          under all studied scenarios — not away from it. The empirical density
-          and policy stakes make this the right place for a first benchmark.
-        </p>
-        <p>
-          <Link href="/case-bangladesh/" variant="in-prose">Read the case in full</Link>.
-        </p>
+  <section class="band reveal" aria-labelledby="case-h">
+    <div class="band__inner">
+      <SectionDivider num="02" name="The case" />
+      <div class="case-grid">
+        <div>
+          <h2 id="case-h">Case 1: Coastal Bangladesh</h2>
+          <p>
+            Bangladesh has 175.7 million people, much of it living in a low-lying
+            delta where sea-level rise, salinity, and flood dynamics interact
+            with economic and social drivers of migration. Bell et al. (2021)
+            projected continued migration toward Bangladesh's coast through 2100
+            under all studied scenarios — not away from it. The empirical density
+            and policy stakes make this the right place for a first benchmark.
+          </p>
+          <p>
+            <Link href="/case-bangladesh/" variant="in-prose">Read the case in full</Link>.
+          </p>
+        </div>
+        <aside class="case-facts" aria-label="Key facts about Case 1">
+          <h3 class="case-facts__h">Key facts</h3>
+          <dl>
+            <div>
+              <dt>Country population</dt>
+              <dd>175.7 million <span class="case-facts__source">(UNFPA SWOP 2025)</span></dd>
+            </div>
+            <div>
+              <dt>Time horizon</dt>
+              <dd>2025–2050 baseline; extensions to 2100</dd>
+            </div>
+            <div>
+              <dt>Climate scenarios</dt>
+              <dd>
+                SSP2-4.5 baseline; SSP1-2.6 and SSP5-8.5 sensitivity
+                <span class="verify">[VERIFY]</span>
+              </dd>
+            </div>
+            <div>
+              <dt>Curated dataset</dt>
+              <dd>
+                16 datasets — population, environmental, mobility (<Link href="/data/" variant="in-prose">Data page</Link>)
+              </dd>
+            </div>
+          </dl>
+        </aside>
       </div>
-      <aside class="case-facts" aria-label="Key facts about Case 1">
-        <h3 class="case-facts__h">Key facts</h3>
-        <dl>
-          <div>
-            <dt>Country population</dt>
-            <dd>175.7 million <span class="case-facts__source">(UNFPA SWOP 2025)</span></dd>
-          </div>
-          <div>
-            <dt>Time horizon</dt>
-            <dd>2025–2050 baseline; extensions to 2100</dd>
-          </div>
-          <div>
-            <dt>Climate scenarios</dt>
-            <dd>
-              SSP2-4.5 baseline; SSP1-2.6 and SSP5-8.5 sensitivity
-              <span class="verify">[VERIFY]</span>
-            </dd>
-          </div>
-          <div>
-            <dt>Curated dataset</dt>
-            <dd>
-              16 datasets — population, environmental, mobility (<Link href="/data/" variant="in-prose">Data page</Link>)
-            </dd>
-          </div>
-        </dl>
-      </aside>
     </div>
   </section>
 
   <!-- Section 5 — Next milestone -->
-  <section class="band" aria-labelledby="next-h">
+  <section class="band reveal" aria-labelledby="next-h">
     <div class="band__inner band__inner--narrow">
+      <SectionDivider num="03" name="Next milestone" />
       <h2 id="next-h">Next milestone</h2>
       <div class="milestone">
         <p class="milestone__head"><strong>iEMSs 2026 — University College Dublin, July 12–16, 2026</strong></p>
@@ -184,7 +216,7 @@ const orgJsonLd = {
         </p>
         <p>
           <Link href="/dublin/" variant="in-prose">3MIP at iEMSs Dublin</Link>
-          <span class="milestone__sep" aria-hidden="true"> · </span>
+          <span aria-hidden="true"> · </span>
           <Link href="https://conference.iemss.org/streams/" variant="external">
             Session details on the iEMSs program
           </Link>
@@ -193,45 +225,40 @@ const orgJsonLd = {
     </div>
   </section>
 
-  <!-- Section 6 — How 3MIP works -->
-  <section class="band band--surface" aria-labelledby="how-h">
-    <div class="band__inner">
+  <!-- Section 6 — How 3MIP works: hairline-ruled blocks, hanging numerals.
+       Deliberately not a SaaS feature grid (V4). -->
+  <section class="band reveal" aria-labelledby="how-h">
+    <div class="band__inner band__inner--narrow">
+      <SectionDivider num="04" name="How it works" />
       <h2 id="how-h">How 3MIP works</h2>
-      <ol class="steps">
-        <li class="step">
-          <span class="step__num" aria-hidden="true">1</span>
-          <h3 class="step__h">Register</h3>
-          <p>Tell us your modeling approach and research interest.</p>
-        </li>
-        <li class="step">
-          <span class="step__num" aria-hidden="true">2</span>
-          <h3 class="step__h">Receive curated data</h3>
-          <p>Get access to the harmonized Bangladesh input dataset.</p>
-        </li>
-        <li class="step">
-          <span class="step__num" aria-hidden="true">3</span>
-          <h3 class="step__h">Run your model</h3>
-          <p>Apply your approach to the shared question. Your model stays yours.</p>
-        </li>
-        <li class="step">
-          <span class="step__num" aria-hidden="true">4</span>
-          <h3 class="step__h">Contribute to synthesis</h3>
-          <p>Submit outputs to the <em>Climatic Change</em> topical collection and present at iEMSs.</p>
-        </li>
+      <ol class="works">
+        {WORKS_STEPS.map((step, i) => (
+          <li class="works__step">
+            {i > 0 && <span class="works__rule reveal-rule" aria-hidden="true"></span>}
+            <div class="works__row">
+              <span class="works__num" aria-hidden="true">{i + 1}</span>
+              <div class="works__body">
+                <h3 class="works__h">{step.h}</h3>
+                <p>{i === 3 ? <>Submit outputs to the <em>Climatic Change</em> topical collection and present at iEMSs.</> : step.p}</p>
+              </div>
+            </div>
+          </li>
+        ))}
       </ol>
     </div>
   </section>
 
-  <!-- Section 7 — Leadership (Phase 4D.5) -->
+  <!-- Section 7 — Leadership -->
   {coLeads.length > 0 && (
-    <section class="band" aria-labelledby="lead-h">
+    <section class="band reveal" aria-labelledby="lead-h">
       <div class="band__inner">
+        <SectionDivider num="05" name="Leadership" />
         <h2 id="lead-h">Leadership</h2>
         <ul class="leads">
           {coLeads.map((e) => (
             <li class="lead-card">
               <h3 class="lead-card__name">
-                <a href="/team/">{e.data.name}</a>
+                <a href="/team/" class="underline-slide">{e.data.name}</a>
               </h3>
               <p class="lead-card__affil">{e.data.affiliation}</p>
               <p class="lead-card__role">{e.data.shortRole}</p>
@@ -255,20 +282,21 @@ const orgJsonLd = {
   )}
 
   <!-- Section 8 — Registration CTA -->
-  <section class="band band--cta" aria-labelledby="cta-h">
+  <section class="band band--cta reveal" aria-labelledby="cta-h">
     <div class="band__inner band__inner--narrow cta">
       <h2 id="cta-h" class="vh">Register</h2>
       <Button href="/participate/" class="cta__button">Register to participate</Button>
       <p class="cta__note">
         Open to climate-migration modelers using ABM, gravity, radiation,
-        IAM, or ML approaches. No fee. Participation expectations on the
+        IAM, or ML approaches — and to domain experts on Bangladesh and
+        climate-related mobility. No fee. Participation expectations on the
         Participate page.
       </p>
     </div>
   </section>
 
   <!-- Section 9 — Lineage strip -->
-  <section class="lineage" aria-label="Lineage and institutional context">
+  <section class="lineage reveal" aria-label="Lineage and institutional context">
     <p>
       Inspired by AgMIP and ISIMIP. Founded at Princeton C-PREE, September 2024.
       Led from Cornell, Ohio State, and VU Amsterdam.
@@ -279,12 +307,11 @@ const orgJsonLd = {
 <style>
   /* ── Shared band layout ─────────────────────────────────────────── */
   .band { padding-block: var(--space-7); }
-  @media (min-width: 1024px) { .band { padding-block: var(--space-8); } }
-  .band--surface { background: var(--color-surface); }
+  @media (min-width: 1024px) { .band { padding-block: var(--space-8) var(--space-7); } }
   .band--cta {
-    background: var(--color-background);
     border-top: 1px solid var(--color-border);
     border-bottom: 1px solid var(--color-border);
+    padding-block: var(--space-7);
   }
   .band__inner {
     max-width: var(--content-max);
@@ -293,33 +320,42 @@ const orgJsonLd = {
   }
   @media (min-width: 768px) { .band__inner { padding-inline: var(--space-5); } }
   .band__inner--narrow {
-    max-width: 45rem;
+    max-width: 48rem;
   }
 
-  /* ── Hero ──────────────────────────────────────────────────────── */
+  /* ── Hero — oversized, calm; ambience drifts in the right third. ── */
   .hero {
-    padding-block: var(--space-7) var(--space-6);
+    position: relative;
+    padding-block: var(--space-8) var(--space-7);
+    overflow: hidden;
   }
   @media (min-width: 1024px) {
-    .hero { padding-block: var(--space-8) var(--space-7); }
+    .hero { padding-block: var(--space-9) var(--space-8); }
+  }
+  .hero__ambience {
+    position: absolute;
+    inset: 0 0 0 58%;
   }
   .hero__inner {
+    position: relative;
     max-width: var(--content-max);
     margin: 0 auto;
     padding-inline: var(--space-3);
-    max-width: 45rem; /* hero copy stays narrow */
   }
   @media (min-width: 768px) {
     .hero__inner { padding-inline: var(--space-5); }
   }
   .hero__headline {
     font-family: var(--font-serif);
-    font-size: clamp(2.25rem, 4vw + 1rem, 3.5rem);
-    line-height: 1.05;
-    letter-spacing: -0.02em;
+    font-variation-settings: var(--fraunces-display);
+    font-weight: 500;
+    font-size: clamp(2.5rem, 4.5vw + 1rem, 4.25rem);
+    line-height: 1.04;
+    letter-spacing: -0.015em;
     color: var(--color-ink);
     text-wrap: balance;
     margin: 0;
+    max-width: 18ch;
   }
   .hero__subhead {
     font-size: var(--text-body-lg);
@@ -329,7 +365,29 @@ const orgJsonLd = {
     max-width: 38rem;
   }
 
-  /* ── Lede paragraph ────────────────────────────────────────────── */
+  /* ── Section 3: full-bleed plate band — the boldest compositional
+       moment on the site. Parchment edge-to-edge against the white
+       page, space-8 breathing room above and below. ────────────────── */
+  .viz-band {
+    background: var(--color-plate);
+    margin-block: var(--space-8);
+    padding-block: var(--space-7);
+  }
+  @media (min-width: 1024px) {
+    .viz-band { padding-block: var(--space-8); }
+  }
+  .viz-band__inner {
+    max-width: var(--content-max);
+    margin: 0 auto;
+    padding-inline: var(--space-3);
+  }
+  @media (min-width: 768px) {
+    .viz-band__inner { padding-inline: var(--space-5); }
+  }
+  .viz-band__fig {
+    margin-top: var(--space-6);
+  }
+
   .lede {
     font-size: var(--text-body-lg);
     line-height: var(--text-body-lg--line-height);
@@ -338,7 +396,8 @@ const orgJsonLd = {
     max-width: 60ch;
   }
   .long-alt {
-    margin-top: var(--space-4);
+    margin-top: var(--space-5);
+    font-family: var(--font-sans);
     font-size: var(--text-small);
     color: var(--color-ink-muted);
     max-width: 65ch;
@@ -359,29 +418,24 @@ const orgJsonLd = {
     }
   }
   .case-facts {
-    background: var(--color-background);
+    background: var(--color-surface);
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
     padding: var(--space-4);
   }
   .case-facts__h {
+    font-family: var(--font-sans);
+    font-variation-settings: normal;
     font-size: var(--text-caption);
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-ink-subtle);
+    letter-spacing: var(--tracking-label);
+    color: var(--color-ink-muted);
     font-weight: 500;
     margin: 0 0 var(--space-3);
   }
   .case-facts dl { margin: 0; display: grid; gap: var(--space-3); }
-  .case-facts dt { font-weight: 500; color: var(--color-ink); font-size: var(--text-small); }
-  .case-facts dd { margin: var(--space-1) 0 0; color: var(--color-ink-muted); font-size: var(--text-small); }
-  .case-facts__source { color: var(--color-ink-subtle); font-size: var(--text-caption); }
-  .verify {
-    margin-left: var(--space-1);
-    color: var(--color-warning);
-    font-size: var(--text-caption);
-    font-weight: 500;
-  }
+  .case-facts dt { font-family: var(--font-sans); font-weight: 500; color: var(--color-ink); font-size: var(--text-small); }
+  .case-facts dd { font-family: var(--font-sans); margin: var(--space-1) 0 0; color: var(--color-ink-muted); font-size: var(--text-small); }
+  .case-facts__source { color: var(--color-ink-muted); font-size: var(--text-caption); }
 
   /* ── Section 5: next milestone ─────────────────────────────────── */
   .milestone {
@@ -397,36 +451,48 @@ const orgJsonLd = {
   .milestone__head { font-size: var(--text-body-lg); color: var(--color-ink); }
   .milestone__note { color: var(--color-ink-muted); font-style: italic; }
 
-  /* ── Section 6: how it works ───────────────────────────────────── */
-  .steps {
+  /* ── Section 6: how it works — ruled blocks, hanging numerals ───── */
+  .works {
     list-style: none;
     margin: var(--space-5) 0 0;
     padding: 0;
-    display: grid;
-    gap: var(--space-5);
-    grid-template-columns: 1fr;
   }
-  @media (min-width: 640px) { .steps { grid-template-columns: repeat(2, 1fr); } }
-  @media (min-width: 1024px) { .steps { grid-template-columns: repeat(4, 1fr); } }
-  .step {
-    padding-top: var(--space-3);
-    border-top: 1px solid var(--color-border);
-  }
-  .step__num {
-    font-family: var(--font-serif);
-    font-size: 2.75rem;
-    font-weight: 400;
-    line-height: 1;
-    color: var(--color-accent);
+  .works__rule {
     display: block;
+    border-top: var(--hairline) solid var(--color-border-strong);
+    margin-block: var(--space-5);
   }
-  .step__h {
+  .works__row {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-2);
+  }
+  @media (min-width: 768px) {
+    .works__row {
+      /* Numeral hangs in the left margin at desktop. */
+      grid-template-columns: 5rem 1fr;
+      gap: var(--space-4);
+    }
+  }
+  .works__num {
+    font-family: var(--font-serif);
+    font-variation-settings: var(--fraunces-display);
+    font-weight: 500;
+    font-size: 3rem;
+    line-height: 1;
+    color: var(--color-accent-dim);
+  }
+  .works__h {
     font-size: var(--text-h4);
-    margin: var(--space-2) 0 var(--space-2);
+    margin: 0 0 var(--space-2);
   }
-  .step p { color: var(--color-ink-muted); font-size: var(--text-small); margin: 0; }
+  .works__body p {
+    color: var(--color-ink-muted);
+    margin: 0;
+    max-width: 55ch;
+  }
 
-  /* ── Section 7: leadership (Phase 4D.5) ─────────────────────────── */
+  /* ── Section 7: leadership ─────────────────────────────────────── */
   .leads {
     list-style: none;
     margin: var(--space-5) 0 0;
@@ -440,22 +506,21 @@ const orgJsonLd = {
     border: 1px solid var(--color-border);
     border-radius: var(--radius);
     padding: var(--space-4);
-    background: var(--color-background);
+    background: var(--color-surface);
+    transition: border-color 150ms var(--ease-out);
+  }
+  .lead-card:hover {
+    border-color: var(--color-border-strong);
   }
   .lead-card__name {
     font-family: var(--font-serif);
+    font-variation-settings: var(--fraunces-h3);
     font-size: var(--text-h4);
-    font-weight: 600;
+    font-weight: 500;
     margin: 0;
   }
   .lead-card__name a {
     color: var(--color-ink);
-    text-decoration: none;
-  }
-  .lead-card__name a:hover {
-    color: var(--color-accent);
-    text-decoration: underline;
-    text-underline-offset: 0.2em;
   }
   .lead-card__name a:focus-visible {
     outline: 2px solid var(--color-focus-ring);
@@ -463,21 +528,23 @@ const orgJsonLd = {
     border-radius: 2px;
   }
   .lead-card__affil {
+    font-family: var(--font-sans);
     margin: var(--space-2) 0 0;
     font-size: var(--text-small);
     color: var(--color-ink-muted);
   }
   .lead-card__role {
+    font-family: var(--font-sans);
     margin: var(--space-2) 0 0;
     font-size: var(--text-small);
     font-style: italic;
-    color: var(--color-ink-subtle);
+    color: var(--color-ink-muted);
   }
-  /* Coordination line — deliberately NOT a card; one rule above, smaller type. */
   .coord-line {
     margin-top: var(--space-5);
     padding-top: var(--space-3);
-    border-top: 1px solid var(--color-border);
+    border-top: var(--hairline) solid var(--color-border-strong);
+    font-family: var(--font-sans);
     font-size: var(--text-small);
     color: var(--color-ink-muted);
     max-width: none;
@@ -494,9 +561,10 @@ const orgJsonLd = {
   }
   .cta__button { font-size: var(--text-body-lg); padding: var(--space-3) var(--space-5); }
   .cta__note {
+    font-family: var(--font-sans);
     color: var(--color-ink-muted);
     font-size: var(--text-small);
-    max-width: 38rem;
+    max-width: 40rem;
     margin: 0;
   }
 
@@ -510,7 +578,7 @@ const orgJsonLd = {
     margin: 0 auto;
     padding-inline: var(--space-3);
     font-size: var(--text-body-lg);
-    font-family: var(--font-serif);
+    font-style: italic;
     color: var(--color-ink-muted);
     line-height: 1.5;
   }

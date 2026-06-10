@@ -1,17 +1,13 @@
 ---
 /**
- * Footer — per docs/IA.md § Footer information architecture.
+ * Footer — per docs/IA.md § Footer information architecture, restyled in
+ * Phase 4e (DECISIONS-V2 V4/V6).
  *
- * Sections, in order:
- *   1. Wordmark + tagline
- *   2. Contact line
- *   3. Quick links (subset of nav)
- *   4. Project links: GitHub repo [PLACEHOLDER], Cite this site, RSS
- *   5. Legal: Privacy notice, Accessibility statement, License
- *   6. Meta: Last updated (auto from git)
+ * Sections: wordmark + tagline + contact / quick links / project links /
+ * legal — then the colophon: Fraunces italic, hairline above, carrying the
+ * type credit, stack credit, licenses, and the git last-updated date.
  *
- * Total footer height should fit one screen at desktop (no link farms).
- * On mobile, collapses to a single column.
+ * No upper-case anywhere; tracking carries the label register.
  */
 import Wordmark from "./Wordmark.astro";
 import { getLastUpdated, formatLongDate } from "../lib/last-updated";
@@ -56,7 +52,7 @@ const LEGAL_LINKS = [
       <h2 class="site-footer__h">Quick links</h2>
       <ul class="site-footer__list">
         {QUICK_LINKS.map((l) => (
-          <li><a href={l.href}>{l.label}</a></li>
+          <li><a href={l.href} class="underline-slide">{l.label}</a></li>
         ))}
       </ul>
     </div>
@@ -68,6 +64,7 @@ const LEGAL_LINKS = [
           <li>
             <a
               href={l.href}
+              class="underline-slide"
               rel={l.external ? "noopener noreferrer" : undefined}
             >
               {l.label}{l.external ? " ↗" : ""}
@@ -81,20 +78,23 @@ const LEGAL_LINKS = [
       <h2 class="site-footer__h">Legal</h2>
       <ul class="site-footer__list">
         {LEGAL_LINKS.map((l) => (
-          <li><a href={l.href}>{l.label}</a></li>
+          <li><a href={l.href} class="underline-slide">{l.label}</a></li>
         ))}
       </ul>
-      <p class="site-footer__license">
-        Content licensed under <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer">CC BY 4.0</a>.
-        Source code under <a href="https://opensource.org/licenses/MIT" rel="noopener noreferrer">MIT</a>.
-      </p>
     </div>
   </div>
 
-  <div class="site-footer__meta">
-    <span>Last updated <time datetime={lastUpdated}>{formatLongDate(lastUpdated)}</time>.</span>
-    <span class="site-footer__meta-sep" aria-hidden="true">·</span>
-    <span>No analytics, no third-party trackers.</span>
+  {/* Colophon (V6): Fraunces italic, hairline above. */}
+  <div class="site-footer__colophon-wrap">
+    <p class="site-footer__colophon">
+      This website set in Fraunces and Geist. Built with Astro and deployed
+      on Vercel. Content licensed under
+      <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer">CC BY 4.0</a>;
+      code under
+      <a href="https://opensource.org/licenses/MIT" rel="noopener noreferrer">MIT</a>.
+      Last updated <time datetime={lastUpdated}>{formatLongDate(lastUpdated)}</time>.
+      No analytics, no third-party trackers.
+    </p>
   </div>
 </footer>
 
@@ -133,27 +133,29 @@ const LEGAL_LINKS = [
     gap: var(--space-2);
   }
   .site-footer__tagline {
+    font-family: var(--font-sans);
     font-size: var(--text-small);
     color: var(--color-ink-muted);
     max-width: 32ch;
     margin: 0;
   }
   .site-footer__contact {
+    font-family: var(--font-sans);
     font-size: var(--text-small);
-    color: var(--color-ink);
     margin: 0;
   }
   .site-footer__contact a {
     color: var(--color-ink);
   }
 
+  /* Column headings: Geist 500 + tracking — no upper-case (V4). */
   .site-footer__h {
     font-family: var(--font-sans);
+    font-variation-settings: normal;
     font-size: var(--text-caption);
     font-weight: 500;
-    text-transform: uppercase;
-    letter-spacing: 0.08em;
-    color: var(--color-ink-subtle);
+    letter-spacing: var(--tracking-label);
+    color: var(--color-ink-muted);
     margin: 0 0 var(--space-3);
   }
 
@@ -164,16 +166,11 @@ const LEGAL_LINKS = [
     display: flex;
     flex-direction: column;
     gap: var(--space-2);
+    font-family: var(--font-sans);
     font-size: var(--text-small);
   }
   .site-footer__list a {
     color: var(--color-ink);
-    text-decoration: none;
-  }
-  .site-footer__list a:hover {
-    text-decoration: underline;
-    text-decoration-color: var(--color-accent);
-    text-underline-offset: 0.2em;
   }
   .site-footer__list a:focus-visible {
     outline: 2px solid var(--color-focus-ring);
@@ -181,38 +178,38 @@ const LEGAL_LINKS = [
     border-radius: 2px;
   }
 
-  .site-footer__license {
-    font-size: var(--text-caption);
-    color: var(--color-ink-subtle);
-    margin: var(--space-3) 0 0;
-    line-height: 1.5;
-  }
-  .site-footer__license a {
-    color: var(--color-ink-muted);
-  }
-
-  .site-footer__meta {
+  /* Colophon */
+  .site-footer__colophon-wrap {
     max-width: var(--content-max);
     margin: 0 auto;
-    padding: var(--space-3) var(--space-3) var(--space-5);
-    border-top: 1px solid var(--color-border);
-    color: var(--color-ink-subtle);
-    font-size: var(--text-caption);
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
+    padding: var(--space-4) var(--space-3) var(--space-6);
   }
   @media (min-width: 640px) {
-    .site-footer__meta {
-      padding: var(--space-3) var(--space-4) var(--space-5);
-    }
+    .site-footer__colophon-wrap { padding-inline: var(--space-4); }
   }
   @media (min-width: 1024px) {
-    .site-footer__meta {
-      padding: var(--space-3) var(--space-5) var(--space-5);
-    }
+    .site-footer__colophon-wrap { padding-inline: var(--space-5); }
   }
-  .site-footer__meta-sep {
-    color: var(--color-ink-subtle);
+  .site-footer__colophon {
+    margin: 0;
+    padding-top: var(--space-3);
+    border-top: var(--hairline) solid var(--color-border-strong);
+    font-family: var(--font-serif);
+    font-variation-settings: var(--fraunces-text);
+    font-style: italic;
+    font-size: 0.75rem;
+    line-height: 1.6;
+    color: var(--color-ink-muted);
+    max-width: none;
+  }
+  .site-footer__colophon a {
+    color: var(--color-ink-muted);
+    text-decoration: underline;
+    text-decoration-color: var(--color-border-strong);
+    text-underline-offset: 0.2em;
+  }
+  .site-footer__colophon a:hover {
+    color: var(--color-accent);
+    text-decoration-color: var(--color-accent);
   }
 </style>

@@ -1,7 +1,7 @@
 /**
  * Last-updated helper.
  *
- * Per DECISIONS.md D12: footer "Last updated" date is the date of the most
+ * Per archive/v1/DECISIONS.md D12: footer "Last updated" date is the date of the most
  * recent git commit. Computed at build time only (this site has no SSR
  * routes); falls back to build date if git is unavailable (e.g., Vercel
  * shallow clones with --depth=1 if not configured).

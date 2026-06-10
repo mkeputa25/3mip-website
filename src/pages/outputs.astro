@@ -50,7 +50,7 @@ const jsonLd = {
       </p>
     </header>
 
-    <section aria-labelledby="webinars-h">
+    <section class="reveal" aria-labelledby="webinars-h">
       <h2 id="webinars-h">Webinars</h2>
       {webinars.length === 0 ? (
         <p class="empty">
@@ -65,7 +65,6 @@ const jsonLd = {
               title={w.data.title}
               date={w.data.date.toISOString().slice(0, 10)}
               dateLabel={longDate(w.data.date)}
-              speakers={w.data.speakers}
               lengthMinutes={w.data.lengthMinutes}
               abstract={w.data.abstract}
               recordingUrl={w.data.recordingUrl}
@@ -76,7 +75,7 @@ const jsonLd = {
       )}
     </section>
 
-    <section aria-labelledby="papers-h">
+    <section class="reveal" aria-labelledby="papers-h">
       <h2 id="papers-h">Working papers</h2>
       {papers.length === 0 ? (
         <p class="empty">
@@ -104,7 +103,7 @@ const jsonLd = {
       )}
     </section>
 
-    <section aria-labelledby="sessions-h">
+    <section class="reveal" aria-labelledby="sessions-h">
       <h2 id="sessions-h">Conference sessions</h2>
       <div class="sessions">
         <article class="session">
@@ -137,7 +136,7 @@ const jsonLd = {
       </div>
     </section>
 
-    <section aria-labelledby="cc-h">
+    <section class="reveal" aria-labelledby="cc-h">
       <h2 id="cc-h"><em>Climatic Change</em> topical collection</h2>
       <p class="empty">
         A topical collection in the journal <em>Climatic Change</em> will host

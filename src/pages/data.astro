@@ -174,10 +174,9 @@ const ENVIRONMENTAL_ROWS: DataRow[] = [
     citation:
       "Soil Resource Development Institute (2010). Saline soils of Bangladesh. Government of the People's Republic of Bangladesh.",
     link: {
-      href: "https://srdi.portal.gov.bd",
-      label: "SRDI portal",
+      href: "https://srdi.portal.gov.bd/sites/default/files/files/srdi.portal.gov.bd/publications/bc598e7a_df21_49ee_882e_0302c974015f/Soil%20salinity%20report-Nov%202010.pdf",
+      label: "SRDI report (PDF)",
     },
-    needsVerify: true,
   },
   {
     id: "dewan-precipitation",
@@ -286,7 +285,7 @@ const datasetJsonLd = {
       </p>
     </header>
 
-    <section aria-labelledby="cite-h">
+    <section class="reveal" aria-labelledby="cite-h">
       <h2 id="cite-h" class="vh">Citation and extension policy</h2>
       <Callout variant="note" label="How to cite the 3MIP curated dataset">
         When using these datasets through the 3MIP curation, cite both the
@@ -306,17 +305,17 @@ const datasetJsonLd = {
       </Callout>
     </section>
 
-    <section aria-labelledby="pop-h">
+    <section class="reveal" aria-labelledby="pop-h">
       <h2 id="pop-h">Population and socioeconomic data</h2>
       <DataTable rows={POPULATION_ROWS} caption="Population and socioeconomic datasets curated for the Bangladesh case." />
     </section>
 
-    <section aria-labelledby="env-h">
+    <section class="reveal" aria-labelledby="env-h">
       <h2 id="env-h">Environmental data</h2>
       <DataTable rows={ENVIRONMENTAL_ROWS} caption="Environmental datasets curated for the Bangladesh case." />
     </section>
 
-    <section aria-labelledby="mob-h">
+    <section class="reveal" aria-labelledby="mob-h">
       <h2 id="mob-h">Mobility data</h2>
       <DataTable rows={MOBILITY_ROWS} caption="Mobility datasets curated for the Bangladesh case." />
     </section>

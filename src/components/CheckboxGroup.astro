@@ -89,14 +89,16 @@ const errorId = `${id}-error`;
     gap: var(--space-2);
     min-height: 44px;
     padding: var(--space-1) var(--space-2);
-    border: 1px solid var(--color-border);
+    /* border-strong: white option tiles on the white ground (4e). */
+    border: 1px solid var(--color-border-strong);
     border-radius: var(--radius);
     background: var(--color-surface-elevated);
     cursor: pointer;
+    font-family: var(--font-sans);
     font-size: var(--text-body);
     color: var(--color-ink);
   }
-  .checkbox-group__option:hover { border-color: var(--color-border-strong); }
+  .checkbox-group__option:hover { border-color: var(--color-ink-muted); }
   .checkbox-group__option:focus-within {
     outline: 2px solid var(--color-focus-ring);
     outline-offset: 2px;

@@ -107,7 +107,7 @@ const READING_LIST = [
   {
     authors: "Mallick, B., Best, K., Carrico, A., Ghosh, R., Priodarshini, R., Sultana, Z., & Samanta, G.",
     year: 2023,
-    title: "How do migration decisions and drivers differ against extreme environmental events? [VERIFY exact title]",
+    title: "How do migration decisions and drivers differ against extreme environmental events?",
     venue: "Environmental Hazards",
     doi: "10.1080/17477891.2023.2195152",
   },
@@ -131,7 +131,7 @@ const READING_LIST = [
       </p>
     </header>
 
-    <section aria-labelledby="why-h">
+    <section class="reveal" aria-labelledby="why-h">
       <h2 id="why-h">Why Bangladesh is the first case</h2>
       <p>
         Three factors converge on Bangladesh. The empirical literature on
@@ -169,7 +169,7 @@ const READING_LIST = [
       />
     </section>
 
-    <section aria-labelledby="q-h">
+    <section class="reveal" aria-labelledby="q-h">
       <h2 id="q-h">The shared question</h2>
       <Callout variant="note" label="The shared question">
         <strong>Net internal migration in coastal Bangladesh districts, 2025–2050,
@@ -188,7 +188,7 @@ const READING_LIST = [
       </p>
     </section>
 
-    <section aria-labelledby="geo-h">
+    <section class="reveal" aria-labelledby="geo-h">
       <h2 id="geo-h">Geographic scope</h2>
       <div class="geo">
         <div>
@@ -201,11 +201,14 @@ const READING_LIST = [
             migrants <span class="verify">[VERIFY exact district list against protocol]</span>.
           </p>
         </div>
-        <BangladeshMap />
+        {/* The map mounts on the plate token (V8): a warm print on the wall. */}
+        <div class="plate">
+          <BangladeshMap />
+        </div>
       </div>
     </section>
 
-    <section aria-labelledby="data-h">
+    <section class="reveal" aria-labelledby="data-h">
       <h2 id="data-h">Curated input dataset</h2>
       <p>
         3MIP curates 16 datasets for the case — population and socioeconomic,
@@ -220,12 +223,12 @@ const READING_LIST = [
       </p>
     </section>
 
-    <section aria-labelledby="time-h">
+    <section class="reveal" aria-labelledby="time-h">
       <h2 id="time-h">Expected outputs and timeline</h2>
       <TimelineList items={timelineItems} />
     </section>
 
-    <section aria-labelledby="lit-h">
+    <section class="reveal" aria-labelledby="lit-h">
       <h2 id="lit-h">Background literature</h2>
       <p>
         The papers below frame the Bangladesh case. Bell et al. (2021)
@@ -244,7 +247,7 @@ const READING_LIST = [
       ))}
     </section>
 
-    <section aria-labelledby="proto-h">
+    <section class="reveal" aria-labelledby="proto-h">
       <h2 id="proto-h">Protocol document</h2>
       <p>
         The 3MIP Bangladesh case protocol document specifies the shared

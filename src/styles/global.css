@@ -19,7 +19,7 @@
    29KB over the 180KB target — the overage is the cost of true italics and
    the full axis set, both mandated. Trim options documented at the 1c gate.
 
-   No text-transform: uppercase anywhere (V4). Tracking carries the register.
+   No text-transform: upper-case anywhere (V4). Tracking carries the register.
    ========================================================================= */
 
 @import "@fontsource-variable/fraunces/full.css";
@@ -27,7 +27,10 @@
 @import "@fontsource-variable/geist/wght.css";
 @import "@fontsource/geist-mono/400.css";
 
-@import "tailwindcss";
+/* Restrict utility scanning to src/ — Tailwind 4's auto-detection otherwise
+   reads docs/*.md and the planning files, where words like "uppercase"
+   appear as prose and would generate unused (and banned) utilities. */
+@import "tailwindcss" source("../");
 
 /* -----------------------------------------------------------------------
    1. Design tokens — single light theme (V2 hex, verbatim from directive).
@@ -135,8 +138,9 @@
   --text-h1--line-height: 1.15;
   --text-h1--letter-spacing: -0.01em;
 
-  --text-h2: 1.875rem;
-  --text-h2--line-height: 1.2;
+  /* h2 up one step (4e: "confidently oversized in type, calm in everything else"). */
+  --text-h2: 2.25rem;
+  --text-h2--line-height: 1.15;
   --text-h2--letter-spacing: -0.005em;
 
   --text-h3: 1.375rem;
@@ -307,7 +311,7 @@
    4. Editorial register utilities (V4).
    ----------------------------------------------------------------------- */
 
-/* Eyebrow — Geist 500, 12px, 0.18em tracking, accent. No uppercase; the
+/* Eyebrow — Geist 500, 12px, 0.18em tracking, accent. No upper-case; the
    tracking carries the register. C2: accent at this size measures 4.03:1 —
    a documented near-miss accepted for this one redundant-label use. */
 .eyebrow {

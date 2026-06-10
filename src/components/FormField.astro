@@ -56,7 +56,9 @@ const describedBy = [helpId, errorId].filter(Boolean).join(" ") || undefined;
 const baseField =
   "block w-full mt-2 px-3 py-2.5 " +
   "bg-surface-elevated text-ink " +
-  "border border-border rounded-[4px] " +
+  // border-strong: white inputs on the white gallery ground need a visible
+  // boundary (4e; see PLAN-V2 C-notes).
+  "border border-border-strong rounded-[4px] " +
   "font-sans text-[1rem] leading-normal " +
   "focus:border-ink focus:outline-none " +
   "focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 " +
