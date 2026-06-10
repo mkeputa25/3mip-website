@@ -8,6 +8,7 @@ publications:
   - citation: "Best, K., Ober, K., & McLeman, R. (2025). Migration and Displacement in a Changing Climate. Cambridge University Press."
 institutionalUrl: "https://si.osu.edu/kelsea-best"
 personalUrl: "https://kelseabestresearch.com"
+photo: team/best.jpg
 ---
 
 Best works on climate migration modeling, environmental migration in coastal

@@ -65,8 +65,8 @@ Sources are cited inline. Where a source is contested or has been updated, the m
 
 ## Project management
 
-- **Mario Keputa**: Project coordinator. Cornell MPA candidate (graduating May 2026). Email: mk2674@cornell.edu. Through June 2026.
-- **Ishita Kashyap**: Cornell. Project management secondary. `[VERIFY current title and email]`
+- **Mario Keputa**: Project coordinator, Cornell University. Email: mk2674@cornell.edu.
+- ~~Ishita Kashyap~~ — no longer part of the project (removed June 2026, per Mario). Do not list anywhere on the site.
 
 ## Advisory committee (14 members)
 
@@ -160,7 +160,7 @@ identities below are internal metadata only.
 
 - **"February Webinar Presentation"** (February 2026) — speaker metadata: Hedda Bonatz (University of Kiel). Recording: https://drive.google.com/file/d/1UA-KpVOobspNNLXdW1pD4ctI4v0y9UJi/view
 - **"March Webinar Presentation"** (March 2026). Recording: https://drive.google.com/file/d/1Of1ndcRHtXi54mnlKnaBDDHida04ak29/view
-- **"November Webinar Presentation"** `[VERIFY month — provisional, per the early-November-2025 first-webinar timeline]` — speaker metadata: Andrew Bell (Cornell). Recording: https://drive.google.com/file/d/1-qAABRtk0wHcn95Gu0LjAypfRUkPIAqT/view
+- **"May Webinar Presentation"** (May 2026 — confirmed by Mario, June 2026; supersedes the earlier provisional November dating). Speaker metadata: Andrew Bell (Cornell). Recording: https://drive.google.com/file/d/1-qAABRtk0wHcn95Gu0LjAypfRUkPIAqT/view
 
 Hosting: recordings stay on Google Drive in v1 (see archive/v1/DECISIONS.md D20); linked as external buttons, never embedded iframes.
 
@@ -289,6 +289,18 @@ When Claude Code adds a content claim during the build, it must either:
 2. Add `[VERIFY]` inline AND surface the unverified claim in `OPEN-QUESTIONS.md` at the end of the phase.
 
 Never proceed past a `[VERIFY]` tag silently. The whole point of this file is to keep the website's factual ground sound.
+
+**June 2026 approvals (relayed by Mario):** Bell sign-off on the shipping
+defaults — hero headline, tagline, terracotta system, Fraunces wordmark
+(B11 resolved: wordmark over the old logo), registration-gated protocol,
+official code-sharing wording, press-via-Cornell-Relations, privacy and
+accessibility notice wording, curated-dataset citation format, signature
+figure (archetypes, patterns, motion, lineage attributions), and leadership
++ coordinator photos (B3: monochrome treatment; Bell/Best/Tierolf live,
+Keputa pending file drop). Ishita Kashyap removed from the project. The
+Bell webinar recording is May 2026. Still genuinely open: final domain
+(B1), operating-phase funder announcements (B4), GitHub repo URL (B18),
+and the factual [VERIFY] items listed in OPEN-QUESTIONS.md § 2.
 
 **Phase 4D update (June 2026):** full crawl of 3mip.weebly.com (all 7 pages)
 by Mario. Corrections: timeline (Weebly "Early November, 2026" typo → 2025;

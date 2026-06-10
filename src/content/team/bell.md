@@ -11,6 +11,7 @@ publications:
     doi: "https://doi.org/10.18174/sesmo.2019a16102"
 institutionalUrl: "https://einaudi.cornell.edu/discover/people/andrew-reid-bell"
 personalUrl: "https://andrewreidbell.com"
+photo: team/bell.jpg
 ---
 
 Bell works on agent-based modeling of climate adaptation, migration, and food

@@ -16,6 +16,7 @@
  * Co-lead bios are authored as Markdown bodies in the collection entries, so
  * each entry is rendered and its <Content /> passed into PersonCard's slot.
  */
+import { existsSync } from "node:fs";
 import { getCollection, render } from "astro:content";
 import Base from "../layouts/Base.astro";
 import PersonCard from "../components/PersonCard.astro";
@@ -26,12 +27,18 @@ const all = await getCollection("team");
 const bySurname = (a: { data: { surname: string } }, b: { data: { surname: string } }) =>
   a.data.surname.localeCompare(b.data.surname);
 
+// A photo is only rendered if the file actually exists in public/ at build
+// time — a frontmatter path pointing at a not-yet-dropped file degrades to
+// the text-only card instead of a broken image.
+const photoIfExists = (photo?: string) =>
+  photo && existsSync(new URL(`../../public/${photo}`, import.meta.url)) ? photo : undefined;
+
 // Co-leads: canonical order is alphabetical by surname (Bell, Best, Tierolf).
 const coLeads = all.filter((e) => e.data.role === "co-lead").sort(bySurname);
 const advisors = all.filter((e) => e.data.role === "advisor").sort(bySurname);
 const domainExperts = all.filter((e) => e.data.role === "domain-expert").sort(bySurname);
 // PM: the active coordinator leads the list (primary contact), then others
-// by surname. Update when coordination transitions after June 2026.
+// by surname.
 const pm = all
   .filter((e) => e.data.role === "project-management")
   .sort((a, b) => {
@@ -89,7 +96,7 @@ const jsonLd = {
           publications={entry.data.publications}
           institutionalUrl={entry.data.institutionalUrl}
           personalUrl={entry.data.personalUrl}
-          photo={entry.data.photo}
+          photo={photoIfExists(entry.data.photo)}
         >
           <Content />
         </PersonCard>
@@ -143,18 +150,14 @@ const jsonLd = {
       {pm.length === 0 && (
         <p class="empty">Project management entries load from the team content collection (seeded in Phase 5).</p>
       )}
-      {pm.length > 0 && (
-        <ul class="advisor-list">
-          {pm.map((e) => (
-            <PersonRow
-              name={e.data.name}
-              affiliation={e.data.affiliation}
-              shortRole={e.data.shortRole}
-              institutionalUrl={e.data.institutionalUrl}
-            />
-          ))}
-        </ul>
-      )}
+      {pm.map((e) => (
+        <PersonCard
+          name={e.data.name}
+          affiliation={e.data.affiliation}
+          shortRole={e.data.shortRole}
+          photo={photoIfExists(e.data.photo)}
+        />
+      ))}
     </section>
 
     <section class="reveal" aria-labelledby="modelers-h">

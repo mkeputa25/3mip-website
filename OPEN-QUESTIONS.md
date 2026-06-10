@@ -1,11 +1,16 @@
 # 3MIP Website — Open Questions
 
-**Phase 6 compilation (June 2026).** Every `[VERIFY]` and
-`[PENDING BELL APPROVAL]` tag on the site, grouped by who can resolve it,
-with file paths. Resolving an item means editing the named file, removing
-the tag, and (where FACTS.md is the source) updating FACTS.md in the same
-commit. Component-level matches in `src/components/` and
-`src/styles/global.css` are the tag *styling utilities*, not open items.
+**Phase 6 compilation (June 2026), updated after the blanket approval.**
+Bell sign-off (relayed by Mario, June 2026) resolved the § 1 table below:
+every decision now ships its stated default, the visible
+`[PENDING BELL APPROVAL]` tags are removed from the site, and leadership +
+coordinator photos are live (B3). Ishita Kashyap is removed from the
+project and the site. Three § 1 items remain genuinely open because their
+*content* doesn't exist yet: **B1 final domain** (configs keep the
+`3mip.org` placeholder until DNS day), **B4 operating-phase funders** (the
+About page truthfully says funding "has not been publicly announced"),
+and **B18 GitHub repository URL** (footer placeholder until the repo is
+public). § 2 items are factual and still need answers.
 
 ---
 
