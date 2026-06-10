@@ -22,6 +22,15 @@ import Footer from "../components/Footer.astro";
 import JsonLd from "../components/JsonLd.astro";
 import RevealScript from "../components/RevealScript.astro";
 
+// Preload the two fonts that paint the LCP text on every page: Fraunces
+// (prose + headings, incl. the lede that is the LCP element on long pages
+// like /team/) and Geist (nav, metadata). Importing the woff2 as a URL
+// asset gives Astro's hashed, fingerprinted path with no fragility — the
+// preload starts the download during HTML parse instead of after CSS layout,
+// which is what pulled /team/ and /dublin/ to >=95 in Lighthouse. (Phase 6b.)
+import frauncesUrl from "@fontsource-variable/fraunces/files/fraunces-latin-full-normal.woff2?url";
+import geistUrl from "@fontsource-variable/geist/files/geist-latin-wght-normal.woff2?url";
+
 interface Props {
   /** Page title — used in <title> and og:title. Will be suffixed with " — 3MIP" unless `bareTitle` is true. */
   title: string;
@@ -61,6 +70,10 @@ const ogImageUrl = ogImage ?? `${SITE_URL}/og-default.png`;
     <title>{fullTitle}</title>
     <meta name="description" content={description} />
     <link rel="canonical" href={canonicalUrl} />
+
+    {/* Critical-font preloads — speed the LCP text paint (Phase 6b). */}
+    <link rel="preload" href={frauncesUrl} as="font" type="font/woff2" crossorigin="anonymous" />
+    <link rel="preload" href={geistUrl} as="font" type="font/woff2" crossorigin="anonymous" />
 
     {/* Favicon + theme color. Light-only by mandate (DECISIONS-V2 V3):
         a single theme-color, no dark variant, no color-scheme dark. */}

@@ -36,6 +36,14 @@ export default defineConfig({
   build: {
     // Trailing-slash policy matches IA.md: directory routes only.
     format: "directory",
+    // Inline ALL CSS into each page's <head> rather than emitting external
+    // <link> stylesheets. On a 14-page static site this eliminates the
+    // render-blocking CSS request that Lighthouse flagged as the only
+    // performance opportunity on /team/ and /dublin/ (their scoped styles
+    // exceed Astro's 4KB auto-inline threshold). Trades repeat-visit CSS
+    // caching for first-paint speed — the right call when LH >=95 is a hard
+    // gate and the CSS is small in absolute terms. (Phase 6b.)
+    inlineStylesheets: "always",
   },
   trailingSlash: "always",
 });

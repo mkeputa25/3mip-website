@@ -30,8 +30,11 @@ const sizeClass = size === "small" ? "wordmark--small" : "";
       <span class="vh">3MIP — Mobility and Migration Modeling Intercomparison Project</span>
     </a>
   ) : (
-    <span class={`wordmark ${sizeClass} ${className}`} aria-label="3MIP">
-      <span class="wordmark__text" aria-hidden="true">3MIP</span>
+    /* Span variant (Home, where the wordmark is not a link): plain visible
+       text — no aria-label (prohibited on a span with no role) and no
+       aria-hidden, so it reads naturally as "3MIP". */
+    <span class={`wordmark ${sizeClass} ${className}`}>
+      <span class="wordmark__text">3MIP</span>
     </span>
   )
 }

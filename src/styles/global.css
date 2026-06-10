@@ -311,16 +311,18 @@
    4. Editorial register utilities (V4).
    ----------------------------------------------------------------------- */
 
-/* Eyebrow — Geist 500, 12px, 0.18em tracking, accent. No upper-case; the
-   tracking carries the register. C2: accent at this size measures 4.03:1 —
-   a documented near-miss accepted for this one redundant-label use. */
+/* Eyebrow — Geist 500, 12px, 0.18em tracking. Uses accent-DEEP, not accent:
+   at 12px on the parchment plate, accent (#B85A35) measures only 4.03:1 and
+   fails AA + Lighthouse. accent-deep (#6B1F1F) is 9.97:1 on plate / 11.41:1
+   on white — the same terracotta family, AAA everywhere. (C2 resolved at 6b:
+   the >=95 gate wins over the brighter eyebrow.) */
 .eyebrow {
   font-family: var(--font-sans);
   font-variation-settings: normal;
   font-size: 0.75rem;
   font-weight: 500;
   letter-spacing: var(--tracking-label);
-  color: var(--color-accent);
+  color: var(--color-accent-deep);
 }
 
 /* Section divider — hairline + "Sec. 01 / Name" label. */
@@ -368,16 +370,18 @@
    nothing is ever hidden. Under reduced motion, end states render
    immediately. Nothing moves that doesn't mean something.
    ----------------------------------------------------------------------- */
+/* Transform-only (no opacity): a 10px settle into place. Opacity fades were
+   flagged by automated contrast tools because mid-transition compositing
+   drops effective text contrast below AA — and the directive's "Lighthouse
+   >=95" is a hard requirement that wins over the specific fade. Transform
+   alone keeps text at full contrast at every frame while still reading as a
+   reveal. (4e/6b.) */
 html.js .reveal {
-  opacity: 0;
-  transform: translateY(4px);
+  transform: translateY(10px);
 }
 html.js .reveal.is-revealed {
-  opacity: 1;
   transform: none;
-  transition:
-    opacity 300ms var(--ease-out),
-    transform 300ms var(--ease-out);
+  transition: transform 350ms var(--ease-out);
 }
 
 html.js .reveal-rule {
@@ -392,7 +396,6 @@ html.js .reveal-rule.is-revealed {
 @media (prefers-reduced-motion: reduce) {
   html.js .reveal,
   html.js .reveal-rule {
-    opacity: 1;
     transform: none;
     transition: none;
   }

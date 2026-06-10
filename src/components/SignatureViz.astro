@@ -546,7 +546,8 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
     font-size: var(--text-caption);
     font-weight: 500;
     letter-spacing: var(--tracking-label);
-    color: var(--color-accent);
+    /* accent-deep, not accent: 4.03:1 on the plate fails AA at this size. */
+    color: var(--color-accent-deep);
     border: var(--hairline) solid var(--color-border-strong);
     border-radius: 2px;
     padding: var(--space-1) var(--space-2);
