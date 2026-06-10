@@ -66,4 +66,7 @@ Tellman citation (flood-exposure paper) · BBS survey title · iEMSs dates
 (July 12–16, UCD) · webinar years (2026, not 2025) · Tierolf VU URL · SRDI
 exact PDF URL · Mallick et al. title · Simona surname (moot under month
 titling) · Burzyński spelling (FACTS corrected to Polish diacritics,
-Phase 6).
+Phase 6) · **Registration form endpoint** — Formspree form live at
+`https://formspree.io/f/xeewzpjj`, delivering to mkeputa25@gmail.com; set as
+`PUBLIC_FORMSPREE_ENDPOINT` in Vercel (Production/Preview/Development). The
+old D5 [PENDING] form-endpoint item is closed. See MAINTAINERS § 14.

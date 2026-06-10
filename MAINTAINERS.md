@@ -240,5 +240,27 @@ Editing these can break the whole site, and the breakage may not be obvious.
       genuinely pending (see `OPEN-QUESTIONS.md`).
 - [ ] The domain is not within 2 months of expiry (§12).
 - [ ] Open the site on a phone and a laptop; click through every page once.
-- [ ] The "Last updated" date in the footer is recent (it updates automatically
-      from the last change).
+- [ ] Submit one test registration (§14) to confirm the form still delivers.
+
+## 14. The registration form
+
+The "Register" form on the **Participate** page is handled by **Formspree**
+(free tier). There is no database and no admin panel — it works like this:
+
+- **Where submissions go:** each registration arrives as an **email from
+  Formspree to mkeputa25@gmail.com**. That inbox is where you read and act on
+  them.
+- **How the form knows where to send:** the Formspree endpoint is set as a
+  **Vercel environment variable**, `PUBLIC_FORMSPREE_ENDPOINT` — **not** in the
+  code. (Vercel → the `3mip-website` project → Settings → Environment
+  Variables.) The site reads it at build time.
+- **The email inbox is the system of record.** The Formspree free tier only
+  archives submissions for **30 days** in its own dashboard, so do not rely on
+  the dashboard as storage — keep the emails (or forward them somewhere
+  durable).
+- **To change the destination address** (e.g. when coordination passes to
+  someone new): in the Formspree dashboard, add the new person's address as a
+  **second linked email** on the form, have them click Formspree's verification
+  email, then **remove the old address**. That's it — **no code change and no
+  redeploy** are needed for an address change. (You'd only touch the Vercel env
+  var if you switched to a brand-new Formspree form with a different endpoint.)
