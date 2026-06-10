@@ -228,8 +228,9 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
             </clipPath>
           </defs>
 
-          {/* Land fill */}
-          <path d={BANGLADESH_PATH} fill="var(--color-surface)" />
+          {/* Land fill — design-locked literal (DECISIONS-V2 V8): this is
+              part of the figure's print world, not the UI token system. */}
+          <path d={BANGLADESH_PATH} fill="#EEE7D7" />
 
           {/* ── Architecture grammar, clipped to the landmass ── */}
           <g clip-path={`url(#${idBase}-clip-${panel.id})`}>
@@ -319,7 +320,7 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
                   cx={d.x}
                   cy={d.y}
                   r={d.r}
-                  fill="var(--color-background)"
+                  fill="var(--color-plate)"
                   stroke="var(--color-ink)"
                   stroke-width="1"
                 />

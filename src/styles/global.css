@@ -33,19 +33,24 @@
    1. Design tokens — single light theme (V2 hex, verbatim from directive).
    ----------------------------------------------------------------------- */
 :root {
-  /* Color */
-  --color-background: #f5efe4;       /* warm parchment — the whole site sits on this */
-  --color-surface: #eee7d7;          /* cards step DEEPER than background, not white */
-  --color-surface-elevated: #ffffff; /* dropdowns/overlays only */
+  /* Color — v2.1 gallery grounds (DECISIONS-V2 V8). The page is a white
+     gallery wall; the parchment survives as the `plate` token, the ground
+     of figure blocks only. */
+  --color-background: #ffffff;       /* pure white — gallery wall */
+  --color-surface: #f8f6f3;          /* warm-neutral cards (not gray) */
+  --color-plate: #f5efe4;            /* figure plates: atlas, viz band, maps */
+  --color-surface-elevated: #ffffff;
   --color-ink: #1a1612;              /* deep ink-brown, not pure black */
   --color-ink-muted: #6b6358;
   --color-ink-subtle: #9a9085;       /* C1: decorative use only — fails AA as text */
-  --color-accent: #b85a35;           /* terracotta — the sole chromatic signal */
+  --color-accent: #b85a35;           /* terracotta — large text, UI, graphics.
+                                        Body-size accent text uses accent-deep
+                                        or ink (4.61:1 on white — no margin). */
   --color-accent-dim: #d08a6e;       /* C2: fills/borders only, never text */
   --color-accent-deep: #6b1f1f;      /* rare emphasis; carries [VERIFY]/[PENDING] tags (C3) */
   --color-accent-ink: #ffffff;
-  --color-border: #e8e2d5;
-  --color-border-strong: #c9c0ae;
+  --color-border: #ece9e4;
+  --color-border-strong: #d6d2cb;
   --color-focus-ring: #2f6cb3;       /* ink blue — the ONLY blue on the site */
   --color-success: #3f6d2f;
   --color-warning: #c88a1a;          /* C3: labeled callout borders only, never text */
@@ -101,6 +106,7 @@
 @theme inline {
   --color-background: var(--color-background);
   --color-surface: var(--color-surface);
+  --color-plate: var(--color-plate);
   --color-surface-elevated: var(--color-surface-elevated);
   --color-ink: var(--color-ink);
   --color-ink-muted: var(--color-ink-muted);
@@ -328,7 +334,7 @@
 }
 
 /* Inline review tags — [VERIFY] / [PENDING ...]. C3: warning fails contrast
-   as text, so these carry accent-deep (9.97:1). */
+   as text, so these carry accent-deep (11.41:1 on white). */
 .verify, .pending {
   color: var(--color-accent-deep);
   font-family: var(--font-sans);
@@ -336,6 +342,71 @@
   font-size: var(--text-caption);
   font-weight: 500;
   letter-spacing: 0.02em;
+}
+
+/* Figure plate — the parchment mount for figure blocks (V8). Figures read
+   as warm prints on the white gallery wall. Full-bleed variants are
+   composed per-page in 4e; this is the bounded mount. */
+.plate {
+  background: var(--color-plate);
+  border-radius: var(--radius);
+  padding: var(--space-5);
+}
+@media (min-width: 768px) {
+  .plate { padding: var(--space-6); }
+}
+
+/* -----------------------------------------------------------------------
+   4b. Motion system, Tier 1 (V9) — JS-gated, reduced-motion-safe.
+
+   The RevealScript (Base layout) adds .js to <html> before paint and an
+   IntersectionObserver toggles .is-revealed once per element. Without JS,
+   nothing is ever hidden. Under reduced motion, end states render
+   immediately. Nothing moves that doesn't mean something.
+   ----------------------------------------------------------------------- */
+html.js .reveal {
+  opacity: 0;
+  transform: translateY(4px);
+}
+html.js .reveal.is-revealed {
+  opacity: 1;
+  transform: none;
+  transition:
+    opacity 300ms var(--ease-out),
+    transform 300ms var(--ease-out);
+}
+
+html.js .reveal-rule {
+  transform: scaleX(0);
+  transform-origin: left;
+}
+html.js .reveal-rule.is-revealed {
+  transform: scaleX(1);
+  transition: transform 400ms var(--ease-out);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html.js .reveal,
+  html.js .reveal-rule {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* Underline slide-in on hover — standalone/nav/card-title links only.
+   In-prose links keep their persistent underline (WCAG 1.4.1). */
+.underline-slide {
+  text-decoration: none;
+  background-image: linear-gradient(currentColor, currentColor);
+  background-size: 0% 1px;
+  background-position: 0 100%;
+  background-repeat: no-repeat;
+  transition: background-size 150ms var(--ease-out);
+}
+.underline-slide:hover,
+.underline-slide:focus-visible {
+  background-size: 100% 1px;
 }
 
 /* -----------------------------------------------------------------------

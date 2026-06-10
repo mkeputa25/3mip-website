@@ -20,6 +20,7 @@ import SkipLink from "../components/SkipLink.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import JsonLd from "../components/JsonLd.astro";
+import RevealScript from "../components/RevealScript.astro";
 
 interface Props {
   /** Page title — used in <title> and og:title. Will be suffixed with " — 3MIP" unless `bareTitle` is true. */
@@ -64,7 +65,7 @@ const ogImageUrl = ogImage ?? `${SITE_URL}/og-default.png`;
     {/* Favicon + theme color. Light-only by mandate (DECISIONS-V2 V3):
         a single theme-color, no dark variant, no color-scheme dark. */}
     <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-    <meta name="theme-color" content="#F5EFE4" />
+    <meta name="theme-color" content="#FFFFFF" />
     <meta name="color-scheme" content="light" />
 
     {/* Open Graph */}
@@ -99,5 +100,8 @@ const ogImageUrl = ogImage ?? `${SITE_URL}/og-default.png`;
       <slot />
     </main>
     <Footer />
+    {/* Shared scroll-reveal observer (V9). Runs after content; adds the
+        html.js gate immediately so initial states never flash. */}
+    <RevealScript />
   </body>
 </html>

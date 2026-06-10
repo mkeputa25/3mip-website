@@ -1,9 +1,67 @@
 # 3MIP Website — Redesign Plan (v2)
 
-Phase 0c output. Execution order: **0c → 1c → 2c → 4e**, each ending in a
-review gate, then Phase 5 (advisors + news) proceeds as planned in
-[archive/v1/PLAN.md](archive/v1/PLAN.md). Phases 6–7 are unchanged except
-where noted (OG image now uses the Fraunces wordmark).
+Phase 0c output, amended by the **final directive (v2.1)**. Execution order:
+**0c → 1c → 2c → 1d → 2d → 4e**, each ending in a review gate, then Phase 5
+(advisors + news) proceeds as planned in
+[archive/v1/PLAN.md](archive/v1/PLAN.md). Phases 6–7 unchanged except where
+noted (OG image uses the Fraunces wordmark; the static SVG export for
+Dublin slides renders the reduced-motion state).
+
+> **Resume note for a fresh session:** PLAN-V2.md + DECISIONS-V2.md are
+> authoritative. 0c/1c/2c are complete and committed; 1d is in flight per
+> the v2.1 sections below; 2d and the revised 4e follow. Do not rebuild
+> from memory.
+
+---
+
+## Phase 1d — gallery ground + motion infrastructure (v2.1)
+
+**Scope:** background→white, surface→#F8F6F3, NEW plate token #F5EFE4
+(figures only), border/border-strong revised; contrast re-verification on
+/design against the new grounds; Tier 1 motion (shared reveal observer +
+utilities) and Tier 2 hero ambience component; /design gains grounds,
+plate-treatment demo, and live motion demos. Atlas land fill design-locked
+to literal #EEE7D7 (V8). Accent-on-white usage rule documented (body-size
+accent text → accent-deep or ink).
+
+**Files:** global.css, Base.astro (RevealScript include), new
+src/components/RevealScript.astro + HeroAmbience.astro, design.astro,
+SignatureViz.astro + BangladeshMap.astro (land-fill literal only).
+
+**Approval question:** *On /design: does the plate treatment read as "warm
+print on a gallery wall," and is the ambience demo quiet enough?*
+
+## Phase 2d — kinetic signature figure (v2.1)
+
+**Scope:** the six-panel plate animates on a shared ~14s 2025→2050 loop
+with a Geist Mono year readout. Per-panel motion mirrors each model's
+computational logic: 01 dots drift toward the Dhaka corridor with fade-out/
+fade-in displacement; 02 arcs draw in (dashoffset) then pulse with flow
+weight; 03 rings ripple outward (~2.5s cascade); 04 region fills jump
+through 5 discrete states (no tweening — the jump cut is the meaning);
+05 contour bands crossfade between 3 precomputed states; 06 cells update
+in discrete generations (~1.5s tick). CSS keyframes/SMIL on the existing
+geometry; precomputed states as additional arrays; deterministic; no rAF,
+no canvas, no library.
+
+**Controls (non-negotiable):** plays in view / pauses out of view (shared
+observer); visible pause/play ghost button (WCAG 2.2.2); reduced motion →
+today's static plate, button hidden; long-form alternatives on Home and
+/dublin gain one motion sentence per panel; nothing exceeds 3 changes/sec
+(WCAG 2.3.1). Total JS stays within the ≤3KB system budget.
+
+## Phase 4e — restyle pass (revised brief, v2.1)
+
+As planned below (wordmark, colophon, eyebrows, hairlines, How-3MIP-works
+rebuild, uppercase strip, V7 corrections) **plus**: all 14 pages on white;
+every figure block mounts on plate, the Home//dublin viz band full-bleed
+with space-8 above/below; hero clamps up to 4.25rem desktop with 1.04
+leading; section h2s up one step; How-3MIP-works numerals ~3rem Fraunces
+accent-dim hanging in the left margin at desktop; site-wide scroll-reveal
+on section blocks (never the first viewport); card hover = border-strong
+lift + title underline-slide, no translation, no shadow.
+
+---
 
 Complexity scale as before: **S** ≤2h, **M** ≤6h, **L** ≤12h.
 

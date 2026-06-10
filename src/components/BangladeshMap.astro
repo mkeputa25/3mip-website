@@ -56,10 +56,11 @@ const COASTAL_DISTRICTS = [
       </clipPath>
     </defs>
 
-    {/* Country fill */}
+    {/* Country fill — design-locked literal (DECISIONS-V2 V8), matching the
+        signature viz land color so the two figures never drift apart. */}
     <path
       d={BANGLADESH_PATH}
-      fill="var(--color-surface)"
+      fill="#EEE7D7"
       stroke="var(--color-border-strong)"
       stroke-width="1.25"
     />
@@ -128,7 +129,7 @@ const COASTAL_DISTRICTS = [
     width: 100%;
     height: auto;
     display: block;
-    background: var(--color-background);
+    /* No own background — the figure mounts on the plate token (4e). */
     border-radius: var(--radius);
   }
 </style>

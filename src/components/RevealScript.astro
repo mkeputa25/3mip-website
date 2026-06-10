@@ -1,0 +1,45 @@
+---
+/**
+ * RevealScript — the single shared scroll-reveal observer (DECISIONS-V2 V9).
+ *
+ * Included once by the Base layout (and the standalone /design page).
+ * Contract:
+ *   - Adds .js to <html> immediately so the CSS hidden-initial states in
+ *     global.css apply only when JS will actually reveal them. Without JS,
+ *     nothing is ever hidden.
+ *   - One IntersectionObserver (threshold 0.15) toggles .is-revealed once
+ *     per element, then unobserves.
+ *   - Under prefers-reduced-motion, everything is revealed immediately
+ *     (the CSS also neutralizes transitions — belt and braces).
+ *
+ * Size: ~0.5KB. Total motion-system JS budget is ≤3KB incl. Phase 2d.
+ */
+---
+
+<script is:inline>
+  (function () {
+    document.documentElement.classList.add('js');
+    var els = function () { return document.querySelectorAll('.reveal, .reveal-rule'); };
+    var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    function init() {
+      if (reduce || !('IntersectionObserver' in window)) {
+        els().forEach(function (el) { el.classList.add('is-revealed'); });
+        return;
+      }
+      var io = new IntersectionObserver(function (entries) {
+        entries.forEach(function (e) {
+          if (e.isIntersecting) {
+            e.target.classList.add('is-revealed');
+            io.unobserve(e.target);
+          }
+        });
+      }, { threshold: 0.15 });
+      els().forEach(function (el) { io.observe(el); });
+    }
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
+  })();
+</script>

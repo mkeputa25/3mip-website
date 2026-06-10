@@ -7,6 +7,14 @@ collections, D5 Formspree, D7 no search, D8 no analytics, D9 sitemap/robots,
 D10 404 posture, D12 last-updated, D15–D17 platform/tooling, D18 RSS,
 D19 news pagination, D20 webinar hosting).
 
+> **v2.1 addendum (final directive, June 2026):** sections **V8–V9** below
+> supersede V2's `background`/`surface`/`border` values and V4's static-only
+> posture. The direction named: Distill.pub / Quanta register — white gallery
+> ground, figures as warm plates, purposeful motion. Fraunces+Geist, the
+> terracotta/ink system, the Phase 2c atlas geometry, the editorial
+> furniture, and light-only all survive unchanged. This is the last
+> aesthetic pivot; after it, content/QA/launch only.
+
 **Authority:** Mario's redesign directive (June 2026), issued after screenshot
 review of the v1 build. The Fraunces/Geist references in the Phase 4D spec
 were from this directive; the D1 flag I raised at the 4D gate is answered:
@@ -184,6 +192,65 @@ Rigaud et al. 2018; ISIMIP3 protocol; Schiavina et al. 2019).
 FACTS.md is updated alongside each.
 
 ---
+
+## V8 — Gallery ground + plate token (v2.1, supersedes V2's grounds)
+
+**Decision (locked by final directive):**
+
+| Token | Hex | Role | Key measured ratios |
+|---|---|---|---|
+| `background` | `#FFFFFF` | Pure white — the page is a gallery wall | ink 17.99:1 · ink-muted 5.91:1 |
+| `surface` | `#F8F6F3` | Warm-neutral cards (not gray) | ink 16.68:1 · ink-muted 5.48:1 |
+| `plate` | `#F5EFE4` | **New.** The parchment survives as the ground of figure blocks only — atlas plates, the signature-viz band, the Case-page map. Figures read as warm prints on a white wall | ink 15.72:1 · accent 4.03:1 |
+| `surface-elevated` | `#FFFFFF` | unchanged | |
+| `border` | `#ECE9E4` | | decorative |
+| `border-strong` | `#D6D2CB` | | 1.51:1 — decorative |
+
+Ink scale, accent family, focus-ring, semantic colors: unchanged from V2.
+
+**Usage rule (directive note, confirmed by measurement):** accent `#B85A35`
+on white is 4.61:1 — passes AA for normal text with no margin. Body-size
+accent text uses `accent-deep` or `ink`; `#B85A35` is reserved for large
+text, UI, and graphics. The C2 eyebrow near-miss carries over on plate
+grounds (4.03:1) with the same documented-exception rationale.
+
+**Figure-internal colors:** the atlas land fill is design-locked to
+`#EEE7D7` (the former surface value) as a literal — it belongs to the
+figure's print world, not the UI token system, and must not drift when UI
+tokens change again.
+
+## V9 — Motion system (v2.1, new)
+
+**Principles (locked):** motion explains or orients, never decorates;
+nothing moves that doesn't mean something; everything honors
+`prefers-reduced-motion: reduce` by rendering the static end state. The
+anti-patterns remain law: no parallax, no scroll-jacking, no animated
+counters, no carousels. **JS budget ≤3KB minified for the entire system
+including the Phase 2d kinetic figure**; no libraries, no rAF loops, no
+canvas.
+
+**Tier 1 — micro (CSS + one shared observer):**
+- Scroll-reveal: `.reveal` blocks fade in + rise 4px, 300ms ease-out, once.
+  One shared IntersectionObserver (threshold 0.15) in `RevealScript.astro`,
+  included by the Base layout. JS-gated: without JS everything renders
+  static-visible (`html.js` class gates the hidden initial state).
+- Hairline rules: `.reveal-rule` draws in left→right (scaleX 0→1, 400ms).
+- Link underlines: `.underline-slide` slides in on hover via the
+  background-size technique, 150ms — applied to standalone/nav/card-title
+  links only; in-prose links keep their persistent underline (color-only
+  links fail WCAG 1.4.1).
+- Buttons: 150ms color/border transitions (already specced).
+
+**Tier 2 — hero ambience (`HeroAmbience.astro`, zero JS):** 14 terracotta
+dots, 2–4px, opacity 0.15–0.35, drifting southwest↔northeast (the ambience
+quotes the Bangladesh coastal-to-Dhaka direction) on 60–90s CSS-keyframe
+oscillations. `aria-hidden`, `pointer-events: none`, `display: none` under
+reduced motion. Quiet enough that a reader who never notices it loses
+nothing.
+
+**Tier 3 — the kinetic figure** is Phase 2d scope (each panel's motion
+grammar mirrors its model's computational logic; 14s shared 2025→2050 loop;
+pause/play per WCAG 2.2.2; static under reduced motion).
 
 ## Open decisions awaiting Bell (carried forward from v1, unchanged)
 

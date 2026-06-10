@@ -28,11 +28,14 @@ import CitationBlock from "../components/CitationBlock.astro";
 import FormField from "../components/FormField.astro";
 import ColorSwatch from "../components/ColorSwatch.astro";
 import SignatureViz from "../components/SignatureViz.astro";
+import RevealScript from "../components/RevealScript.astro";
+import HeroAmbience from "../components/HeroAmbience.astro";
 
-// v2 token hexes (DECISIONS-V2 V2) — mirrors src/styles/global.css.
+// v2.1 token hexes (DECISIONS-V2 V8) — mirrors src/styles/global.css.
 const LIGHT = {
-  background: "#F5EFE4",
-  surface: "#EEE7D7",
+  background: "#FFFFFF",
+  surface: "#F8F6F3",
+  plate: "#F5EFE4",
   surfaceElevated: "#FFFFFF",
   ink: "#1A1612",
   inkMuted: "#6B6358",
@@ -41,8 +44,8 @@ const LIGHT = {
   accentDim: "#D08A6E",
   accentDeep: "#6B1F1F",
   accentInk: "#FFFFFF",
-  border: "#E8E2D5",
-  borderStrong: "#C9C0AE",
+  border: "#ECE9E4",
+  borderStrong: "#D6D2CB",
   focusRing: "#2F6CB3",
   success: "#3F6D2F",
   warning: "#C88A1A",
@@ -93,11 +96,12 @@ const RAMP = ["#F5EFE4", "#E8B98A", "#D08A6E", "#B85A35", "#8E3A22", "#6B1F1F"] 
   <body>
     <header class="container" style="padding-block: var(--space-6);">
       <p class="eyebrow">Internal · not linked from the public site</p>
-      <h1 style="margin-top: var(--space-2);">3MIP design system, v2</h1>
+      <h1 style="margin-top: var(--space-2);">3MIP design system, v2.1</h1>
       <p class="note" style="font-size: var(--text-body-lg); margin-top: var(--space-3);">
-        Fraunces and Geist on warm parchment with a terracotta accent — light-only by mandate.
-        Every contrast pair below shows its measured WCAG ratio. Two documented exceptions
-        (C2 eyebrow near-miss; warning-as-border) are annotated where they appear.
+        Distill/Quanta register: Fraunces and Geist on a white gallery ground; the parchment
+        survives as the plate beneath figures; terracotta is the sole chromatic signal;
+        motion explains or orients, never decorates. Light-only. Every contrast pair below
+        shows its measured WCAG ratio.
       </p>
     </header>
 
@@ -107,15 +111,18 @@ const RAMP = ["#F5EFE4", "#E8B98A", "#D08A6E", "#B85A35", "#8E3A22", "#6B1F1F"] 
       <section class="section" aria-labelledby="color-h">
         <h2 id="color-h">1 · Color tokens</h2>
         <p class="note" style="margin-top: var(--space-2);">
-          Single light theme. Cards step deeper than the page (surface is darker than
-          background, not white). The focus ring is the only blue on the site.
+          Single light theme on a pure-white gallery ground. Cards sit on warm-neutral
+          surface; figures mount on the parchment plate. The focus ring is the only blue
+          on the site.
         </p>
 
-        <h3 style="margin-top: var(--space-5);">Text on background</h3>
+        <h3 style="margin-top: var(--space-5);">Text on the three grounds</h3>
         <div class="swatch-grid" style="margin-top: var(--space-3);">
-          <ColorSwatch name="ink"        hex={LIGHT.ink}       pairedWith={LIGHT.background} pairedName="background" kind="body" />
-          <ColorSwatch name="ink-muted"  hex={LIGHT.inkMuted}  pairedWith={LIGHT.background} pairedName="background" kind="body" />
-          <ColorSwatch name="ink-muted"  hex={LIGHT.inkMuted}  pairedWith={LIGHT.surface}    pairedName="surface"    kind="body" />
+          <ColorSwatch name="ink"        hex={LIGHT.ink}       pairedWith={LIGHT.background} pairedName="white" kind="body" />
+          <ColorSwatch name="ink"        hex={LIGHT.ink}       pairedWith={LIGHT.plate}      pairedName="plate" kind="body" />
+          <ColorSwatch name="ink-muted"  hex={LIGHT.inkMuted}  pairedWith={LIGHT.background} pairedName="white" kind="body" />
+          <ColorSwatch name="ink-muted"  hex={LIGHT.inkMuted}  pairedWith={LIGHT.surface}    pairedName="surface" kind="body" />
+          <ColorSwatch name="ink-muted"  hex={LIGHT.inkMuted}  pairedWith={LIGHT.plate}      pairedName="plate" kind="body" />
         </div>
         <p class="annotation" style="margin-top: var(--space-3);">
           C1 — ink-subtle #9A9085 measures 2.74:1 and is therefore restricted to decorative
@@ -125,16 +132,18 @@ const RAMP = ["#F5EFE4", "#E8B98A", "#D08A6E", "#B85A35", "#8E3A22", "#6B1F1F"] 
 
         <h3 style="margin-top: var(--space-5);">Accent and interactive</h3>
         <div class="swatch-grid" style="margin-top: var(--space-3);">
-          <ColorSwatch name="accent"      hex={LIGHT.accent}     pairedWith={LIGHT.background} pairedName="background" kind="large" />
-          <ColorSwatch name="accent-deep" hex={LIGHT.accentDeep} pairedWith={LIGHT.background} pairedName="background" kind="body" />
-          <ColorSwatch name="accent-ink"  hex={LIGHT.accentInk}  pairedWith={LIGHT.accent}     pairedName="accent"     kind="body" />
-          <ColorSwatch name="focus-ring"  hex={LIGHT.focusRing}  pairedWith={LIGHT.background} pairedName="background" kind="ui" />
+          <ColorSwatch name="accent"      hex={LIGHT.accent}     pairedWith={LIGHT.background} pairedName="white" kind="body" />
+          <ColorSwatch name="accent"      hex={LIGHT.accent}     pairedWith={LIGHT.plate}      pairedName="plate" kind="large" />
+          <ColorSwatch name="accent-deep" hex={LIGHT.accentDeep} pairedWith={LIGHT.background} pairedName="white" kind="body" />
+          <ColorSwatch name="accent-ink"  hex={LIGHT.accentInk}  pairedWith={LIGHT.accent}     pairedName="accent" kind="body" />
+          <ColorSwatch name="focus-ring"  hex={LIGHT.focusRing}  pairedWith={LIGHT.background} pairedName="white" kind="ui" />
         </div>
         <p class="annotation" style="margin-top: var(--space-3);">
-          C2 — accent at 4.03:1 passes AA-large/UI but misses small-text AA (4.5:1). It is used
-          as small text in exactly one place: eyebrows (12px Geist 500), accepted as a documented
-          near-miss because the eyebrow is always a redundant label adjacent to a compliant
-          heading. accent-dim (2.43:1) is fills and borders only, never text.
+          Usage rule (V8): accent on white is 4.61:1 — AA for normal text with no margin.
+          Body-size accent text uses accent-deep or ink; #B85A35 is reserved for large text,
+          UI, and graphics. C2 carries over on plate grounds (4.03:1): eyebrows on plates
+          remain the one documented near-miss, always redundant beside a compliant heading.
+          accent-dim (2.78:1 on white) is fills and borders only, never text.
         </p>
 
         <h3 style="margin-top: var(--space-5);">Status</h3>
@@ -382,17 +391,64 @@ const RAMP = ["#F5EFE4", "#E8B98A", "#D08A6E", "#B85A35", "#8E3A22", "#6B1F1F"] 
       <section class="section" aria-labelledby="viz-h">
         <h2 id="viz-h">8 · Signature visualization</h2>
         <p class="note" style="margin-top: var(--space-2);">
-          Atlas-plate build (Phase 2c): each panel uses the visual grammar of its own
-          architecture — dots, arcs, rings, polygons, contours, cells. Check that 05-smooth
-          vs 06-discrete reads at a glance, and that panel 04's emptiness reads as
-          "aggregated," not "unfinished."
+          Atlas-plate build (Phase 2c) mounted on the plate token (V8) — the figure reads
+          as a warm print on the white gallery wall. Check that 05-smooth vs 06-discrete
+          reads at a glance, and that panel 04's emptiness reads as "aggregated," not
+          "unfinished." The kinetic version (Phase 2d) animates this same geometry.
         </p>
-        <SignatureViz />
+        <div class="plate" style="margin-top: var(--space-4);">
+          <SignatureViz />
+        </div>
+      </section>
+
+      <!-- 9. Motion system (V9) -->
+      <section class="section" aria-labelledby="motion-h">
+        <h2 id="motion-h">9 · Motion</h2>
+        <p class="note" style="margin-top: var(--space-2);">
+          Motion explains or orients; it never decorates. Everything honors reduced motion
+          by rendering the static end state. JS budget for the whole system including the
+          Phase 2d kinetic figure: ≤3KB, vanilla, no libraries. The demos below are live —
+          reload the page to replay the reveals.
+        </p>
+
+        <h3 style="margin-top: var(--space-5);">Scroll-reveal (300ms fade + 4px rise, once)</h3>
+        <div class="reveal" style="margin-top: var(--space-3); max-width: 36rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: var(--radius); padding: var(--space-4);">
+          <p style="margin: 0;">
+            This block faded in and rose 4px when it entered the viewport. Without
+            JavaScript it would simply have been visible from the start; under reduced
+            motion it renders immediately in its end state.
+          </p>
+        </div>
+
+        <h3 style="margin-top: var(--space-6);">Hairline draw-in (scaleX, 400ms)</h3>
+        <hr class="reveal-rule" style="margin-block: var(--space-3); max-width: 36rem;" />
+        <p class="section-label reveal" style="margin: 0;">Sec. 09 / Motion</p>
+
+        <h3 style="margin-top: var(--space-6);">Underline slide (150ms, hover)</h3>
+        <p style="margin-top: var(--space-3);">
+          <a href="/outputs/" class="underline-slide" style="font-family: var(--font-sans); color: var(--color-ink); font-weight: 500;">Hover this standalone link</a>
+          <span class="note" style="margin-left: var(--space-3);">— in-prose links keep their persistent underline (WCAG 1.4.1).</span>
+        </p>
+
+        <h3 style="margin-top: var(--space-6);">Hero ambience (Tier 2 — zero JS)</h3>
+        <p class="note" style="margin-top: var(--space-2);">
+          14 terracotta dots, 2–4px, opacity 0.15–0.35, drifting southwest↔northeast on
+          60–90s loops — the ambience quotes the coastal-to-Dhaka direction. Gone entirely
+          under reduced motion. If you have to look for it, it's working.
+        </p>
+        <div style="position: relative; height: 220px; margin-top: var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius); overflow: hidden;">
+          <HeroAmbience />
+          <p style="position: relative; padding: var(--space-5); max-width: 28rem; margin: 0; color: var(--color-ink-muted); font-size: var(--text-small);">
+            Placeholder hero copy — the dots drift behind content at the pace of a
+            slow tide. A reader who never notices them loses nothing.
+          </p>
+        </div>
       </section>
     </main>
 
     <footer class="container" style="padding-block: var(--space-6);">
       <p class="note">Internal design system · excluded from sitemap · noindex.</p>
     </footer>
+    <RevealScript />
   </body>
 </html>
