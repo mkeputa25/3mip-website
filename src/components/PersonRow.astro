@@ -12,7 +12,8 @@
 interface Props {
   name: string;
   affiliation: string;
-  shortRole: string;
+  /** Optional: advisors are listed without a role line (just name + affiliation). */
+  shortRole?: string;
   institutionalUrl?: string;
 }
 
@@ -29,7 +30,7 @@ const { name, affiliation, shortRole, institutionalUrl }: Props = Astro.props;
       <span class="person-row__name">{name}</span>
     )}<span class="person-row__sep">, </span><span class="person-row__affil">{affiliation}</span>
   </p>
-  <p class="person-row__role" set:html={shortRole} />
+  {shortRole && <p class="person-row__role" set:html={shortRole} />}
 </li>
 
 <style>

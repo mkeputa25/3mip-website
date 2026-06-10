@@ -18,7 +18,7 @@ interface Publication {
 interface Props {
   name: string;
   affiliation: string;
-  shortRole: string;
+  shortRole?: string;
   publications?: Publication[];
   institutionalUrl?: string;
   /** Personal or lab site, distinct from the institutional page. */
@@ -59,7 +59,7 @@ const {
   <div class="person__body">
     <h3 class="person__name">{name}</h3>
     <p class="person__affil">{affiliation}</p>
-    <p class="person__role">{shortRole}</p>
+    {shortRole && <p class="person__role">{shortRole}</p>}
 
     <div class="person__bio">
       <slot />

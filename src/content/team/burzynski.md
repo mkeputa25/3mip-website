@@ -3,7 +3,6 @@ name: Michał Burzyński
 surname: Burzyński
 affiliation: Senior researcher, Luxembourg Institute of Socio-Economic Research (LISER)
 role: advisor
-shortRole: Economic migration modeling advisor.
 ---
 
 <!--

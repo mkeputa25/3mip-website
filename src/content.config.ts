@@ -78,7 +78,7 @@ const team = defineCollection({
     affiliation: z.string(),
     role: z.enum(["co-lead", "advisor", "project-management", "domain-expert"]),
     /** One-line role description shown on the Team page. */
-    shortRole: z.string(),
+    shortRole: z.string().optional(),
     /** Longer bio — typically only for co-leads. */
     bio: z.string().optional(),
     publications: z

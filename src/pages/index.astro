@@ -40,8 +40,8 @@ const coLeads = team
 const coordinators = team
   .filter((e) => e.data.role === "project-management")
   .sort((a, b) => {
-    const aCoord = a.data.shortRole.toLowerCase().includes("coordinator") ? 0 : 1;
-    const bCoord = b.data.shortRole.toLowerCase().includes("coordinator") ? 0 : 1;
+    const aCoord = (a.data.shortRole ?? "").toLowerCase().includes("coordinator") ? 0 : 1;
+    const bCoord = (b.data.shortRole ?? "").toLowerCase().includes("coordinator") ? 0 : 1;
     return aCoord - bCoord || a.data.surname.localeCompare(b.data.surname);
   });
 
