@@ -86,7 +86,7 @@ Each entry: name, current primary affiliation, one-line role in 3MIP (Mario to r
 
 7. **Fabien Cottier** — University of Geneva. Co-organizer, Princeton C-PREE September 2024 founding workshop. Role: empirical migration analysis advisor, founding workshop co-organizer.
 
-8. **Michal Burzynski** — Senior researcher, Luxembourg Institute of Socio-Economic Research (LISER). Role: economic migration modeling advisor.
+8. **Michał Burzyński** — Senior researcher, Luxembourg Institute of Socio-Economic Research (LISER). Role: economic migration modeling advisor. (Spelling corrected to Polish diacritics in Phase 6; the earlier ASCII form was a flattening.)
 
 9. **Michael Puma** — Director, Center for Climate Systems Research, Columbia University; NASA Goddard Institute for Space Studies. Role: food systems and climate impacts advisor.
 

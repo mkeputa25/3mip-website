@@ -8,9 +8,22 @@ noted (OG image uses the Fraunces wordmark; the static SVG export for
 Dublin slides renders the reduced-motion state).
 
 > **Resume note for a fresh session:** PLAN-V2.md + DECISIONS-V2.md are
-> authoritative. 0c/1c/2c are complete and committed; 1d is in flight per
-> the v2.1 sections below; 2d and the revised 4e follow. Do not rebuild
-> from memory.
+> authoritative. COMPLETE AND COMMITTED: 0c, 1c, 2c, 1d, 2d, 4e, Phase 5
+> (advisors + news), and Phase 6a (prep — see below). NEXT: Phase 6b.
+>
+> **Phase 6 is split 6a/6b** (session usage cap):
+> 6a (done): OPEN-QUESTIONS.md fully compiled; FACTS Burzyński fix;
+> scripts/audit.mjs (axe + keyboard trace), scripts/check-links.mjs,
+> scripts/export-assets.mjs (og-default.png + slide exports, reduced-motion
+> state); .lighthouserc.json (≥95 ×4, ten routes).
+> 6b (next session): `npm i -D playwright axe-core @lhci/cli && npx
+> playwright install chromium`, then `npm run build`, `node
+> scripts/audit.mjs` (fix violations, write A11Y-AUDIT.md from its output),
+> `node scripts/check-links.mjs` (fix internal; document external),
+> `CHROME_PATH=$(node -e "console.log(require('playwright').chromium.executablePath())") npx lhci autorun`
+> (document any <95), `node scripts/export-assets.mjs && npm run build`,
+> commit `chore(qa): quality gates and audit reports`. Then Phase 7
+> (handoff docs) per archive/v1/PLAN.md.
 
 ---
 
