@@ -10,13 +10,6 @@
  * No upper-case anywhere; tracking carries the label register.
  */
 import Wordmark from "./Wordmark.astro";
-import { getLastUpdated, formatLongDate } from "../lib/last-updated";
-
-const lastUpdated = getLastUpdated();
-
-// Repo URL (B18). Private until launch — this link 404s for the public while
-// the repo is private; make the repo public (or remove this link) at cutover.
-const GITHUB_URL = "https://github.com/mkeputa25/3mip-website";
 
 const QUICK_LINKS = [
   { href: "/about/", label: "About" },
@@ -26,7 +19,6 @@ const QUICK_LINKS = [
 ];
 
 const PROJECT_LINKS = [
-  { href: GITHUB_URL, label: "GitHub", external: true },
   { href: "/news/feed.xml", label: "RSS feed" },
   { href: "#cite", label: "Cite this site" },
 ];
@@ -63,13 +55,7 @@ const LEGAL_LINKS = [
       <ul class="site-footer__list">
         {PROJECT_LINKS.map((l) => (
           <li>
-            <a
-              href={l.href}
-              class="underline-slide"
-              rel={l.external ? "noopener noreferrer" : undefined}
-            >
-              {l.label}{l.external ? " ↗" : ""}
-            </a>
+            <a href={l.href} class="underline-slide">{l.label}</a>
           </li>
         ))}
       </ul>
@@ -85,18 +71,6 @@ const LEGAL_LINKS = [
     </div>
   </div>
 
-  {/* Colophon (V6): Fraunces italic, hairline above. */}
-  <div class="site-footer__colophon-wrap">
-    <p class="site-footer__colophon">
-      This website set in Fraunces and Geist. Built with Astro and deployed
-      on Vercel. Content licensed under
-      <a href="https://creativecommons.org/licenses/by/4.0/" rel="noopener noreferrer">CC BY 4.0</a>;
-      code under
-      <a href="https://opensource.org/licenses/MIT" rel="noopener noreferrer">MIT</a>.
-      Last updated <time datetime={lastUpdated}>{formatLongDate(lastUpdated)}</time>.
-      No analytics, no third-party trackers.
-    </p>
-  </div>
 </footer>
 
 <style>
