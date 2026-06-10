@@ -91,10 +91,10 @@ const baseField =
       id={id}
       name={name}
       required={required}
-      multiple={multiple}
+      multiple={multiple || undefined}
       aria-describedby={describedBy}
       aria-invalid={error ? "true" : undefined}
-      class={baseField}
+      class={`${baseField} form-select`}
     >
       {!multiple && <option value="">Select…</option>}
       {options.map((opt) => (
@@ -131,3 +131,26 @@ const baseField =
     </p>
   )}
 </div>
+
+<style>
+  /* Custom select: drop the native OS chevron for a clean Geist control
+     with a hand-drawn ink chevron. Forces the option list to Geist + ink so
+     it matches the rest of the form (the native popup was inheriting the
+     page serif). */
+  .form-select {
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    padding-right: 2.5rem;
+    cursor: pointer;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8' fill='none'><path d='M1 1.5 L6 6.5 L11 1.5' stroke='%231A1612' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 0.9rem center;
+  }
+  .form-select::-ms-expand { display: none; }
+  .form-select option {
+    font-family: var(--font-sans);
+    color: var(--color-ink);
+    background: var(--color-surface-elevated);
+  }
+</style>
