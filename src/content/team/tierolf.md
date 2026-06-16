@@ -1,7 +1,7 @@
 ---
 name: Lars Tierolf
 surname: Tierolf
-affiliation: PhD researcher, Institute for Environmental Studies (IVM), Vrije Universiteit Amsterdam
+affiliation: Postdoctoral researcher, Institute for Environmental Studies (IVM), Vrije Universiteit Amsterdam
 role: co-lead
 shortRole: Co-lead
 publications:
@@ -11,9 +11,14 @@ institutionalUrl: "https://research.vu.nl/en/persons/lars-tierolf"
 photo: team/tierolf.webp
 ---
 
-Tierolf works on coupled coastal adaptation and migration agent-based modeling
-within COASTMOVE, the ERC Advanced Grant project led by Jeroen Aerts at VU
-Amsterdam. His 2024 *Science of the Total Environment* paper presents a
-coupled agent-based model for France simulating household adaptation and
-migration decisions under future coastal flood risk — an architecture directly
-relevant to the Bangladesh benchmark case.
+Lars Tierolf is a postdoctoral researcher at the Institute for Environmental
+Studies (IVM). Here he works on the development of agent-based models that
+capture household adaptation and migration decisions in response to climate
+change. In his doctoral dissertation entitled "Rising Waters: Tradeoffs in
+Climate Migration and Adaptation Under Future Flood Risk" he combined
+agent-based modeling with flood risk assessment models to study household
+adaptation and migration behavior under increasing flood risk. His 2024
+*Science of the Total Environment* paper presents a coupled agent-based model
+for France simulating household adaptation and migration decisions under
+future coastal flood risk — an architecture directly relevant to the
+Bangladesh benchmark case.
