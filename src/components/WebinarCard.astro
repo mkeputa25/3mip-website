@@ -2,28 +2,30 @@
 /**
  * WebinarCard — one webinar on the Outputs page § Webinars.
  *
- * Phase 4e (V7.1): titled by month; no speaker names displayed.
- *
- * June 2026: each card now leads with a video poster — a 16:9 plate-colored
- * thumbnail with a terracotta play control that IS the "watch recording"
- * link. This is the "preview of the video" affordance without putting a
- * third-party request on the Outputs page on load (the locked privacy
- * posture, archive/v1 D8/D20): the recording still lives on Drive and opens
- * on click; we don't embed an iframe or hot-link a Google thumbnail.
- *
- * If a real frame-grab is available, drop it in public/webinars/<slug>.jpg
- * and set `poster: webinars/<slug>.jpg` in the webinar's frontmatter — the
- * card renders the still behind the play control. Otherwise the designed
- * poster (month + play glyph) ships, which always renders.
+ * June 2026 changes (per Mario):
+ *  - Speaker name + affiliation are now displayed (previously hidden).
+ *  - The recording plays INLINE on this site, not by sending the visitor to
+ *    Google Drive. Clicking the poster swaps it, in place, for an embedded
+ *    Drive player (the file's /preview URL in an iframe). The iframe src is
+ *    set only on click — no third-party request on page load — which keeps
+ *    the Outputs page fast and private until the visitor chooses to watch.
+ *    (This supersedes the earlier "external link, never iframe" stance for
+ *    webinars; see DECISIONS-V2 D20.)
+ *  - No-JS fallback: the poster is a real link to the recording, so without
+ *    JavaScript it still opens (in Drive). With JS, playback stays on-site.
  */
 import Button from "./Button.astro";
 
+interface Speaker {
+  name: string;
+  affiliation: string;
+}
+
 interface Props {
   title: string;
-  /** ISO date string for the <time> element. */
   date: string;
-  /** Long-format display date, e.g. "May 2026". */
   dateLabel: string;
+  speakers?: Speaker[];
   lengthMinutes?: number;
   abstract?: string;
   recordingUrl?: string;
@@ -37,6 +39,7 @@ const {
   title,
   date,
   dateLabel,
+  speakers,
   lengthMinutes,
   abstract,
   recordingUrl,
@@ -44,28 +47,41 @@ const {
   poster,
   needsVerify = false,
 }: Props = Astro.props;
+
+// Build a Google Drive inline-player URL from the share link
+// (https://drive.google.com/file/d/<ID>/view → .../<ID>/preview).
+const driveId = recordingUrl?.match(/\/d\/([^/]+)/)?.[1];
+const embedUrl = driveId ? `https://drive.google.com/file/d/${driveId}/preview` : undefined;
 ---
 
 <article class="webinar">
-  {recordingUrl ? (
-    <a
-      class="webinar__poster"
-      href={recordingUrl}
-      rel="noopener noreferrer"
-      aria-label={`Watch the recording: ${title} (opens in Google Drive)`}
-      style={poster ? `background-image: url(/${poster}); background-size: cover; background-position: center;` : undefined}
-    >
-      <span class="webinar__play" aria-hidden="true">
-        <svg viewBox="0 0 64 64" width="56" height="56">
-          <circle cx="32" cy="32" r="31" fill="var(--color-accent)" />
-          <path d="M26 21 L46 32 L26 43 Z" fill="var(--color-accent-ink)" />
-        </svg>
-      </span>
-      <span class="webinar__poster-tag">{dateLabel}</span>
-    </a>
-  ) : (
-    <div class="webinar__poster webinar__poster--empty" aria-hidden="true">
-      <span class="webinar__poster-tag">{dateLabel}</span>
+  {recordingUrl && (
+    <div class="webinar__media">
+      <a
+        class="webinar__poster"
+        href={recordingUrl}
+        rel="noopener noreferrer"
+        data-webinar-play
+        data-embed={embedUrl}
+        aria-label={`Play the ${title} recording`}
+        style={poster ? `background-image: url(/${poster}); background-size: cover; background-position: center;` : undefined}
+      >
+        <span class="webinar__play" aria-hidden="true">
+          <svg viewBox="0 0 64 64" width="56" height="56">
+            <circle cx="32" cy="32" r="31" fill="var(--color-accent)" />
+            <path d="M26 21 L46 32 L26 43 Z" fill="var(--color-accent-ink)" />
+          </svg>
+        </span>
+        <span class="webinar__poster-tag">{dateLabel}</span>
+      </a>
+      <iframe
+        class="webinar__iframe"
+        title={`${title} recording`}
+        hidden
+        allow="autoplay; fullscreen"
+        allowfullscreen
+        loading="lazy"
+      ></iframe>
     </div>
   )}
 
@@ -78,16 +94,21 @@ const {
 
     <h3 class="webinar__title">{title}</h3>
 
+    {speakers && speakers.length > 0 && (
+      <p class="webinar__speakers">
+        {speakers.map((s, i) => (
+          <span>
+            {s.name} <span class="webinar__affil">({s.affiliation})</span>{i < speakers.length - 1 ? "; " : ""}
+          </span>
+        ))}
+      </p>
+    )}
+
     {abstract && <p class="webinar__abstract">{abstract}</p>}
 
-    {(recordingUrl || slidesUrl) && (
+    {slidesUrl && (
       <div class="webinar__actions">
-        {recordingUrl && (
-          <Button href={recordingUrl} external variant="secondary">Watch recording</Button>
-        )}
-        {slidesUrl && (
-          <Button href={slidesUrl} external variant="ghost">Slides</Button>
-        )}
+        <Button href={slidesUrl} external variant="ghost">Slides</Button>
       </div>
     )}
   </div>
@@ -104,40 +125,40 @@ const {
   .webinar:first-of-type { border-top: 0; }
   @media (min-width: 640px) {
     .webinar {
-      grid-template-columns: 16rem 1fr;
+      grid-template-columns: 22rem 1fr;
       gap: var(--space-5);
       align-items: start;
     }
   }
 
-  /* Poster — 16:9 plate thumbnail; the whole thing is the watch link. */
-  .webinar__poster {
+  /* Media: a 16:9 box that holds the poster, then the inline player. */
+  .webinar__media {
     position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
     aspect-ratio: 16 / 9;
     background-color: var(--color-plate);
     border: 1px solid var(--color-border-strong);
     border-radius: var(--radius);
     overflow: hidden;
-    text-decoration: none;
-    transition: border-color 150ms var(--ease-out);
   }
-  .webinar__poster:hover { border-color: var(--color-ink-muted); }
+  .webinar__poster {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: background-color 150ms var(--ease-out);
+  }
   .webinar__poster:focus-visible {
     outline: 2px solid var(--color-focus-ring);
-    outline-offset: 2px;
+    outline-offset: -2px;
   }
-  .webinar__poster--empty { cursor: default; }
-
   .webinar__play {
     display: inline-flex;
     transition: transform 150ms var(--ease-out);
     filter: drop-shadow(0 2px 6px rgb(26 22 18 / 0.25));
   }
   .webinar__poster:hover .webinar__play { transform: scale(1.06); }
-
   .webinar__poster-tag {
     position: absolute;
     left: var(--space-2);
@@ -150,6 +171,13 @@ const {
     background: color-mix(in srgb, var(--color-plate) 85%, transparent);
     padding: 2px var(--space-2);
     border-radius: 2px;
+  }
+  .webinar__iframe {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    border: 0;
   }
 
   .webinar__meta {
@@ -170,11 +198,17 @@ const {
     color: var(--color-ink-muted);
     letter-spacing: 0.06em;
   }
-
   .webinar__title {
-    margin: var(--space-2) 0 var(--space-2);
+    margin: var(--space-2) 0 var(--space-1);
     font-size: var(--text-h3);
   }
+  .webinar__speakers {
+    margin: 0;
+    font-family: var(--font-sans);
+    font-size: var(--text-small);
+    color: var(--color-ink);
+  }
+  .webinar__affil { color: var(--color-ink-muted); }
   .webinar__abstract {
     margin: var(--space-3) 0 0;
     color: var(--color-ink-muted);
@@ -187,3 +221,24 @@ const {
     flex-wrap: wrap;
   }
 </style>
+
+<!--
+  Bundled (not inline) so it is included once per page regardless of how many
+  WebinarCards render. Click the poster → swap it for the inline Drive player,
+  setting the iframe src lazily (no Google request until the visitor watches).
+  Without JS the poster is a normal link (opens the recording).
+-->
+<script>
+  document.querySelectorAll<HTMLAnchorElement>("[data-webinar-play]").forEach((poster) => {
+    poster.addEventListener("click", (e) => {
+      const embed = poster.getAttribute("data-embed");
+      const media = poster.closest(".webinar__media");
+      const frame = media?.querySelector<HTMLIFrameElement>(".webinar__iframe");
+      if (!embed || !frame) return; // no embed → fall through to the href
+      e.preventDefault();
+      frame.src = embed;
+      frame.hidden = false;
+      poster.style.display = "none";
+    });
+  });
+</script>

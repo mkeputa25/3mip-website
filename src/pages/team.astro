@@ -64,6 +64,14 @@ const coLeadsRendered = await Promise.all(
   }),
 );
 
+// Project management cards render their Markdown body too (Mario's bio).
+const pmRendered = await Promise.all(
+  pm.map(async (entry) => {
+    const { Content } = await render(entry);
+    return { entry, Content };
+  }),
+);
+
 // Domain experts are now full cards (with photos + bios), like leadership.
 // Render their Markdown bodies too; experts without a body simply show no bio.
 const domainExpertsRendered = await Promise.all(
@@ -126,14 +134,16 @@ const jsonLd = {
       {pm.length === 0 && (
         <p class="empty">Project management entries load from the team content collection (seeded in Phase 5).</p>
       )}
-      {pm.map((e) => (
+      {pmRendered.map(({ entry, Content }) => (
         <PersonCard
-          name={e.data.name}
-          affiliation={e.data.affiliation}
-          shortRole={e.data.shortRole}
-          personalUrl={e.data.personalUrl}
-          photo={photoIfExists(e.data.photo)}
-        />
+          name={entry.data.name}
+          affiliation={entry.data.affiliation}
+          shortRole={entry.data.shortRole}
+          personalUrl={entry.data.personalUrl}
+          photo={photoIfExists(entry.data.photo)}
+        >
+          <Content />
+        </PersonCard>
       ))}
     </section>
 

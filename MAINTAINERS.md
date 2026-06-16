@@ -99,11 +99,18 @@ lengthMinutes: 45
 ```
 
 - `title` — the project names webinars by month, e.g. "September Webinar
-  Presentation". Speaker names are **not** shown on the card (you can record a
-  speaker in the file for your own reference; it won't display).
-- `recordingUrl` — paste the Google Drive (or YouTube) share link. The card shows
-  a play poster that opens this link. **Make sure the Drive file is shared
-  "anyone with the link."**
+  Presentation".
+- `speakers` — list the presenter(s); shown under the title as
+  "Name (Affiliation)". Format:
+  ```yaml
+  speakers:
+    - name: Jane Researcher
+      affiliation: University of Somewhere
+  ```
+- `recordingUrl` — paste the Google Drive share link. The card shows a play
+  poster; clicking it plays the video **inline on the site** (the visitor is
+  not sent to Google Drive). **The Drive file must be shared "anyone with the
+  link"** or it won't embed.
 - `lengthMinutes`, `abstract` — optional.
 - `poster` (optional) — if you have a real still image from the talk, put the
   image in `public/webinars/` and add `poster: webinars/your-file.jpg`. Otherwise
