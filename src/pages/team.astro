@@ -55,6 +55,15 @@ const coLeadsRendered = await Promise.all(
   }),
 );
 
+// Domain experts are now full cards (with photos + bios), like leadership.
+// Render their Markdown bodies too; experts without a body simply show no bio.
+const domainExpertsRendered = await Promise.all(
+  domainExperts.map(async (entry) => {
+    const { Content } = await render(entry);
+    return { entry, Content };
+  }),
+);
+
 // JSON-LD: Person entities for leadership only (advisors excluded for privacy,
 // per CONTENT-INVENTORY § Team JSON-LD note).
 const jsonLd = {
@@ -77,9 +86,9 @@ const jsonLd = {
     <header class="page__header">
       <h1>Team</h1>
       <p class="lede">
-        3MIP is led by three co-leads, advised by a 14-member committee,
-        supported by four domain experts, and coordinated by project
-        management at Cornell.
+        3MIP is led by three co-leads, supported by domain experts and a
+        14-member advisory committee, and coordinated by project management
+        at Cornell.
       </p>
     </header>
 
@@ -119,6 +128,29 @@ const jsonLd = {
       ))}
     </section>
 
+    <section class="reveal" aria-labelledby="experts-h">
+      <h2 id="experts-h">Domain experts</h2>
+      <p>
+        Researchers with domain expertise on Bangladesh and climate-related
+        mobility who support the network.
+      </p>
+      {domainExpertsRendered.length === 0 && (
+        <p class="empty">Domain expert profiles load from the team content collection.</p>
+      )}
+      {domainExpertsRendered.map(({ entry, Content }) => (
+        <PersonCard
+          name={entry.data.name}
+          affiliation={entry.data.affiliation}
+          shortRole={entry.data.shortRole}
+          institutionalUrl={entry.data.institutionalUrl}
+          personalUrl={entry.data.personalUrl}
+          photo={photoIfExists(entry.data.photo)}
+        >
+          <Content />
+        </PersonCard>
+      ))}
+    </section>
+
     <section class="reveal" aria-labelledby="advisory-h">
       <h2 id="advisory-h">Advisory committee</h2>
       {advisors.length === 0 && (
@@ -127,29 +159,6 @@ const jsonLd = {
       {advisors.length > 0 && (
         <ul class="advisor-list">
           {advisors.map((e) => (
-            <PersonRow
-              name={e.data.name}
-              affiliation={e.data.affiliation}
-              shortRole={e.data.shortRole}
-              institutionalUrl={e.data.institutionalUrl}
-            />
-          ))}
-        </ul>
-      )}
-    </section>
-
-    <section class="reveal" aria-labelledby="experts-h">
-      <h2 id="experts-h">Domain experts</h2>
-      <p>
-        Researchers with domain expertise on Bangladesh and climate-related
-        mobility who support the network.
-      </p>
-      {domainExperts.length === 0 && (
-        <p class="empty">Domain expert profiles load from the team content collection.</p>
-      )}
-      {domainExperts.length > 0 && (
-        <ul class="advisor-list">
-          {domainExperts.map((e) => (
             <PersonRow
               name={e.data.name}
               affiliation={e.data.affiliation}
