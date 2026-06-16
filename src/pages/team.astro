@@ -36,7 +36,16 @@ const photoIfExists = (photo?: string) =>
 // Co-leads: canonical order is alphabetical by surname (Bell, Best, Tierolf).
 const coLeads = all.filter((e) => e.data.role === "co-lead").sort(bySurname);
 const advisors = all.filter((e) => e.data.role === "advisor").sort(bySurname);
-const domainExperts = all.filter((e) => e.data.role === "domain-expert").sort(bySurname);
+// Domain-expert order (per Mario): Nassos first, Hedda second, then the rest
+// by surname. Keyed on the file slug (entry id).
+const EXPERT_ORDER = ["vafeidis", "bonatz"];
+const domainExperts = all
+  .filter((e) => e.data.role === "domain-expert")
+  .sort((a, b) => {
+    const ar = EXPERT_ORDER.indexOf(a.id) === -1 ? EXPERT_ORDER.length : EXPERT_ORDER.indexOf(a.id);
+    const br = EXPERT_ORDER.indexOf(b.id) === -1 ? EXPERT_ORDER.length : EXPERT_ORDER.indexOf(b.id);
+    return ar - br || a.data.surname.localeCompare(b.data.surname);
+  });
 // PM: the active coordinator leads the list (primary contact), then others
 // by surname.
 const pm = all
