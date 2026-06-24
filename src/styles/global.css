@@ -183,6 +183,10 @@
   body {
     background-color: var(--color-background);
     color: var(--color-ink);
+    /* Guard: full-bleed editorial bands (News/About/Case) break out with a
+       negative margin-inline; clip the scrollbar-width overshoot so no
+       horizontal scrollbar appears. `clip` (not hidden) preserves any sticky. */
+    overflow-x: clip;
     /* Prose face is Fraunces at text optical size with old-style figures —
        the monograph register. UI elements opt into Geist explicitly. */
     font-family: var(--font-serif);

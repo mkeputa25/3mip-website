@@ -26,17 +26,22 @@
   --band-sage: #eef0e9;
 }
 
-/* Section banding — a tinted block. Background only; text stays ink/teal so AA
-   always holds. Stage 5B promotes selected bands to full-bleed. */
+/* ── 5B · Full-bleed section banding ────────────────────────────────────
+   Bands break out of the centered .page column to span the viewport while
+   their content stays in the measure (negative margin-inline, padding back).
+   Color carries chapter rhythm; a 1px rule prevents hard color jumps.
+   Body text on every tint is ink (≥14.5:1) or teal (≥5.1:1) — AA holds. */
 .page-editorial .editorial-band {
+  margin-inline: calc(50% - 50vw);
+  padding: var(--space-8) calc(50vw - 50%);
+  border-block: 1px solid var(--color-border);
   background: var(--band-parchment-deep);
-  padding: var(--space-5);
-  border-radius: var(--radius);
 }
+.page-editorial .editorial-band--parchment { background: var(--color-plate); }
+.page-editorial .editorial-band--parchment-deep { background: var(--band-parchment-deep); }
 .page-editorial .editorial-band--teal { background: var(--band-teal); }
 .page-editorial .editorial-band--ochre { background: var(--band-ochre); }
 .page-editorial .editorial-band--sage { background: var(--band-sage); }
-.page-editorial .editorial-band--parchment-deep { background: var(--band-parchment-deep); }
 
 /* Section kicker — teal eyebrow (teal is AA-safe as text). Used from Stage 5A. */
 .page-editorial .editorial-kicker {
