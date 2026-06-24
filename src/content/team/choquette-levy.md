@@ -1,6 +1,6 @@
 ---
 name: Nic Choquette-Levy
 surname: Choquette-Levy
-affiliation: Postdoctoral Research Associate, Penn State University
+affiliation: Assistant Professor, Department of Geosciences, Penn State University
 role: advisor
 ---

@@ -10,7 +10,7 @@ publications:
   - citation: "Bell, A. R., Calvo-Hernandez, C., & Oppenheimer, M. (2019). Migration, Intensification, and Diversification as Adaptive Strategies. Socio-Environmental Systems Modelling, 1, 16102."
     doi: "https://doi.org/10.18174/sesmo.2019a16102"
 institutionalUrl: "https://einaudi.cornell.edu/discover/people/andrew-reid-bell"
-personalUrl: "https://www.linkedin.com/in/andrew-bell-b94168297/"
+personalUrl: "https://andrewreidbell.com"
 photo: team/bell.jpg
 ---
 

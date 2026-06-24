@@ -2,6 +2,7 @@
 name: Lars Tierolf
 surname: Tierolf
 affiliation: Postdoctoral researcher, Institute for Environmental Studies (IVM), Vrije Universiteit Amsterdam
+# TODO(human): confirm Tierolf's current title (postdoc vs PhD researcher). Per his explicit instruction the publications below are left byte-for-byte as-is — do not change title/venue/DOI/order.
 role: co-lead
 shortRole: Co-lead
 publications:

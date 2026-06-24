@@ -3,6 +3,7 @@ name: Nassos Vafeidis
 surname: Vafeidis
 affiliation: Group Leader, Coastal Risk and Sea Level Rise group, Kiel University (CAU)
 role: domain-expert
+# TODO(human): Vafeidis is listed as a 5th domain expert; the official Weebly record lists only four (Bonatz, Ahmed, Rahaman, Poluru). Confirm with leads whether to keep him listed.
 shortRole: Coastal systems, sea-level rise, GIS, and remote sensing.
 email: vafeidis@geographie.uni-kiel.de
 institutionalUrl: "https://www.crslr.de/team/nassos-vafeidis"
