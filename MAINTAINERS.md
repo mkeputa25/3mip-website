@@ -232,7 +232,9 @@ Editing these can break the whole site, and the breakage may not be obvious.
 
 ## 12. Domain renewal
 
-- **Domain:** `[PENDING BELL APPROVAL — final domain]` (placeholder `3mip.org`).
+- **Domain:** `3mip-project.com` (production). Canonical host is the apex; the
+  `www.` host should be configured in Vercel to redirect to it (see README §
+  "Domain & canonical host").
 - **Registered to / paid by:** `[fill in at launch — owner + renewal date +
   payment method]`.
 - Set a calendar reminder ~1 month before the renewal date. A lapsed domain takes

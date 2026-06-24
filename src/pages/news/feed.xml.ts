@@ -18,7 +18,7 @@ export async function GET(context: APIContext) {
     (a, b) => b.data.date.valueOf() - a.data.date.valueOf(),
   );
 
-  const site = context.site ?? new URL("https://3mip.org");
+  const site = context.site ?? new URL("https://3mip-project.com");
 
   return rss({
     title: "3MIP News",

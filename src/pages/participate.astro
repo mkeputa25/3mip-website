@@ -66,7 +66,7 @@ const faqItems = [
   },
   {
     q: "What if my model is still in development?",
-    a: 'You can register and join webinars now. Output submission for the synthesis requires a working model by <span class="verify">[VERIFY deadline]</span>.',
+    a: 'You can register and join the participant meetings now. Output submission for the synthesis requires a working model; submission timing is announced to registered participants.',
   },
   {
     q: "Who owns the outputs?",
@@ -90,7 +90,7 @@ const faqItems = [
   },
   {
     q: "What is the Climatic Change topical collection?",
-    a: 'A planned topical collection in the journal <em>Climatic Change</em> for 3MIP-affiliated papers. The formal call is anticipated for late 2026 <span class="verify">[VERIFY]</span>.',
+    a: 'A planned topical collection in the journal <em>Climatic Change</em> for 3MIP-affiliated papers. The formal call for papers is forthcoming.',
   },
   {
     q: "Will participating modelers be listed publicly?",
@@ -171,10 +171,10 @@ const faqItems = [
         </li>
         <li>
           <strong>Submit your outputs and methodological documentation</strong>
-          by <span class="verify">[VERIFY deadline]</span> for inclusion in
-          the synthesis and the <em>Climatic Change</em> topical collection.
-          Participating modelers are asked to share their code and model
-          findings with the network.
+          for inclusion in the synthesis and the <em>Climatic Change</em>
+          topical collection; submission timing is announced to registered
+          participants. Participating modelers are asked to share their code
+          and model findings with the network.
         </li>
         <li>
           <strong>Retain ownership of your model and outputs.</strong> 3MIP
@@ -295,11 +295,6 @@ const faqItems = [
         with third parties. See the <Link href="/privacy/" variant="in-prose">privacy notice</Link> for details.
       </p>
 
-      <p class="endpoint-note" data-endpoint-note hidden>
-        <span class="pending">[PENDING]</span> Form endpoint not yet configured.
-        Set <code>PUBLIC_FORMSPREE_ENDPOINT</code> in the Vercel environment
-        before launch (see archive/v1/DECISIONS.md D5).
-      </p>
     </section>
 
     <section class="reveal" aria-labelledby="faq-h">
@@ -460,7 +455,7 @@ const faqItems = [
       modeler -> at least one approach checkbox
       expert  -> non-empty expertise textarea
   - AJAX submit to Formspree with inline success state; data preserved on error.
-  - Placeholder endpoint short-circuits with a visible [PENDING] note.
+  - An unconfigured placeholder endpoint short-circuits with an inline status message.
 -->
 <script is:inline>
   (function () {
@@ -468,14 +463,9 @@ const faqItems = [
     if (!form) return;
     var statusEl = form.querySelector('[data-form-status]');
     var successEl = document.querySelector('[data-form-success]');
-    var endpointNote = document.querySelector('[data-endpoint-note]');
     var action = form.getAttribute('action') || '';
     var radios = form.querySelectorAll('[data-track-radio]');
     var panels = form.querySelectorAll('[data-track-panel]');
-
-    if (action.indexOf('REPLACE_WITH_FORM_ID') !== -1 && endpointNote) {
-      endpointNote.hidden = false;
-    }
 
     function selectedTrack() {
       var r = form.querySelector('[data-track-radio]:checked');

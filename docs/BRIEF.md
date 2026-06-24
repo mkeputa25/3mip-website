@@ -142,7 +142,7 @@ Mario expects pushback. The agent should refuse or surface, not silently comply,
 - **Accessibility**: WCAG 2.2 AA minimum. Real, not lip service. Verified via automated tools and manual keyboard traversal.
 - **Privacy**: GDPR notice required. No analytics in v1, or Plausible self-hosted only. No third-party trackers.
 - **Maintenance**: Mario leaves Cornell for Albania in June 2026. A non-developer must be able to add news items, papers, webinars, and team members via Markdown after that. The handoff document is a hard deliverable, not optional.
-- **Domain**: TBD, awaiting Bell decision. Use `3mip.org` as a placeholder in configs.
+- **Domain**: `3mip-project.com` (confirmed production domain; the apex is the canonical host).
 
 ## Mario's role
 

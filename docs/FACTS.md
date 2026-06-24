@@ -278,7 +278,7 @@ Suggested citation for the curated input data package:
 > Bell, A. R., Best, K., Tierolf, L., & the 3MIP Consortium (2025). *3MIP Curated Input Dataset for Coastal Bangladesh, Version 1.0*. Mobility and Migration Modeling Intercomparison Project. [DOI when minted].
 
 Suggested citation for the project as a whole:
-> Mobility and Migration Modeling Intercomparison Project (3MIP). https://3mip.org `[PENDING BELL APPROVAL on final domain]`
+> Mobility and Migration Modeling Intercomparison Project (3MIP). https://3mip-project.com
 
 ## Verification log
 

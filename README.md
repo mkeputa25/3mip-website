@@ -89,8 +89,10 @@ archive/v1/         the superseded v1 plan & decisions (kept for history)
 
 ## Configuration
 
-- **Site URL / domain**: `astro.config.mjs` → `SITE_URL` (placeholder
-  `https://3mip.org`; change at DNS cutover) and `public/robots.txt`.
+- **Site URL / domain**: `astro.config.mjs` → `SITE_URL`
+  (`https://3mip-project.com`, the confirmed production domain) and
+  `public/robots.txt`. This one value drives every canonical URL, the sitemap,
+  the Open Graph URLs, and the RSS channel link.
 - **Registration form**: set `PUBLIC_FORMSPREE_ENDPOINT` in the Vercel
   environment (and `.env.local` for local testing). Until set, the form renders
   but is inert and says so. See `.env.example`.
@@ -102,6 +104,19 @@ Push to `main`. Vercel builds and deploys automatically (framework preset:
 Astro; build command `npm run build`; output `dist/`). Pull requests get preview
 deployments. See [MAINTAINERS.md](MAINTAINERS.md) § Deploying and
 [LAUNCH-CHECKLIST.md](LAUNCH-CHECKLIST.md) for the first-time cutover.
+
+### Domain & canonical host
+
+The canonical host is the **apex**, `https://3mip-project.com` (this is the
+value in `astro.config.mjs` and therefore in every canonical/OG/sitemap URL).
+The apex resolves and serves `200` over TLS.
+
+`www.3mip-project.com` is **not yet configured** — it has no DNS record / TLS
+certificate and does not resolve. Before launch, add `www.3mip-project.com` to
+the Vercel project's Domains and set it to **redirect to the apex** (Vercel's
+default when you add a `www` domain alongside an apex), so the two hosts stay
+consistent and `www` does not dead-end. No code change is needed for this; it is
+a Vercel dashboard setting.
 
 ## Troubleshooting
 

@@ -6,10 +6,10 @@ import vercel from "@astrojs/vercel";
 import tailwindcss from "@tailwindcss/vite";
 
 /**
- * Site URL is a [PENDING BELL APPROVAL] item; using 3mip.org as the placeholder.
- * When Bell confirms the final domain, change `site` here and update Vercel DNS.
+ * Production domain, confirmed: 3mip-project.com. Drives canonical URLs, the
+ * sitemap, Open Graph URLs, and the RSS channel link (all derive from `site`).
  */
-const SITE_URL = "https://3mip.org";
+const SITE_URL = "https://3mip-project.com";
 
 // https://astro.build/config
 export default defineConfig({

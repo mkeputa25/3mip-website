@@ -3,4 +3,4 @@ Allow: /
 Disallow: /design/
 Disallow: /design
 
-Sitemap: https://3mip.org/sitemap-index.xml
+Sitemap: https://3mip-project.com/sitemap-index.xml

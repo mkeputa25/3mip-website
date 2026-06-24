@@ -55,7 +55,7 @@ const {
   bareTitle = false,
 } = Astro.props;
 
-const SITE_URL = Astro.site?.toString().replace(/\/$/, "") ?? "https://3mip.org";
+const SITE_URL = Astro.site?.toString().replace(/\/$/, "") ?? "https://3mip-project.com";
 const fullTitle = bareTitle ? title : `${title} — 3MIP`;
 const canonicalUrl = `${SITE_URL}${canonical ?? Astro.url.pathname}`;
 const ogImageUrl = ogImage ?? `${SITE_URL}/og-default.png`;

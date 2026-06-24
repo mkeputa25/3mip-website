@@ -23,7 +23,7 @@ const {
 
 // Auto-detect external if not explicitly set.
 const isAbsolute = /^https?:\/\//i.test(href);
-const isExternalGuess = isAbsolute && !href.startsWith("https://3mip.org");
+const isExternalGuess = isAbsolute && !href.startsWith("https://3mip-project.com");
 const variant: Variant = variantProp ?? (isExternalGuess || forceExternal ? "external" : "in-prose");
 
 const base = "transition-colors duration-150 ease-out " +

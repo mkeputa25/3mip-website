@@ -5,12 +5,13 @@ Bell sign-off (relayed by Mario, June 2026) resolved the § 1 table below:
 every decision now ships its stated default, the visible
 `[PENDING BELL APPROVAL]` tags are removed from the site, and leadership +
 coordinator photos are live (B3). Ishita Kashyap is removed from the
-project and the site. Three § 1 items remain genuinely open because their
-*content* doesn't exist yet: **B1 final domain** (configs keep the
-`3mip.org` placeholder until DNS day), **B4 operating-phase funders** (the
-About page truthfully says funding "has not been publicly announced"),
-and **B18 GitHub repository URL** (footer placeholder until the repo is
-public). § 2 items are factual and still need answers.
+project and the site. The domain is now confirmed: **B1** is resolved —
+configs use the production domain `3mip-project.com` (the apex is canonical;
+`www.` still needs a redirect configured in Vercel). Two § 1 items remain
+genuinely open because their *content* doesn't exist yet: **B4
+operating-phase funders** (the About page truthfully says funding "has not
+been publicly announced") and **B18 GitHub repository URL** (no public repo
+link is surfaced on the site). § 2 items are factual and still need answers.
 
 ---
 
@@ -18,7 +19,7 @@ public). § 2 items are factual and still need answers.
 
 | # | Decision | Where it shows | Default shipping meanwhile |
 |---|---|---|---|
-| B1 | Final domain | `astro.config.mjs`, `public/robots.txt`, citations | `3mip.org` placeholder |
+| B1 | Final domain | `astro.config.mjs`, `public/robots.txt`, citations | ✅ Resolved — `3mip-project.com` (apex canonical; configure `www.` redirect in Vercel) |
 | B2 | Institutional logos on Home | [index.astro](src/pages/index.astro) lineage strip | None shown |
 | B3 | Leadership headshots | [team.astro](src/pages/team.astro) | No photos rendered |
 | B4 | Operating-phase funder list | [about.astro](src/pages/about.astro) § Funding | "operating-phase funding pending" + NSF RCN status `[VERIFY current status]` |
