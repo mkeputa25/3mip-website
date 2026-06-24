@@ -6,7 +6,6 @@
  */
 import Base from "../layouts/Base.astro";
 import Link from "../components/Link.astro";
-import Button from "../components/Button.astro";
 import Callout from "../components/Callout.astro";
 import CitationBlock from "../components/CitationBlock.astro";
 import BangladeshMap from "../components/BangladeshMap.astro";
@@ -17,7 +16,7 @@ const jsonLd = {
   "@type": "ResearchProject",
   name: "3MIP Case 1: Coastal Bangladesh",
   description:
-    "3MIP's first benchmark case asks participating teams to project net internal migration in coastal Bangladesh districts from 2025 to 2050 using a curated input dataset.",
+    "3MIP's first benchmark case provides a single curated input dataset for coastal Bangladesh. Each participating team brings its own model architecture and research question; the project synthesizes the resulting divergence.",
   location: { "@type": "Place", name: "Coastal Bangladesh" },
   parentOrganization: { "@type": "Organization", name: "3MIP", alternateName: "Mobility and Migration Modeling Intercomparison Project" },
 };
@@ -116,18 +115,18 @@ const READING_LIST = [
 
 <Base
   title="Case 1: Coastal Bangladesh"
-  description="Coastal Bangladesh is 3MIP's first benchmark case. 175.7M people, sea-level rise, salinity, flood dynamics. Open dataset, shared protocol."
+  description="Coastal Bangladesh is 3MIP's first benchmark case. 175.7M people, sea-level rise, salinity, flood dynamics. One curated dataset; each team brings its own research question and model."
   jsonLd={jsonLd}
 >
   <article class="page">
     <header class="page__header">
       <h1>Case 1: Coastal Bangladesh</h1>
       <p class="lede">
-        Bangladesh's coastal districts face one of the most studied combinations
-        of climate stress and population pressure in the world. 3MIP's first
-        benchmark case asks participating modeling teams to project net
-        internal migration in these districts from 2025 to 2050 under shared
-        climate and socioeconomic scenarios, using shared input data.
+        Bangladesh's coastal zone faces one of the most studied combinations
+        of climate stress and population pressure in the world. For 3MIP's
+        first benchmark case, participating teams work from a single curated
+        dataset for coastal Bangladesh — each team choosing its own research
+        question, model architecture, key variables, and outputs.
       </p>
     </header>
 
@@ -170,21 +169,21 @@ const READING_LIST = [
     </section>
 
     <section class="reveal" aria-labelledby="q-h">
-      <h2 id="q-h">The shared question</h2>
-      <Callout variant="note" label="The shared question">
-        <strong>Net internal migration in coastal Bangladesh districts, 2025–2050,
-        under SSP2-4.5.</strong>
-        Each participating team applies their model to this question using the
-        curated input dataset. Teams may extend the analysis to SSP1-2.6 and
-        SSP5-8.5 as sensitivity scenarios, and to 2100 as a sensitivity time
-        horizon.
+      <h2 id="q-h">The benchmark design</h2>
+      <Callout variant="note" label="The benchmark design">
+        <strong>3MIP fixes the allowable data inputs — a single curated dataset
+        for coastal Bangladesh — and leaves everything downstream to each
+        team.</strong>
+        The research question, model design, key variables, dynamics, and
+        outputs are all at the modeler's discretion. Input data is held
+        constant; what each team asks of it, and how, is not.
       </Callout>
       <p>
-        Teams choose how to operationalize "migration" within their own model
+        Teams choose how to define and model migration within their own
         architecture. The intercomparison does not require harmonized output
-        variables; it requires harmonized inputs and a shared central question.
-        Where outputs diverge — and they will — the synthesis paper documents
-        the divergence and the methodological choices that drive it.
+        variables; it requires only harmonized inputs. Where outputs diverge —
+        and they will — the synthesis documents the divergence and the
+        methodological choices that drive it.
       </p>
     </section>
 
@@ -193,12 +192,12 @@ const READING_LIST = [
       <div class="geo">
         <div>
           <p>
-            The case focuses on districts in the Ganges-Brahmaputra-Meghna
-            delta and adjacent coastal areas. The exact district list is
-            specified in the protocol document and includes Khulna, Satkhira,
-            Bagerhat, Barguna, Patuakhali, Pirojpur, Bhola, Noakhali,
-            Chattogram, and adjacent inland districts that receive coastal
-            migrants.
+            The case centers on the Ganges-Brahmaputra-Meghna delta and
+            Bangladesh's low-lying coastal zone along the Bay of Bengal. The
+            curated dataset covers the country at the resolutions documented on
+            the Data page; 3MIP does not prescribe a fixed list of study
+            districts, so the spatial scope of any analysis is the team's own
+            choice.
           </p>
         </div>
         {/* The map mounts on the plate token (V8): a warm print on the wall. */}
@@ -247,16 +246,26 @@ const READING_LIST = [
       ))}
     </section>
 
-    <section class="reveal" aria-labelledby="proto-h">
-      <h2 id="proto-h">Protocol document</h2>
+    <section class="reveal" aria-labelledby="guide-h">
+      <h2 id="guide-h">Participation guidelines</h2>
       <p>
-        The 3MIP Bangladesh case protocol document specifies the shared
-        question, the curated dataset, the climate scenarios, the geographic
-        scope, and the output submission process. Registered participants
-        receive the latest version of the protocol.
+        3MIP runs on a small set of shared commitments rather than a formal
+        written protocol:
       </p>
+      <ul class="guidelines">
+        <li><strong>Register</strong> as a modeler or a domain expert.</li>
+        <li><strong>The data inputs are fixed.</strong> Every team works from
+          the same curated dataset for coastal Bangladesh.</li>
+        <li><strong>The research question is open.</strong> Model design, key
+          variables, dynamics, and outputs are each team's own choice.</li>
+        <li><strong>The dataset list can grow</strong> — but only when a new
+          dataset is made known and available to all teams.</li>
+        <li><strong>Regular meetings</strong> are held with times rotated across
+          time zones, so the inconvenience of out-of-hours meetings is shared.</li>
+        <li><strong>Code and findings are shared</strong> with the network.</li>
+      </ul>
       <p>
-        <Button href="/participate/">Request the protocol document</Button>
+        <Link href="/participate/" variant="in-prose">Register to take part</Link>.
       </p>
     </section>
   </article>
@@ -299,6 +308,15 @@ const READING_LIST = [
     }
   }
   .geo p { margin: 0; }
+
+  .guidelines {
+    margin: var(--space-3) 0 0;
+    padding-left: var(--space-4);
+    color: var(--color-ink-muted);
+    max-width: 65ch;
+  }
+  .guidelines li { margin-bottom: var(--space-2); padding-left: var(--space-1); }
+  .guidelines li strong { color: var(--color-ink); }
 
   .verify {
     color: var(--color-accent-deep);

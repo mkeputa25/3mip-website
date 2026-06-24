@@ -244,9 +244,9 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
   <div class="sigviz__head">
     <div>
       <p class="eyebrow sigviz__fig">Fig. 01</p>
-      <p class="sigviz__title">Six architectures, one question</p>
+      <p class="sigviz__title">Six architectures, one dataset</p>
       <p class="sigviz__question">
-        Net internal migration, coastal Bangladesh, 2025–2050, SSP2-4.5
+        The same curated dataset for coastal Bangladesh, rendered six ways
       </p>
     </div>
     <div class="sigviz__head-tools">
@@ -262,7 +262,7 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
     </div>
   </div>
 
-  <div class="sigviz__grid" role="group" aria-label="Six model architectures applied to the same question.">
+  <div class="sigviz__grid" role="group" aria-label="Six model architectures applied to the same curated dataset.">
     {PANELS.map((panel) => (
       <div class="sigviz__panel">
         <p class="sigviz__panel-title">
@@ -275,7 +275,7 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
           aria-labelledby={`${idBase}-t-${panel.id} ${idBase}-d-${panel.id}`}
           class="sigviz__svg"
         >
-          <title id={`${idBase}-t-${panel.id}`}>{panel.title} architecture, same question.</title>
+          <title id={`${idBase}-t-${panel.id}`}>{panel.title} architecture, same curated dataset.</title>
           <desc id={`${idBase}-d-${panel.id}`}>{panel.desc}</desc>
 
           <defs>
@@ -479,7 +479,7 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
       <span class="sigviz__scale-bar" aria-hidden="true"></span>
       <span>≈ 100 km</span>
     </div>
-    <span class="sigviz__scenario">SSP2-4.5</span>
+    <span class="sigviz__scenario">Shared inputs</span>
   </div>
 
   <!-- Simulation-time readout: labels the loop, 2025 → 2050. A progress
@@ -496,11 +496,13 @@ const BOTTOM_ROW_IDS = new Set(["iam", "ml", "cellular"]);
   </div>
 
   <figcaption class="sigviz__attribution">
-    <em>Illustrative.</em> Synthetic geometry tuned to show the spatial
-    grammar each architecture tends to produce; 3MIP's purpose is to make
-    this divergence legible across real participating teams. Archetype
-    lineages: Bell et al. 2019; Simini et al. 2012; Stouffer 1940; Rigaud
-    et al. 2018; ISIMIP3 protocol; Schiavina et al. 2019.
+    <em>Illustrative.</em> The same curated dataset, analysed by different
+    model architectures — agent-based, gravity, radiation,
+    integrated-assessment, machine-learning, and cellular-automaton
+    approaches. 3MIP holds the data inputs constant and makes the resulting
+    divergence legible. Archetype lineages: Bell et al. 2019; Simini et al.
+    2012; Stouffer 1940; Rigaud et al. 2018; ISIMIP3 protocol; Schiavina et
+    al. 2019.
   </figcaption>
 </figure>
 
