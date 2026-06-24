@@ -14,6 +14,7 @@
  */
 import Base from "../../layouts/Base.astro";
 import NewsListItem from "../../components/NewsListItem.astro";
+import "../../styles/editorial.css";
 import { getCollection } from "astro:content";
 
 const entries = (await getCollection("news")).sort(
@@ -44,8 +45,8 @@ const jsonLd = {
   description="Recent news from 3MIP: project updates, webinar announcements, publication releases, and conference participation."
   jsonLd={entries.length > 0 ? jsonLd : undefined}
 >
-  <article class="page">
-    <header class="page__header">
+  <article class="page page-editorial">
+    <header class="page__header editorial-band editorial-band--teal">
       <h1>News</h1>
       <p class="lede">
         Updates from 3MIP. Subscribe to the

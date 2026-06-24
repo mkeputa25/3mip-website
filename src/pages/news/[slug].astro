@@ -12,6 +12,7 @@
  */
 import { getCollection, render, type CollectionEntry } from "astro:content";
 import Base from "../../layouts/Base.astro";
+import "../../styles/editorial.css";
 
 export async function getStaticPaths() {
   const entries = await getCollection("news");
@@ -45,7 +46,7 @@ const jsonLd = {
 ---
 
 <Base title={entry.data.title} description={entry.data.excerpt} jsonLd={jsonLd}>
-  <article class="post">
+  <article class="post page-editorial">
     <p class="post__back"><a href="/news/">← All news</a></p>
     <time datetime={entry.data.date.toISOString().slice(0, 10)} class="post__date">
       {longDate(entry.data.date)}

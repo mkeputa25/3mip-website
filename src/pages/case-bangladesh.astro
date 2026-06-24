@@ -10,6 +10,7 @@ import Callout from "../components/Callout.astro";
 import CitationBlock from "../components/CitationBlock.astro";
 import BangladeshMap from "../components/BangladeshMap.astro";
 import TimelineList from "../components/TimelineList.astro";
+import "../styles/editorial.css";
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -119,7 +120,7 @@ const READING_LIST = [
   description="Coastal Bangladesh is 3MIP's first benchmark case. 175.7M people, sea-level rise, salinity, flood dynamics. One curated dataset; each team brings its own research question and model."
   jsonLd={jsonLd}
 >
-  <article class="page">
+  <article class="page page-editorial">
     <header class="page__header">
       <h1>Case 1: Coastal Bangladesh</h1>
       <p class="lede">
@@ -208,7 +209,7 @@ const READING_LIST = [
       </div>
     </section>
 
-    <section class="reveal" aria-labelledby="data-h">
+    <section class="reveal editorial-band editorial-band--teal" aria-labelledby="data-h">
       <h2 id="data-h">Curated input dataset</h2>
       <p>
         3MIP curates 16 datasets for the case — population and socioeconomic,

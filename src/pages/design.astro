@@ -170,6 +170,33 @@ const RAMP = ["#F5EFE4", "#E8B98A", "#D08A6E", "#B85A35", "#8E3A22", "#6B1F1F"] 
           {RAMP.map((hex) => <span>{hex.slice(1)}</span>)}
         </div>
         <p class="note" style="margin-top: var(--space-2);">No blue in any figure.</p>
+
+        <h3 style="margin-top: var(--space-6);">Editorial palette — News, About, Case only</h3>
+        <p class="note" style="margin-top: var(--space-2);">
+          A scoped second palette (tokens in <code>src/styles/editorial.css</code>,
+          gated by <code>.page-editorial</code>) lifts the three reading pages,
+          while Data, Participate, and Team keep the restrained base system and
+          never receive these tokens. Body text on the editorial pages stays ink
+          or teal; the warm hues are banding, borders, chips, and large/graphical
+          elements only.
+        </p>
+        <div class="swatch-grid" style="margin-top: var(--space-3);">
+          <ColorSwatch name="accent-teal" hex="#016C59" pairedWith={LIGHT.background} pairedName="white" kind="body" />
+          <ColorSwatch name="accent-teal" hex="#016C59" pairedWith={LIGHT.plate} pairedName="plate" kind="body" />
+          <ColorSwatch name="band-teal" hex="#EAF1EF" pairedWith={LIGHT.ink} pairedName="ink text" kind="body" />
+          <ColorSwatch name="band-ochre" hex="#F6EEDD" pairedWith={LIGHT.ink} pairedName="ink text" kind="body" />
+          <ColorSwatch name="band-sage" hex="#EEF0E9" pairedWith={LIGHT.ink} pairedName="ink text" kind="body" />
+          <ColorSwatch name="band-parch-deep" hex="#EFE6D6" pairedWith={LIGHT.ink} pairedName="ink text" kind="body" />
+        </div>
+        <p class="annotation" style="margin-top: var(--space-3);">
+          Measured pairs in use — ink #1A1612 on band-teal 15.70:1, band-ochre
+          15.58:1, band-sage 15.66:1, parchment-deep 14.53:1 (all AAA). Teal
+          #016C59 as text: white 6.38:1, parchment 5.58:1, every band tint
+          ≥5.1:1 (AA). The remaining hues are banding/border/chip/large only and
+          never body text: ochre #DFC27D 1.73:1, sage #A0A088 2.67:1, terracotta
+          #B85A35 4.61:1 on white — at or below the AA body threshold, so held to
+          large-text/graphical use (V8).
+        </p>
       </section>
 
       <!-- 2. Fraunces axis specimens -->

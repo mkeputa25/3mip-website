@@ -6,6 +6,7 @@
  */
 import Base from "../layouts/Base.astro";
 import Link from "../components/Link.astro";
+import "../styles/editorial.css";
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -26,7 +27,7 @@ const jsonLd = {
   description="3MIP grew out of a 2024 Princeton workshop. Co-leads at Cornell, Ohio State, and VU Amsterdam. Advisory committee includes Oppenheimer, de Sherbinin, and Aerts."
   jsonLd={jsonLd}
 >
-  <article class="page">
+  <article class="page page-editorial">
     <header class="page__header">
       <h1>About 3MIP</h1>
       <p class="lede">
@@ -132,7 +133,7 @@ const jsonLd = {
       </div>
     </section>
 
-    <section class="reveal" aria-labelledby="fund-h">
+    <section class="reveal editorial-band editorial-band--parchment-deep" aria-labelledby="fund-h">
       <h2 id="fund-h">Funding</h2>
       <p>
         3MIP's founding workshop in September 2024 was funded by the

@@ -1,0 +1,57 @@
+/*
+ * Editorial palette — scoped to .page-editorial (News, About, Case-Bangladesh).
+ *
+ * Imported ONLY by those three pages, so Data / Participate / Team never
+ * receive these tokens. (Verify: grep their built HTML for the hexes → 0.)
+ * The base system — white, parchment plate #F5EFE4, terracotta #B85A35,
+ * ink-brown #1A1612 — is untouched and lives in global.css.
+ *
+ * WCAG (non-negotiable). Body text on these pages uses ONLY:
+ *   - ink-brown #1A1612 — 14.5–18:1 on white, parchment, and every band tint
+ *   - accent-teal #016C59 — 5.1–6.4:1 on the same grounds (AA on all)
+ * The ochre, sage, and terracotta hues FAIL AA for body text and appear ONLY
+ * as banding, borders, chips, or large/graphical elements. Measured ratios for
+ * every pair actually used are documented on /design § Editorial palette.
+ *
+ * Stage 5B extends the band utilities below into the full-bleed alternating
+ * rhythm; Stage 4 establishes the tokens, the scope, and a restrained first use.
+ */
+.page-editorial {
+  --accent-teal: #016c59;
+  --accent-ochre: #dfc27d;
+  --accent-sage: #a0a088;
+  --band-parchment-deep: #efe6d6;
+  --band-teal: #eaf1ef;
+  --band-ochre: #f6eedd;
+  --band-sage: #eef0e9;
+}
+
+/* Section banding — a tinted block. Background only; text stays ink/teal so AA
+   always holds. Stage 5B promotes selected bands to full-bleed. */
+.page-editorial .editorial-band {
+  background: var(--band-parchment-deep);
+  padding: var(--space-5);
+  border-radius: var(--radius);
+}
+.page-editorial .editorial-band--teal { background: var(--band-teal); }
+.page-editorial .editorial-band--ochre { background: var(--band-ochre); }
+.page-editorial .editorial-band--sage { background: var(--band-sage); }
+.page-editorial .editorial-band--parchment-deep { background: var(--band-parchment-deep); }
+
+/* Section kicker — teal eyebrow (teal is AA-safe as text). Used from Stage 5A. */
+.page-editorial .editorial-kicker {
+  font-family: var(--font-sans);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  color: var(--accent-teal);
+  margin: 0 0 var(--space-2);
+}
+
+/* Editorial hairline — a teal rule for section boundaries (graphical only). */
+.page-editorial .editorial-rule {
+  border: 0;
+  border-top: 1px solid var(--accent-teal);
+  opacity: 0.35;
+  margin: var(--space-6) 0;
+}
