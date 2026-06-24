@@ -13,6 +13,7 @@ import ContourField from "../components/ContourField.astro";
 import TimelineList from "../components/TimelineList.astro";
 import DataCategoryCard from "../components/DataCategoryCard.astro";
 import ModelArchetypeCard from "../components/ModelArchetypeCard.astro";
+import DataGlanceBar from "../components/DataGlanceBar.astro";
 import "../styles/editorial.css";
 
 // The 16 datasets group into three families, each with a fixed color identity
@@ -271,6 +272,7 @@ const READING_LIST = [
         known and available to all teams; contact project coordination to
         request the inclusion of an additional dataset.
       </p>
+      <DataGlanceBar segments={DATA_FAMILIES.map((f) => ({ label: f.name, count: f.count, color: f.color }))} />
       <div class="data-families">
         {DATA_FAMILIES.map((f) => (
           <DataCategoryCard

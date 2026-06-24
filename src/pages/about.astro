@@ -6,7 +6,14 @@
  */
 import Base from "../layouts/Base.astro";
 import Link from "../components/Link.astro";
+import MilestoneCard from "../components/MilestoneCard.astro";
 import "../styles/editorial.css";
+
+const MILESTONES = [
+  { year: "2024", title: "Founded at Princeton C-PREE", description: "A workshop (September 25–27, 2024) launches the intercomparison." },
+  { year: "2025", title: "3MIP launches", description: "Registration opens in October; the first participant webinar follows in November." },
+  { year: "2026", title: "First synthesis at iEMSs Dublin", description: "Session C7 and Workshop WSC7 present the first public synthesis (July 12–16)." },
+];
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -66,9 +73,43 @@ const jsonLd = {
       </p>
     </section>
 
+    <section class="reveal" aria-labelledby="timeline-h">
+      <p class="kicker">Timeline</p>
+      <h2 id="timeline-h">From workshop to synthesis</h2>
+      <ol class="timeline">
+        {MILESTONES.map((m) => (
+          <MilestoneCard year={m.year} title={m.title} description={m.description} />
+        ))}
+      </ol>
+    </section>
+
     <section class="reveal editorial-band editorial-band--parchment" aria-labelledby="lineage-h">
       <p class="kicker">Lineage</p>
       <h2 id="lineage-h">AgMIP, ISIMIP, and 3MIP</h2>
+      <figure class="lineage">
+        <svg viewBox="0 0 320 96" role="img" aria-label="Lineage: AgMIP (2010) and ISIMIP (2012) precede 3MIP (2025).">
+          <line x1="50" y1="38" x2="270" y2="38" stroke="var(--color-border-strong)" stroke-width="1.5" />
+          <g>
+            <circle cx="50" cy="38" r="15" fill="var(--accent-teal)" fill-opacity="0.16" stroke="var(--accent-teal)" stroke-width="1.5" />
+            <text x="50" y="42" text-anchor="middle" class="lineage__yr">2010</text>
+            <text x="50" y="72" text-anchor="middle" class="lineage__nm">AgMIP</text>
+          </g>
+          <g>
+            <circle cx="160" cy="38" r="15" fill="var(--accent-ochre)" fill-opacity="0.34" stroke="var(--accent-ochre)" stroke-width="1.5" />
+            <text x="160" y="42" text-anchor="middle" class="lineage__yr">2012</text>
+            <text x="160" y="72" text-anchor="middle" class="lineage__nm">ISIMIP</text>
+          </g>
+          <g>
+            <circle cx="270" cy="38" r="17" fill="var(--color-accent)" fill-opacity="0.18" stroke="var(--color-accent)" stroke-width="2" />
+            <text x="270" y="42" text-anchor="middle" class="lineage__yr">2025</text>
+            <text x="270" y="72" text-anchor="middle" class="lineage__nm">3MIP</text>
+          </g>
+        </svg>
+        <figcaption class="lineage__cap">
+          Lineage, not endorsement: 3MIP follows the model-intercomparison
+          pattern AgMIP and ISIMIP established.
+        </figcaption>
+      </figure>
       <p>
         3MIP is modeled on two long-running model intercomparison projects:
         AgMIP (Agricultural Model Intercomparison and Improvement Project),
@@ -239,4 +280,25 @@ const jsonLd = {
     color: var(--color-ink-muted);
   }
   .isnot li { padding-block: var(--space-1); max-width: 32ch; }
+
+  /* 5F · AgMIP/ISIMIP lineage diagram */
+  .lineage { margin: var(--space-4) 0; max-width: 22rem; }
+  .lineage svg { width: 100%; height: auto; display: block; overflow: visible; }
+  .lineage__yr { font-family: var(--font-mono); font-size: 9px; fill: var(--color-ink); }
+  .lineage__nm { font-family: var(--font-serif); font-size: 13px; fill: var(--color-ink); }
+  .lineage__cap {
+    margin-top: var(--space-2);
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
+    color: var(--color-ink-muted);
+    max-width: 40ch;
+  }
+
+  /* 5F · About timeline — teal spine, terracotta nodes (from MilestoneCard) */
+  .timeline {
+    list-style: none;
+    margin: var(--space-5) 0 0;
+    padding: 0;
+    border-left: 2px solid var(--accent-teal);
+  }
 </style>
