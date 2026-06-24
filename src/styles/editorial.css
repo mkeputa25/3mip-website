@@ -142,12 +142,14 @@
   letter-spacing: 0.01em;
 }
 
-/* Oversized year numeral — the About timeline spine (Stage 5F). */
+/* Oversized year numeral — the About timeline spine (Stage 5F). The numeral's
+   grid column is sized to its content (MilestoneCard) so it never overlaps the
+   milestone text. */
 .page-editorial .year-numeral {
   font-family: var(--font-serif);
   font-variation-settings: var(--fraunces-display);
   font-weight: 500;
-  font-size: clamp(3rem, 7vw, 5rem);
+  font-size: clamp(2.5rem, 5vw, 3.5rem);
   line-height: 0.9;
   color: var(--accent-teal);
   letter-spacing: -0.02em;

@@ -27,11 +27,13 @@ const { year, title, description } = Astro.props;
   .milestone {
     position: relative;
     display: grid;
-    grid-template-columns: minmax(4.5rem, 6rem) 1fr;
+    /* The year column auto-fits the numeral so it can never overlap the body. */
+    grid-template-columns: max-content minmax(0, 1fr);
     gap: var(--space-4);
     align-items: start;
     padding: var(--space-4) 0 var(--space-4) var(--space-4);
   }
+  .milestone__year { overflow: visible; white-space: nowrap; }
   /* Terracotta node dot, centered on the spine the .timeline draws. */
   .milestone__node {
     position: absolute;
