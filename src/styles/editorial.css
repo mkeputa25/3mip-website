@@ -55,3 +55,114 @@
   opacity: 0.35;
   margin: var(--space-6) 0;
 }
+
+/* ── 5A · Editorial typographic system ──────────────────────────────────
+   Two display steps above h1, oversized structural numerals, a pull-quote,
+   a drop cap, and teal section kickers. Fraunces axes mirror global.css. */
+
+/* The page opener on every editorial page is display-xl. */
+.page-editorial .page__header h1,
+.page-editorial .display-xl {
+  font-family: var(--font-serif);
+  font-variation-settings: var(--fraunces-display);
+  font-weight: 500;
+  font-size: clamp(3.5rem, 8vw, 5rem);
+  line-height: 1.02;
+  letter-spacing: -0.015em;
+  margin: 0;
+}
+.page-editorial .display-lg {
+  font-family: var(--font-serif);
+  font-variation-settings: "opsz" 72, "SOFT" 50, "WONK" 1;
+  font-weight: 500;
+  font-size: clamp(2.5rem, 6vw, 3.5rem);
+  line-height: 1.05;
+  letter-spacing: -0.01em;
+  margin: 0;
+}
+
+/* Teal section kicker — a letterspaced eyebrow above a heading. */
+.page-editorial .kicker {
+  display: block;
+  font-family: var(--font-sans);
+  font-size: var(--text-caption);
+  font-weight: 500;
+  letter-spacing: var(--tracking-label);
+  color: var(--accent-teal);
+  margin: 0 0 var(--space-2);
+}
+
+/* Drop cap — opening paragraph of About and Case, Fraunces, terracotta. */
+.page-editorial .dropcap::first-letter {
+  font-family: var(--font-serif);
+  font-variation-settings: var(--fraunces-display);
+  float: left;
+  font-size: 3.4em;
+  line-height: 0.82;
+  padding: 0.04em 0.12em 0 0;
+  color: var(--color-accent);
+  font-weight: 500;
+}
+
+/* Pull-quote — large Fraunces italic, hanging teal quote mark, 28ch measure. */
+.page-editorial .pullquote {
+  position: relative;
+  margin: var(--space-6) 0;
+  padding-left: var(--space-5);
+  max-width: 28ch;
+  font-family: var(--font-serif);
+  font-style: italic;
+  font-weight: 400;
+  font-size: clamp(1.5rem, 3.2vw, 2rem);
+  line-height: 1.28;
+  color: var(--color-ink);
+}
+.page-editorial .pullquote::before {
+  content: "\201C";
+  position: absolute;
+  left: -0.06em;
+  top: 0.08em;
+  font-size: 2.6em;
+  line-height: 1;
+  color: var(--accent-teal);
+  font-family: var(--font-serif);
+}
+.page-editorial .pullquote cite {
+  display: block;
+  margin-top: var(--space-3);
+  font-family: var(--font-sans);
+  font-style: normal;
+  font-size: var(--text-small);
+  color: var(--color-ink-muted);
+  letter-spacing: 0.01em;
+}
+
+/* Oversized year numeral — the About timeline spine (Stage 5F). */
+.page-editorial .year-numeral {
+  font-family: var(--font-serif);
+  font-variation-settings: var(--fraunces-display);
+  font-weight: 500;
+  font-size: clamp(3rem, 7vw, 5rem);
+  line-height: 0.9;
+  color: var(--accent-teal);
+  letter-spacing: -0.02em;
+}
+
+/* Pull-stat — a single oversized datum with a Geist label (Case hero, 5D). */
+.page-editorial .pull-stat {
+  font-family: var(--font-serif);
+  font-variation-settings: var(--fraunces-display);
+  font-weight: 500;
+  font-size: clamp(3.5rem, 8vw, 5rem);
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--color-ink);
+}
+.page-editorial .pull-stat__label {
+  display: block;
+  margin-top: var(--space-2);
+  font-family: var(--font-sans);
+  font-size: var(--text-small);
+  color: var(--color-ink-muted);
+  letter-spacing: 0.01em;
+}
