@@ -1,0 +1,67 @@
+---
+/**
+ * DeltaMap — the Case 1 hero map of the Ganges–Brahmaputra–Meghna delta.
+ *
+ * Built as a STYLIZED vector map in the shared bangladesh-outline coordinate
+ * space (so the hero and the signature-viz silhouette never diverge), styled
+ * in the palette: parchment land floating on the band-teal hero (the Bay of
+ * Bengal is the hero band showing through the transparent SVG), the three major
+ * rivers as teal hairlines weighted by stream order, and a 0.6pt ink coastline.
+ *
+ * Provenance note (deliberate): this is generated abstract SVG, NOT traced from
+ * Natural Earth vector data, so it carries no "Natural Earth" credit — putting a
+ * data credit on hand-drawn geometry would be a false attribution, which a site
+ * whose premise is non-fabrication must not do. It is captioned as a stylized
+ * schematic. A true Natural Earth 1:10m import is a tracked follow-up.
+ *
+ * Physical geography only: NO district boundaries and NO labeled study-scope
+ * points (the official record specifies no study scope).
+ */
+import { BANGLADESH_PATH } from "../lib/bangladesh-outline";
+
+interface Props {
+  class?: string;
+}
+const { class: className = "" } = Astro.props;
+
+// The three major rivers of the GBM delta, schematic, in the 240×180 space,
+// weighted by stream order (the combined Padma trunk reads as the main channel).
+const RIVERS = [
+  { d: "M 30 58 Q 70 92 116 112", w: 1.5 },             // Ganges, from the NW
+  { d: "M 146 30 Q 126 70 118 110", w: 1.8 },           // Brahmaputra / Jamuna, from the N
+  { d: "M 222 62 Q 190 96 168 124 Q 156 142 150 170", w: 1.6 }, // Meghna, from the NE
+  { d: "M 116 112 Q 132 138 146 172", w: 2.4 },         // combined Padma trunk to the mouth
+];
+---
+
+<figure class={`delta ${className}`}>
+  <svg viewBox="0 0 240 190" role="img" aria-labelledby="delta-t delta-d" class="delta__svg">
+    <title id="delta-t">The Ganges–Brahmaputra–Meghna delta, coastal Bangladesh.</title>
+    <desc id="delta-d">
+      A stylized vector map: parchment land over the teal Bay of Bengal, with the
+      three major rivers — the Ganges (Padma), Brahmaputra (Jamuna), and Meghna —
+      converging through the delta to the coast. Physical geography only; no
+      district boundaries or study-scope points. Not to scale.
+    </desc>
+
+    <defs>
+      <clipPath id="delta-land"><path d={BANGLADESH_PATH} /></clipPath>
+    </defs>
+
+    {/* Land — parchment shape; the band-teal hero behind shows through as sea. */}
+    <path d={BANGLADESH_PATH} fill="var(--color-plate)" stroke="none" />
+
+    {/* Rivers — teal hairlines, clipped to land, weighted by stream order. */}
+    <g clip-path="url(#delta-land)" fill="none" stroke="var(--accent-teal)" stroke-linecap="round">
+      {RIVERS.map((r) => <path d={r.d} stroke-width={r.w} opacity="0.85" />)}
+    </g>
+
+    {/* Coastline on top (0.6pt ink). Real silhouette, never bleeds. */}
+    <path d={BANGLADESH_PATH} fill="none" stroke="var(--color-ink)" stroke-width="0.6" stroke-linejoin="round" />
+  </svg>
+</figure>
+
+<style>
+  .delta { margin: 0; }
+  .delta__svg { width: 100%; height: auto; display: block; }
+</style>

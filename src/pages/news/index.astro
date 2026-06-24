@@ -14,6 +14,7 @@
  */
 import Base from "../../layouts/Base.astro";
 import NewsListItem from "../../components/NewsListItem.astro";
+import ContourField from "../../components/ContourField.astro";
 import "../../styles/editorial.css";
 import { getCollection } from "astro:content";
 
@@ -46,7 +47,10 @@ const jsonLd = {
   jsonLd={entries.length > 0 ? jsonLd : undefined}
 >
   <article class="page page-editorial">
-    <header class="page__header editorial-band editorial-band--teal">
+    <header class="page__header editorial-band editorial-band--teal news-masthead">
+      <span class="news-masthead__contour" aria-hidden="true">
+        <ContourField color="var(--accent-teal)" seed={11} opacity={0.14} lines={6} />
+      </span>
       <h1>News</h1>
       <p class="lede">
         Updates from 3MIP. Subscribe to the
@@ -83,6 +87,14 @@ const jsonLd = {
   @media (min-width: 768px) { .page { padding: var(--space-8) var(--space-5); } }
   .page__header { margin-bottom: var(--space-5); }
   .page__header h1 { margin: 0; }
+  .news-masthead { position: relative; overflow: hidden; }
+  .news-masthead__contour {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+  }
+  .news-masthead h1, .news-masthead .lede { position: relative; z-index: 1; }
   .lede {
     font-size: var(--text-body-lg);
     color: var(--color-ink-muted);

@@ -8,7 +8,8 @@ import Base from "../layouts/Base.astro";
 import Link from "../components/Link.astro";
 import Callout from "../components/Callout.astro";
 import CitationBlock from "../components/CitationBlock.astro";
-import BangladeshMap from "../components/BangladeshMap.astro";
+import DeltaMap from "../components/DeltaMap.astro";
+import ContourField from "../components/ContourField.astro";
 import TimelineList from "../components/TimelineList.astro";
 import DataCategoryCard from "../components/DataCategoryCard.astro";
 import ModelArchetypeCard from "../components/ModelArchetypeCard.astro";
@@ -141,8 +142,24 @@ const READING_LIST = [
   jsonLd={jsonLd}
 >
   <article class="page page-editorial">
-    <header class="page__header">
-      <h1>Case 1: Coastal Bangladesh</h1>
+    <section class="case-hero editorial-band editorial-band--teal" aria-labelledby="case-h">
+      <div class="case-hero__grid">
+        <div class="case-hero__text">
+          <p class="kicker">Case 1</p>
+          <h1 id="case-h" class="display-xl">Coastal Bangladesh</h1>
+          <p class="pull-stat">175.7M<span class="pull-stat__label">people in the delta (UNFPA, 2025)</span></p>
+        </div>
+        <figure class="case-hero__fig">
+          <span class="case-hero__contour" aria-hidden="true">
+            <ContourField color="var(--accent-teal)" seed={3} opacity={0.16} lines={7} />
+          </span>
+          <DeltaMap class="case-hero__map" />
+          <figcaption class="case-hero__cap">
+            Stylized schematic of the Ganges–Brahmaputra–Meghna delta —
+            physical geography only, not to scale and not an official study scope.
+          </figcaption>
+        </figure>
+      </div>
       <p class="lede">
         Bangladesh's coastal zone faces one of the most studied combinations
         of climate stress and population pressure in the world. For 3MIP's
@@ -150,7 +167,7 @@ const READING_LIST = [
         dataset for coastal Bangladesh — each team choosing its own research
         question, model architecture, key variables, and outputs.
       </p>
-    </header>
+    </section>
 
     <section class="reveal" aria-labelledby="why-h">
       <p class="kicker">Why Bangladesh</p>
@@ -234,22 +251,14 @@ const READING_LIST = [
 
     <section class="reveal" aria-labelledby="geo-h">
       <h2 id="geo-h">Geographic scope</h2>
-      <div class="geo">
-        <div>
-          <p>
-            The case centers on the Ganges-Brahmaputra-Meghna delta and
-            Bangladesh's low-lying coastal zone along the Bay of Bengal. The
-            curated dataset covers the country at the resolutions documented on
-            the Data page; 3MIP does not prescribe a fixed list of study
-            districts, so the spatial scope of any analysis is the team's own
-            choice.
-          </p>
-        </div>
-        {/* The map mounts on the plate token (V8): a warm print on the wall. */}
-        <div class="plate">
-          <BangladeshMap />
-        </div>
-      </div>
+      <p>
+        The case centers on the Ganges-Brahmaputra-Meghna delta and
+        Bangladesh's low-lying coastal zone along the Bay of Bengal (mapped in
+        the hero above). The curated dataset covers the country at the
+        resolutions documented on the Data page; 3MIP does not prescribe a
+        fixed list of study districts, so the spatial scope of any analysis is
+        the team's own choice.
+      </p>
     </section>
 
     <section class="reveal editorial-band editorial-band--teal" aria-labelledby="data-h">
@@ -348,6 +357,34 @@ const READING_LIST = [
     max-width: 60ch;
   }
   .page section { margin-top: var(--space-7); }
+
+  /* 5D · Case delta-map hero */
+  .page section.case-hero { margin-top: 0; }
+  .case-hero__grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-5);
+    align-items: center;
+  }
+  @media (min-width: 760px) {
+    .case-hero__grid { grid-template-columns: 1.05fr 0.95fr; gap: var(--space-6); }
+  }
+  .case-hero__text .kicker { margin-bottom: var(--space-2); }
+  .case-hero .pull-stat { margin-top: var(--space-4); }
+  .case-hero .lede { margin-top: var(--space-5); max-width: 65ch; }
+  .case-hero__fig { position: relative; margin: 0; order: -1; }
+  @media (min-width: 760px) { .case-hero__fig { order: 0; } }
+  .case-hero__contour { position: absolute; inset: -6% -4%; z-index: 0; pointer-events: none; }
+  .case-hero__map { position: relative; z-index: 1; }
+  .case-hero__cap {
+    position: relative;
+    z-index: 1;
+    margin-top: var(--space-2);
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
+    color: var(--color-ink-muted);
+    max-width: 42ch;
+  }
   .page h2 { margin: 0 0 var(--space-3); }
   .page p { margin: 0 0 var(--space-3); max-width: 65ch; }
   .page p:last-child { margin-bottom: 0; }
