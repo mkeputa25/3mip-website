@@ -1,55 +1,110 @@
 ---
 /**
- * NewsListItem — one entry in the reverse-chronological News list.
+ * NewsListItem — one entry on the News list, with category color-coding.
  *
- * Per docs/CONTENT-INVENTORY.md § News § Section 2: date (long format),
- * title (linked only if a full post exists), 2–3 sentence excerpt, tags.
+ * COLOR ENCODES MEANING: the 2px top border, the generative thumbnail motif,
+ * and the chip dot all carry the item's category color (Publications=terracotta,
+ * Data=teal, Events=ochre, Community=sage). The category LABEL stays ink so it's
+ * always readable — color is never the only signal. The thumbnail is a
+ * deterministic ContourField seeded from the slug (same input → same motif every
+ * build); no photography. The page itself stays white so the color rides the
+ * chips, borders, and thumbnails.
  */
+import ContourField from "./ContourField.astro";
+
 interface Props {
   title: string;
-  /** ISO date for <time>. */
   date: string;
-  /** Long display date, e.g. "October 2025". */
   dateLabel: string;
   excerpt: string;
   tags?: string[];
-  /** Permalink to the full post, only set when fullPost is true. */
   href?: string;
+  /** Category label (e.g. "Event"). */
+  category: string;
+  /** Category color as a CSS value (e.g. var(--accent-ochre)). */
+  categoryColor: string;
+  /** Deterministic thumbnail seed — the entry slug. */
+  seed: string;
 }
-
-const { title, date, dateLabel, excerpt, tags = [], href }: Props = Astro.props;
+const { title, date, dateLabel, excerpt, tags = [], href, category, categoryColor, seed }: Props = Astro.props;
 ---
 
-<article class="news-item">
-  <time datetime={date} class="news-item__date">{dateLabel}</time>
-  <h2 class="news-item__title">
-    {href ? <a href={href}>{title}</a> : title}
-  </h2>
-  <p class="news-item__excerpt">{excerpt}</p>
-  {tags.length > 0 && (
-    <ul class="news-item__tags" aria-label="Tags">
-      {tags.map((t) => <li>{t}</li>)}
-    </ul>
-  )}
+<article class="news-item" style={`--cat:${categoryColor}`}>
+  <div class="news-item__thumb" aria-hidden="true">
+    <ContourField color={categoryColor} seed={seed} opacity={0.55} lines={5} />
+  </div>
+  <div class="news-item__body">
+    <div class="news-item__meta">
+      <time datetime={date} class="news-item__date">{dateLabel}</time>
+      <span class="news-item__cat"><span class="news-item__dot"></span>{category}</span>
+    </div>
+    <h2 class="news-item__title">
+      {href ? <a href={href}>{title}</a> : title}
+    </h2>
+    <p class="news-item__excerpt">{excerpt}</p>
+    {tags.length > 0 && (
+      <ul class="news-item__tags" aria-label="Tags">
+        {tags.map((t) => <li>{t}</li>)}
+      </ul>
+    )}
+  </div>
 </article>
 
 <style>
   .news-item {
-    padding: var(--space-5) 0;
-    border-top: 1px solid var(--color-border);
-    max-width: 65ch;
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    padding: var(--space-4) 0 var(--space-5);
+    border-top: 2px solid var(--cat);
   }
-  .news-item:first-of-type { border-top: 0; }
+  @media (min-width: 560px) {
+    .news-item { grid-template-columns: 7rem 1fr; gap: var(--space-4); }
+  }
+  /* Generative thumbnail — category-colored contour motif on parchment. */
+  .news-item__thumb {
+    aspect-ratio: 1 / 1;
+    max-width: 7rem;
+    background: var(--color-plate);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .news-item__body { min-width: 0; max-width: 65ch; }
+  .news-item__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+  }
   .news-item__date {
-    font-size: var(--text-small);
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
     color: var(--color-ink-muted);
+    letter-spacing: 0.02em;
+  }
+  /* Chip: category-color dot + ink label (label always readable). */
+  .news-item__cat {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4em;
+    font-family: var(--font-sans);
+    font-size: var(--text-caption);
     font-weight: 500;
+    letter-spacing: var(--tracking-label);
+    color: var(--color-ink-muted);
+  }
+  .news-item__dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--cat);
   }
   .news-item__title {
     font-family: var(--font-serif);
     font-size: var(--text-h3);
     font-weight: 600;
-    margin: var(--space-2) 0 var(--space-2);
+    margin: var(--space-2) 0;
   }
   .news-item__title a {
     color: var(--color-ink);
@@ -61,13 +116,8 @@ const { title, date, dateLabel, excerpt, tags = [], href }: Props = Astro.props;
     transition: background-size 150ms var(--ease-out);
   }
   .news-item__title a:hover,
-  .news-item__title a:focus-visible {
-    background-size: 100% 1px;
-  }
-  .news-item__excerpt {
-    margin: 0;
-    color: var(--color-ink-muted);
-  }
+  .news-item__title a:focus-visible { background-size: 100% 1px; }
+  .news-item__excerpt { margin: 0; color: var(--color-ink-muted); }
   .news-item__tags {
     list-style: none;
     margin: var(--space-3) 0 0;

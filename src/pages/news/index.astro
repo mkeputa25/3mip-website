@@ -26,6 +26,17 @@ function longDate(d: Date): string {
   return d.toLocaleDateString("en-US", { year: "numeric", month: "long", timeZone: "UTC" });
 }
 
+// Category color-coding (5E). Derived from tags; color is large-graphical use.
+// Publications=terracotta, Data=teal, Events=ochre, Community=sage (default).
+function categoryOf(tags?: string[]): { label: string; color: string } {
+  const t = (tags ?? []).map((x) => x.toLowerCase());
+  if (t.some((x) => /public|paper/.test(x))) return { label: "Publication", color: "var(--color-accent)" };
+  if (t.some((x) => /data|dataset/.test(x))) return { label: "Data", color: "var(--accent-teal)" };
+  if (t.some((x) => /conferen|event|webinar|iemss|dublin|workshop/.test(x)))
+    return { label: "Event", color: "var(--accent-ochre)" };
+  return { label: "Community", color: "var(--accent-sage)" };
+}
+
 const jsonLd = {
   "@context": "https://schema.org",
   "@type": "Blog",
@@ -63,16 +74,22 @@ const jsonLd = {
       <p class="empty">News entries load from the news content collection (seeded in Phase 5).</p>
     ) : (
       <div class="news-list">
-        {entries.map((e) => (
-          <NewsListItem
-            title={e.data.title}
-            date={e.data.date.toISOString().slice(0, 10)}
-            dateLabel={longDate(e.data.date)}
-            excerpt={e.data.excerpt}
-            tags={e.data.tags}
-            href={e.data.fullPost ? `/news/${e.id}/` : undefined}
-          />
-        ))}
+        {entries.map((e) => {
+          const cat = categoryOf(e.data.tags);
+          return (
+            <NewsListItem
+              title={e.data.title}
+              date={e.data.date.toISOString().slice(0, 10)}
+              dateLabel={longDate(e.data.date)}
+              excerpt={e.data.excerpt}
+              tags={e.data.tags}
+              href={e.data.fullPost ? `/news/${e.id}/` : undefined}
+              category={cat.label}
+              categoryColor={cat.color}
+              seed={e.id}
+            />
+          );
+        })}
       </div>
     )}
   </article>
