@@ -10,7 +10,27 @@ import Callout from "../components/Callout.astro";
 import CitationBlock from "../components/CitationBlock.astro";
 import BangladeshMap from "../components/BangladeshMap.astro";
 import TimelineList from "../components/TimelineList.astro";
+import DataCategoryCard from "../components/DataCategoryCard.astro";
+import ModelArchetypeCard from "../components/ModelArchetypeCard.astro";
 import "../styles/editorial.css";
+
+// The 16 datasets group into three families, each with a fixed color identity
+// reused on the Data page. Counts mirror data.astro (7 / 5 / 4 = 16).
+const DATA_FAMILIES = [
+  { name: "Population & socioeconomic", count: 7, color: "var(--accent-ochre)", href: "/data/#pop-h", seed: 7, description: "Population grids, household surveys, income, and education." },
+  { name: "Environmental", count: 5, color: "var(--accent-teal)", href: "/data/#env-h", seed: 5, description: "Inundation, flood extent, soil salinity, and rainfall." },
+  { name: "Mobility", count: 4, color: "var(--color-accent)", href: "/data/#mob-h", seed: 4, description: "Modeled migration flows and observed displacement." },
+];
+
+// The six model families in the signature figure, with plain-language glosses.
+const ARCHETYPES = [
+  { kind: "abm" as const, name: "Agent-based", gloss: "Simulates individual households deciding whether, when, and where to move." },
+  { kind: "gravity" as const, name: "Gravity", gloss: "Predicts flows between places from their populations and the distance between them." },
+  { kind: "radiation" as const, name: "Radiation", gloss: "Derives flows from the population lying between an origin and a destination — parameter-free." },
+  { kind: "iam" as const, name: "Integrated assessment", gloss: "Embeds migration within a coupled model of climate, economy, and policy." },
+  { kind: "ml" as const, name: "Machine learning", gloss: "Learns migration patterns statistically from observed data." },
+  { kind: "cellular" as const, name: "Cellular automaton", gloss: "Evolves a grid of places by local transition rules at each time step." },
+];
 
 const jsonLd = {
   "@context": "https://schema.org",
@@ -197,6 +217,21 @@ const READING_LIST = [
       </p>
     </section>
 
+    <section class="reveal" aria-labelledby="arch-h">
+      <p class="kicker">Model architectures</p>
+      <h2 id="arch-h">The six model architectures</h2>
+      <p>
+        The signature figure on the home page renders the same curated dataset
+        through six families of migration model. Each encodes how people move
+        differently — which is exactly why their outputs diverge.
+      </p>
+      <div class="arch-grid">
+        {ARCHETYPES.map((a) => (
+          <ModelArchetypeCard kind={a.kind} name={a.name} gloss={a.gloss} />
+        ))}
+      </div>
+    </section>
+
     <section class="reveal" aria-labelledby="geo-h">
       <h2 id="geo-h">Geographic scope</h2>
       <div class="geo">
@@ -227,6 +262,18 @@ const READING_LIST = [
         known and available to all teams; contact project coordination to
         request the inclusion of an additional dataset.
       </p>
+      <div class="data-families">
+        {DATA_FAMILIES.map((f) => (
+          <DataCategoryCard
+            name={f.name}
+            count={f.count}
+            description={f.description}
+            color={f.color}
+            href={f.href}
+            seed={f.seed}
+          />
+        ))}
+      </div>
       <p>
         <Link href="/data/" variant="in-prose">See the full data documentation</Link>.
       </p>
@@ -328,6 +375,25 @@ const READING_LIST = [
   }
   .guidelines li { margin-bottom: var(--space-2); padding-left: var(--space-1); }
   .guidelines li strong { color: var(--color-ink); }
+
+  .data-families {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    margin: var(--space-4) 0;
+  }
+  @media (min-width: 640px) {
+    .data-families { grid-template-columns: repeat(3, 1fr); }
+  }
+
+  .arch-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: var(--space-3);
+    margin-top: var(--space-4);
+  }
+  @media (min-width: 600px) { .arch-grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) { .arch-grid { grid-template-columns: repeat(3, 1fr); } }
 
   .verify {
     color: var(--color-accent-deep);

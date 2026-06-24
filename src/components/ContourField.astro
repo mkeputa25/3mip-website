@@ -1,0 +1,70 @@
+---
+/**
+ * ContourField — deterministic nested isolines used as a quiet topographic
+ * motif. No JS and no randomness: the shape is derived from `seed` via a hash,
+ * so the same input yields the same field on every build (the News thumbnails
+ * in 5E depend on this).
+ *
+ * Used as: the small motif inside the data category cards (5C), section
+ * dividers / tide lines and the delta-map backdrop and News masthead (5D) —
+ * always one palette color at low opacity. Decorative by default
+ * (aria-hidden); pass `label` to expose it as an image.
+ */
+interface Props {
+  /** CSS color for the isolines. */
+  color?: string;
+  /** Deterministic variation seed. */
+  seed?: number | string;
+  /** Stroke opacity (brief: 0.12–0.25). */
+  opacity?: number;
+  /** Number of nested isolines. */
+  lines?: number;
+  class?: string;
+  label?: string;
+}
+const {
+  color = "var(--accent-teal)",
+  seed = 1,
+  opacity = 0.18,
+  lines = 6,
+  class: className = "",
+  label,
+} = Astro.props;
+
+// Tiny deterministic FNV-style hash → 0..1. Build-time only, no Math.random.
+function unit(s: number | string, salt: number): number {
+  let h = (2166136261 ^ salt) >>> 0;
+  const str = String(s) + ":" + salt;
+  for (let i = 0; i < str.length; i++) {
+    h ^= str.charCodeAt(i);
+    h = Math.imul(h, 16777619) >>> 0;
+  }
+  return (h % 1000) / 1000;
+}
+
+const cx = 28 + unit(seed, 1) * 44; // 28..72
+const cy = 30 + unit(seed, 2) * 40; // 30..70
+const aspect = 0.6 + unit(seed, 3) * 0.5; // 0.6..1.1
+const baseR = 7;
+const rings = Array.from({ length: lines }, (_, i) => ({
+  rx: +(baseR * (i + 1)).toFixed(2),
+  ry: +(baseR * (i + 1) * aspect).toFixed(2),
+}));
+---
+
+<svg
+  viewBox="0 0 100 100"
+  class={`contour-field ${className}`}
+  preserveAspectRatio="xMidYMid slice"
+  role={label ? "img" : "presentation"}
+  aria-label={label}
+  aria-hidden={label ? undefined : "true"}
+>
+  <g fill="none" stroke={color} stroke-width="0.8" style={`opacity:${opacity}`}>
+    {rings.map((r) => <ellipse cx={cx} cy={cy} rx={r.rx} ry={r.ry} />)}
+  </g>
+</svg>
+
+<style>
+  .contour-field { display: block; width: 100%; height: 100%; }
+</style>

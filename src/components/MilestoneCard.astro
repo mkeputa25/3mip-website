@@ -1,0 +1,62 @@
+---
+/**
+ * MilestoneCard — one milestone in the About timeline. The oversized Fraunces
+ * year numeral (5A) is the structural spine; a terracotta node dot sits on the
+ * connecting line drawn by the .timeline container (5F). Informational, not a
+ * link. The big numeral is decorative-duplicate, so it's hidden from AT and the
+ * year is restored in the heading for screen readers.
+ */
+interface Props {
+  year: string;
+  title: string;
+  description: string;
+}
+const { year, title, description } = Astro.props;
+---
+
+<li class="milestone">
+  <span class="milestone__node" aria-hidden="true"></span>
+  <span class="milestone__year year-numeral" aria-hidden="true">{year}</span>
+  <div class="milestone__body">
+    <h3 class="milestone__title"><span class="vh">{year}: </span>{title}</h3>
+    <p class="milestone__desc">{description}</p>
+  </div>
+</li>
+
+<style>
+  .milestone {
+    position: relative;
+    display: grid;
+    grid-template-columns: minmax(4.5rem, 6rem) 1fr;
+    gap: var(--space-4);
+    align-items: start;
+    padding: var(--space-4) 0 var(--space-4) var(--space-4);
+  }
+  /* Terracotta node dot, centered on the spine the .timeline draws. */
+  .milestone__node {
+    position: absolute;
+    left: -5px;
+    top: var(--space-5);
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--color-accent);
+    border: 2px solid var(--color-background);
+  }
+  .milestone__year { line-height: 0.9; }
+  .milestone__body { padding-top: var(--space-1); }
+  .milestone__title {
+    font-family: var(--font-serif);
+    font-size: var(--text-h4);
+    margin: 0 0 var(--space-1);
+  }
+  .milestone__desc {
+    margin: 0;
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+    max-width: 48ch;
+  }
+  @media (max-width: 559px) {
+    .milestone { grid-template-columns: 1fr; gap: var(--space-1); }
+  }
+</style>

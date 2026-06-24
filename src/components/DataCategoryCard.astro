@@ -1,0 +1,95 @@
+---
+/**
+ * DataCategoryCard — one of the three dataset families on Case 1. COLOR
+ * ENCODES MEANING: each family has a fixed identity used wherever datasets
+ * appear (Population & Socioeconomic → ochre, Environmental → teal, Mobility
+ * → terracotta). The color rides the left border and the contour motif only;
+ * the card background stays surface and all text is ink/ink-muted, so every
+ * pair meets AA. Clicking anchors to that group on /data/.
+ */
+import ContourField from "./ContourField.astro";
+
+interface Props {
+  name: string;
+  count: number;
+  description: string;
+  /** Family color as a CSS value, e.g. "var(--accent-ochre)". */
+  color: string;
+  href: string;
+  seed?: number;
+}
+const { name, count, description, color, href, seed = 1 } = Astro.props;
+---
+
+<a
+  class="datacard"
+  href={href}
+  aria-label={`${name}: ${count} datasets — view this group on the Data page`}
+  style={`--fam:${color}`}
+>
+  <span class="datacard__motif" aria-hidden="true">
+    <ContourField color={color} seed={seed} opacity={0.22} lines={5} />
+  </span>
+  <span class="datacard__count">{count} datasets</span>
+  <h3 class="datacard__name"><span>{name}</span></h3>
+  <p class="datacard__desc">{description}</p>
+</a>
+
+<style>
+  .datacard {
+    position: relative;
+    display: block;
+    overflow: hidden;
+    text-decoration: none;
+    color: var(--color-ink);
+    background: var(--color-surface);
+    border: 1px solid var(--color-border);
+    border-left: 3px solid var(--fam);
+    border-radius: var(--radius);
+    padding: var(--space-4);
+    transition: border-color 150ms var(--ease-out);
+  }
+  .datacard__motif {
+    position: absolute;
+    top: -12%;
+    right: -8%;
+    width: 46%;
+    height: 124%;
+    pointer-events: none;
+  }
+  .datacard__count {
+    position: relative;
+    font-family: var(--font-mono);
+    font-size: var(--text-caption);
+    color: var(--color-ink-muted);
+    letter-spacing: 0.04em;
+  }
+  .datacard__name {
+    position: relative;
+    font-family: var(--font-serif);
+    font-size: var(--text-h4);
+    margin: var(--space-1) 0 var(--space-2);
+  }
+  .datacard__name span {
+    background-image: linear-gradient(currentColor, currentColor);
+    background-size: 0% 1px;
+    background-position: 0 100%;
+    background-repeat: no-repeat;
+    transition: background-size 150ms var(--ease-out);
+  }
+  .datacard__desc {
+    position: relative;
+    margin: 0;
+    color: var(--color-ink-muted);
+    font-size: var(--text-small);
+    max-width: 34ch;
+  }
+  .datacard:hover,
+  .datacard:focus-visible { border-color: var(--fam); }
+  .datacard:hover .datacard__name span,
+  .datacard:focus-visible .datacard__name span { background-size: 100% 1px; }
+  .datacard:focus-visible {
+    outline: 2px solid var(--color-focus-ring);
+    outline-offset: 2px;
+  }
+</style>
